@@ -19,17 +19,22 @@ const LoadHeader = ({ loadId, broker, status }: LoadHeaderProps) => {
     return "border-green-200 bg-green-50 text-green-700";
   };
 
+  const handleBackClick = () => {
+    console.log("Navigating back to dashboard");
+    navigate("/");
+  };
+
   return (
     <header className="bg-white border-b border-slate-200 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center h-16 space-x-4">
           <Button 
             variant="ghost" 
-            onClick={() => navigate("/")}
-            className="flex items-center space-x-2"
+            onClick={handleBackClick}
+            className="flex items-center space-x-2 hover:bg-slate-100"
           >
             <ArrowLeft className="w-4 h-4" />
-            <span>Back</span>
+            <span>Back to Dashboard</span>
           </Button>
           <div>
             <h1 className="text-xl font-bold text-slate-900">Load #{loadId}</h1>

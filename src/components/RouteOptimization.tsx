@@ -2,9 +2,25 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Fuel, Clock } from "lucide-react";
+import { Fuel, Clock, Navigation } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 const RouteOptimization = () => {
+  const { toast } = useToast();
+
+  const handleViewRoute = () => {
+    console.log("Opening detailed route view");
+    toast({
+      title: "Route Details",
+      description: "Opening optimized route with fuel stops and real-time traffic data...",
+    });
+    
+    // Simulate opening route in external app
+    setTimeout(() => {
+      window.open("https://maps.google.com", "_blank");
+    }, 1000);
+  };
+
   return (
     <Card className="border-blue-200 bg-blue-50">
       <CardHeader>
@@ -39,7 +55,8 @@ const RouteOptimization = () => {
           </div>
         </div>
 
-        <Button className="w-full">
+        <Button className="w-full" onClick={handleViewRoute}>
+          <Navigation className="w-4 h-4 mr-2" />
           View Detailed Route & Fuel Stops
         </Button>
       </CardContent>

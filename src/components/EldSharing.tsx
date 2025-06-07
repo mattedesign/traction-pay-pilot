@@ -1,9 +1,23 @@
 
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Share2 } from "lucide-react";
+import { Share2, CheckCircle } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 const EldSharing = () => {
+  const [isShared, setIsShared] = useState(false);
+  const { toast } = useToast();
+
+  const handleEnableSharing = () => {
+    console.log("Enabling ELD sharing for this load");
+    setIsShared(true);
+    toast({
+      title: "ELD Sharing Enabled",
+      description: "Your broker now has access to real-time location updates. Premium rates unlocked!",
+    });
+  };
+
   return (
     <Card className="border-orange-200 bg-orange-50">
       <CardHeader>
@@ -23,10 +37,21 @@ const EldSharing = () => {
           </ul>
         </div>
         
-        <Button variant="outline" className="w-full border-orange-300">
-          <Share2 className="w-4 h-4 mr-2" />
-          Enable ELD Sharing for This Load
-        </Button>
+        {isShared ? (
+          <Button variant="outline" className="w-full border-green-300 bg-green-50 text-green-700" disabled>
+            <CheckCircle className="w-4 h-4 mr-2" />
+            ELD Sharing Active
+          </Button>
+        ) : (
+          <Button 
+            variant="outline" 
+            className="w-full border-orange-300 hover:bg-orange-100" 
+            onClick={handleEnableSharing}
+          >
+            <Share2 className="w-4 h-4 mr-2" />
+            Enable ELD Sharing for This Load
+          </Button>
+        )}
       </CardContent>
     </Card>
   );
