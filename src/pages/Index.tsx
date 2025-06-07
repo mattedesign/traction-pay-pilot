@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Truck, FileText, MapPin, DollarSign, Route, CreditCard } from "lucide-react";
@@ -60,10 +61,19 @@ const Index = () => {
     <div className="min-h-screen flex w-full bg-slate-50">
       <NavigationSidebar />
       
-      <div className="flex-1 flex flex-col bg-slate-50 relative">
+      <div className="flex-1 flex flex-col relative">
+        {/* Background Image with Overlay */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ 
+            backgroundImage: `url('/lovable-uploads/6f78e8f9-f79b-435c-bc75-4b0a1e3454df.png')` 
+          }}
+        />
+        <div className="absolute inset-0 bg-slate-50/85" />
+        
         {/* Main Content Area - Hide when chat is focused */}
         {!isChatFocused && (
-          <div className="flex-1 flex items-center justify-center">
+          <div className="relative z-10 flex-1 flex items-center justify-center">
             <div className="flex flex-col items-center">
               {/* Welcome Header */}
               <div className="text-center mb-12">
@@ -83,7 +93,7 @@ const Index = () => {
                 {suggestedActions.map((action, index) => (
                   <Card 
                     key={index} 
-                    className="hover:shadow-md transition-shadow cursor-pointer border border-slate-200 bg-white"
+                    className="hover:shadow-md transition-shadow cursor-pointer border border-slate-200 bg-white/90 backdrop-blur-sm"
                     onClick={action.onClick}
                   >
                     <CardContent className="p-6">
@@ -112,7 +122,7 @@ const Index = () => {
         )}
 
         {/* Chat Interface - Expand when focused */}
-        <div className={`${isChatFocused ? 'flex-1' : 'absolute bottom-0 left-0 right-0'} p-4 bg-slate-50`}>
+        <div className={`relative z-10 ${isChatFocused ? 'flex-1' : 'absolute bottom-0 left-0 right-0'} p-4`}>
           <div className={`w-full max-w-4xl mx-auto ${isChatFocused ? 'h-full' : 'h-16'}`}>
             <MockChatInterface 
               ref={chatRef} 
