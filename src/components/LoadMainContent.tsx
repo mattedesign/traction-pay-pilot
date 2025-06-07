@@ -23,8 +23,8 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
   };
 
   return (
-    <div className="flex-1 bg-white flex">
-      {/* Left section with load details and tabs */}
+    <div className="flex-1 bg-white flex flex-col">
+      {/* Main content area */}
       <div className="flex-1 border-r border-slate-200">
         <Tabs defaultValue="details" className="h-full flex flex-col">
           <div className="border-b border-slate-200 bg-white px-6 py-4">
@@ -59,7 +59,7 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
             </TabsList>
           </div>
           
-          <div className="flex-1 overflow-hidden">
+          <div className="flex-1 overflow-hidden pb-80">
             <TabsContent value="details" className="h-full p-6 overflow-y-auto">
               <div className="max-w-4xl space-y-6">
                 <LoadInformation loadData={loadData} />
@@ -106,16 +106,18 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
         </Tabs>
       </div>
 
-      {/* Right section with persistent AI assistant */}
-      <div className="w-96 bg-slate-50 border-l border-slate-200 flex flex-col">
-        <div className="p-4 border-b border-slate-200 bg-white">
-          <h3 className="text-lg font-semibold text-slate-900">AI Assistant</h3>
-          <p className="text-sm text-slate-600">Ask about this load, regulations, routes, and more</p>
-        </div>
-        <div className="flex-1 p-4">
-          <ChatInterface 
-            loadContext={`Load #${loadData.loadId} from ${loadData.origin} to ${loadData.destination}, Rate: ${loadData.amount}`}
-          />
+      {/* Bottom AI assistant panel - persistent horizontally */}
+      <div className="fixed bottom-0 left-80 right-0 h-80 bg-white border-t border-slate-200 shadow-lg z-10">
+        <div className="h-full flex flex-col">
+          <div className="p-4 border-b border-slate-200 bg-slate-50">
+            <h3 className="text-lg font-semibold text-slate-900">AI Assistant</h3>
+            <p className="text-sm text-slate-600">Ask about this load, regulations, routes, and more</p>
+          </div>
+          <div className="flex-1 p-4 overflow-hidden">
+            <ChatInterface 
+              loadContext={`Load #${loadData.loadId} from ${loadData.origin} to ${loadData.destination}, Rate: ${loadData.amount}`}
+            />
+          </div>
         </div>
       </div>
     </div>
