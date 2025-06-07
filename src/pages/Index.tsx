@@ -37,7 +37,7 @@ const Index = () => {
     <div className="min-h-screen flex w-full" style={{ backgroundColor: '#F5F6FA' }}>
       <NavigationSidebar />
       
-      <div className="flex-1 flex items-center justify-center">
+      <div className="flex-1 flex items-center justify-center pb-32">
         <div className="max-w-2xl w-full px-8">
           {/* Welcome Header */}
           <div className="text-center mb-12">
@@ -45,10 +45,10 @@ const Index = () => {
               <Truck className="w-8 h-8 text-white" />
             </div>
             <h1 className="text-4xl font-bold text-slate-900 mb-4">
-              LoadMaster AI
+              Traction
             </h1>
             <p className="text-xl text-slate-600 max-w-lg mx-auto">
-              Start with a task, and let LoadMaster AI complete it for you. Not sure where to start? Try a template
+              Start with a task, and let Traction complete it for you. Not sure where to start? Try a template
             </p>
           </div>
 
@@ -74,15 +74,17 @@ const Index = () => {
           {/* Additional Help */}
           <div className="text-center">
             <p className="text-sm text-slate-500 mb-4">
-              LoadMaster AI might provide inaccurate information. Always verify critical details.
+              Traction might provide inaccurate information. Always verify critical details.
             </p>
           </div>
         </div>
       </div>
 
-      {/* Floating Chat Interface */}
-      <div className="fixed bottom-6 right-6 w-96 h-96 bg-white rounded-lg shadow-xl border border-slate-200 p-4 z-50">
-        <MockChatInterface />
+      {/* Fixed Bottom Chat Interface */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 shadow-lg p-4 z-50">
+        <div className="max-w-4xl mx-auto">
+          <MockChatInterface />
+        </div>
       </div>
     </div>
   );
