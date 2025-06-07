@@ -93,9 +93,9 @@ const LoadAssistant = ({ loadId }: LoadAssistantProps) => {
           <div>
             <CardTitle className="flex items-center space-x-2">
               <span className="text-slate-800">Load Assistant</span>
-              <div className="flex items-center space-x-1 bg-purple-50 px-2 py-1 rounded-full border border-purple-100">
-                <Sparkles className="w-3 h-3 text-purple-600" />
-                <span className="text-xs font-medium text-purple-700">AI Powered</span>
+              <div className="flex items-center space-x-1 bg-slate-100 px-2 py-1 rounded-full border border-slate-200">
+                <Sparkles className="w-3 h-3 text-slate-500" />
+                <span className="text-xs font-medium text-slate-600">AI Powered</span>
               </div>
             </CardTitle>
             <CardDescription className="text-slate-500">
@@ -113,21 +113,21 @@ const LoadAssistant = ({ loadId }: LoadAssistantProps) => {
               className={`flex items-start space-x-2 ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               {message.sender === 'assistant' && (
-                <div className="w-6 h-6 bg-purple-50 rounded-full flex items-center justify-center flex-shrink-0 border border-purple-100">
-                  <Bot className="w-3 h-3 text-purple-600" />
+                <div className="w-6 h-6 bg-slate-100 rounded-full flex items-center justify-center flex-shrink-0 border border-slate-200">
+                  <Bot className="w-3 h-3 text-slate-500" />
                 </div>
               )}
               <div 
                 className={`max-w-xs px-3 py-2 rounded-lg text-sm ${
                   message.sender === 'user' 
-                    ? 'bg-blue-600 text-white ml-2' 
+                    ? 'bg-slate-700 text-white ml-2' 
                     : 'bg-white border border-slate-200 text-slate-700'
                 }`}
               >
                 {message.text}
               </div>
               {message.sender === 'user' && (
-                <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+                <div className="w-6 h-6 bg-slate-700 rounded-full flex items-center justify-center flex-shrink-0">
                   <User className="w-3 h-3 text-white" />
                 </div>
               )}
@@ -135,8 +135,8 @@ const LoadAssistant = ({ loadId }: LoadAssistantProps) => {
           ))}
           {isTyping && (
             <div className="flex items-start space-x-2">
-              <div className="w-6 h-6 bg-purple-50 rounded-full flex items-center justify-center border border-purple-100">
-                <Bot className="w-3 h-3 text-purple-600" />
+              <div className="w-6 h-6 bg-slate-100 rounded-full flex items-center justify-center border border-slate-200">
+                <Bot className="w-3 h-3 text-slate-500" />
               </div>
               <div className="bg-white border border-slate-200 rounded-lg px-3 py-2">
                 <div className="flex space-x-1">
@@ -152,7 +152,7 @@ const LoadAssistant = ({ loadId }: LoadAssistantProps) => {
         {/* Quick Questions */}
         <div className="space-y-2">
           <p className="text-sm font-medium text-slate-600 flex items-center">
-            <Sparkles className="w-3 h-3 mr-1 text-purple-600" />
+            <Sparkles className="w-3 h-3 mr-1 text-slate-500" />
             Quick questions:
           </p>
           <div className="grid grid-cols-2 gap-2">
@@ -161,7 +161,7 @@ const LoadAssistant = ({ loadId }: LoadAssistantProps) => {
                 key={question}
                 variant="outline" 
                 size="sm" 
-                className="text-xs p-2 h-auto text-left justify-start bg-white border-slate-200 hover:bg-purple-50 hover:border-purple-200 transition-all duration-200"
+                className="text-xs p-2 h-auto text-left justify-start bg-white border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all duration-200"
                 onClick={() => handleQuickQuestion(question)}
               >
                 {question}
@@ -178,13 +178,13 @@ const LoadAssistant = ({ loadId }: LoadAssistantProps) => {
             onChange={(e) => setInputValue(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleSendMessage(inputValue)}
             placeholder="Ask me anything about this load..."
-            className="flex-1 px-3 py-2 border border-slate-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 bg-white transition-all duration-200"
+            className="flex-1 px-3 py-2 border border-slate-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-slate-500 bg-white transition-all duration-200"
           />
           <Button 
             size="sm" 
             onClick={() => handleSendMessage(inputValue)}
             disabled={!inputValue.trim() || isTyping}
-            className="bg-purple-600 hover:bg-purple-700 transition-colors duration-200"
+            className="bg-slate-700 hover:bg-slate-800 transition-colors duration-200"
           >
             <Send className="w-4 h-4" />
           </Button>

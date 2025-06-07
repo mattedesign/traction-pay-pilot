@@ -23,7 +23,7 @@ const RouteOptimization = () => {
 
   return (
     <Card className="bg-white border-slate-200 relative overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200">
-      {/* Integrated Route Visualization */}
+      {/* Route Visualization */}
       <div className="absolute top-2 right-2 w-32 h-20 opacity-8">
         <svg viewBox="0 0 128 80" className="w-full h-full">
           {/* Highway route */}
@@ -70,9 +70,9 @@ const RouteOptimization = () => {
           <div className="flex justify-between items-center mb-3">
             <div className="flex items-center space-x-2">
               <span className="font-medium text-slate-700">Recommended Route</span>
-              <div className="flex items-center space-x-1 bg-blue-50 px-2 py-1 rounded-full border border-blue-100">
-                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                <span className="text-xs font-medium text-blue-700">AI Optimized</span>
+              <div className="flex items-center space-x-1 bg-slate-100 px-2 py-1 rounded-full border border-slate-200">
+                <div className="w-2 h-2 bg-slate-400 rounded-full"></div>
+                <span className="text-xs font-medium text-slate-600">AI Optimized</span>
               </div>
             </div>
             <Badge variant="outline" className="border-green-200 text-green-700 bg-green-50">
@@ -90,7 +90,7 @@ const RouteOptimization = () => {
           <div className="bg-slate-50 border border-slate-100 rounded-lg p-4 text-center hover:bg-slate-100 transition-colors duration-200">
             <div className="flex items-center justify-center mb-2">
               <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center border border-slate-200">
-                <Fuel className="w-4 h-4 text-amber-600" />
+                <Fuel className="w-4 h-4 text-green-600" />
               </div>
             </div>
             <p className="text-sm font-medium text-slate-700">Fuel Cost</p>
@@ -100,16 +100,16 @@ const RouteOptimization = () => {
           <div className="bg-slate-50 border border-slate-100 rounded-lg p-4 text-center hover:bg-slate-100 transition-colors duration-200">
             <div className="flex items-center justify-center mb-2">
               <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center border border-slate-200">
-                <Clock className="w-4 h-4 text-blue-600" />
+                <Clock className="w-4 h-4 text-slate-600" />
               </div>
             </div>
             <p className="text-sm font-medium text-slate-700">Drive Time</p>
-            <p className="text-xl font-bold text-blue-600">1h 15m</p>
+            <p className="text-xl font-bold text-slate-600">1h 15m</p>
             <p className="text-xs text-slate-500">fastest route</p>
           </div>
         </div>
 
-        <Button className="w-full bg-blue-600 hover:bg-blue-700 font-medium transition-colors duration-200" onClick={handleViewRoute}>
+        <Button className="w-full bg-slate-700 hover:bg-slate-800 font-medium transition-colors duration-200" onClick={handleViewRoute}>
           <Navigation className="w-4 h-4 mr-2" />
           View Detailed Route & Fuel Stops
         </Button>

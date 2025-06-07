@@ -47,7 +47,7 @@ const LoadDetail = () => {
   const loadData = getLoadData(loadId || "1234");
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50"> {/* Light gray background */}
       <LoadHeader 
         loadId={loadData.loadId}
         broker={loadData.broker}

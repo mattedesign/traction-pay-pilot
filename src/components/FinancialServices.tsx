@@ -47,17 +47,17 @@ const FinancialServices = ({ loadAmount }: FinancialServicesProps) => {
       <div className="absolute top-2 right-2 w-24 h-16 opacity-8">
         <svg viewBox="0 0 96 64" className="w-full h-full">
           {/* Dollar sign */}
-          <text x="48" y="35" fontSize="20" textAnchor="middle" className="fill-slate-300 font-bold">$</text>
+          <text x="48" y="35" fontSize="20" textAnchor="middle" className="fill-green-300 font-bold">$</text>
           {/* Flow arrows */}
-          <path d="M20,32 Q35,20 48,32" stroke="currentColor" strokeWidth="2" fill="none" className="text-slate-200" markerEnd="url(#arrowhead)">
+          <path d="M20,32 Q35,20 48,32" stroke="currentColor" strokeWidth="2" fill="none" className="text-green-200" markerEnd="url(#arrowhead)">
             <animate attributeName="stroke-dasharray" values="0,100;20,100;0,100" dur="3s" repeatCount="indefinite" />
           </path>
-          <path d="M48,32 Q63,44 78,32" stroke="currentColor" strokeWidth="2" fill="none" className="text-slate-200" markerEnd="url(#arrowhead)">
+          <path d="M48,32 Q63,44 78,32" stroke="currentColor" strokeWidth="2" fill="none" className="text-green-200" markerEnd="url(#arrowhead)">
             <animate attributeName="stroke-dasharray" values="0,100;20,100;0,100" dur="3s" repeatCount="indefinite" begin="1s" />
           </path>
           <defs>
             <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-              <polygon points="0 0, 10 3.5, 0 7" className="fill-slate-200" />
+              <polygon points="0 0, 10 3.5, 0 7" className="fill-green-200" />
             </marker>
           </defs>
         </svg>
@@ -99,16 +99,16 @@ const FinancialServices = ({ loadAmount }: FinancialServicesProps) => {
           <div className="bg-slate-50 border border-slate-100 rounded-lg p-4 text-center hover:bg-slate-100 transition-colors duration-200">
             <div className="flex items-center justify-center mb-2">
               <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center border border-slate-200">
-                <CreditCard className="w-4 h-4 text-blue-600" />
+                <CreditCard className="w-4 h-4 text-slate-600" />
               </div>
             </div>
             <p className="text-sm font-medium text-slate-700">Fuel Cards</p>
-            <p className="text-lg font-bold text-blue-600">3¢/gal</p>
+            <p className="text-lg font-bold text-slate-600">3¢/gal</p>
             <p className="text-xs text-slate-500">best discount</p>
             <Button 
               size="sm" 
               variant="outline" 
-              className="mt-2 border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 hover:border-blue-300 w-full transition-all duration-200" 
+              className="mt-2 border-slate-300 bg-white text-slate-700 hover:bg-slate-50 hover:border-slate-400 w-full transition-all duration-200" 
               onClick={handleFuelCards}
             >
               Compare

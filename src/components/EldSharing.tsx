@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Share2, CheckCircle, Truck, MapPin, Signal } from "lucide-react";
+import { Share2, CheckCircle, Signal } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const EldSharing = () => {
@@ -20,7 +20,7 @@ const EldSharing = () => {
 
   return (
     <Card className="bg-white border-slate-200 relative overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200">
-      {/* Integrated GPS Signal Visualization */}
+      {/* GPS Signal Illustration */}
       <div className="absolute top-4 right-4 w-24 h-16 opacity-10">
         <div className="relative w-full h-full">
           {/* GPS Signal waves */}
@@ -61,17 +61,19 @@ const EldSharing = () => {
           </h3>
           <div className="grid grid-cols-1 gap-2">
             {[
-              { icon: "💰", text: "Access to premium loads", highlight: "+15% average rate", isHighlight: true },
-              { icon: "⚡", text: "Faster invoice approval", highlight: "2 days vs 7 days", isHighlight: true },
-              { icon: "🤝", text: "Better broker relationships", highlight: "", isHighlight: false },
-              { icon: "🛡️", text: "Reduced detention claims", highlight: "", isHighlight: false }
+              { icon: "💰", text: "Access to premium loads", highlight: "+15% average rate", isPaymentCritical: true },
+              { icon: "⚡", text: "Faster invoice approval", highlight: "2 days vs 7 days", isPaymentCritical: true },
+              { icon: "🤝", text: "Better broker relationships", highlight: "", isPaymentCritical: false },
+              { icon: "🛡️", text: "Reduced detention claims", highlight: "", isPaymentCritical: false }
             ].map((benefit, index) => (
               <div key={index} className="flex items-center text-sm text-slate-600 bg-white rounded-lg p-3 border border-slate-100">
                 <span className="mr-3 text-base opacity-70">{benefit.icon}</span>
                 <span className="flex-1">{benefit.text}</span>
                 {benefit.highlight && (
                   <span className={`text-xs font-medium px-2 py-1 rounded-full ${
-                    benefit.isHighlight ? 'bg-blue-50 text-blue-700' : 'bg-slate-50 text-slate-600'
+                    benefit.isPaymentCritical 
+                      ? 'bg-green-50 text-green-700 border border-green-200' 
+                      : 'bg-slate-50 text-slate-600'
                   }`}>
                     {benefit.highlight}
                   </span>
@@ -82,24 +84,24 @@ const EldSharing = () => {
         </div>
         
         {isShared ? (
-          <Button variant="outline" className="w-full border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100" disabled>
+          <Button variant="outline" className="w-full border-green-200 bg-green-50 text-green-700 hover:bg-green-100" disabled>
             <CheckCircle className="w-4 h-4 mr-2" />
             ELD Sharing Active
             <div className="ml-auto flex space-x-1">
-              <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-              <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse delay-150"></div>
-              <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse delay-300"></div>
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse delay-150"></div>
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse delay-300"></div>
             </div>
           </Button>
         ) : (
           <Button 
             variant="outline" 
-            className="w-full border-slate-300 hover:border-blue-400 hover:bg-blue-50 hover:text-blue-700 font-medium transition-all duration-200 bg-white" 
+            className="w-full border-slate-300 hover:border-slate-400 hover:bg-slate-50 font-medium transition-all duration-200 bg-white" 
             onClick={handleEnableSharing}
           >
             <Share2 className="w-4 h-4 mr-2" />
             Enable ELD Sharing for This Load
-            <Signal className="w-4 h-4 ml-auto text-blue-600" />
+            <Signal className="w-4 h-4 ml-auto text-slate-400" />
           </Button>
         )}
       </CardContent>
