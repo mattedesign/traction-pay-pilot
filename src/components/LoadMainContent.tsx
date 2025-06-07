@@ -14,7 +14,7 @@ interface LoadMainContentProps {
 
 const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
   return (
-    <div className="flex-1 flex flex-col min-h-screen" style={{ backgroundColor: '#F5F6FA' }}>
+    <div className="flex-1 flex flex-col min-h-screen bg-slate-50">
       {/* Main content area */}
       <div className="flex-1 border-r border-slate-200">
         <Tabs defaultValue="details" className="h-full flex flex-col">
@@ -44,7 +44,7 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
             </TabsList>
           </div>
           
-          <div className="flex-1 overflow-hidden pb-20">
+          <div className="flex-1 overflow-hidden pb-20 bg-slate-50">
             <TabsContent value="details" className="h-full p-6 overflow-y-auto">
               <div className="max-w-4xl space-y-6 w-full">
                 <LoadInformation loadData={loadData} />

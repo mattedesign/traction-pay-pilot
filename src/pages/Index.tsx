@@ -34,10 +34,10 @@ const Index = () => {
   ];
 
   return (
-    <div className="min-h-screen flex w-full" style={{ backgroundColor: '#F5F6FA' }}>
+    <div className="min-h-screen flex w-full bg-slate-50">
       <NavigationSidebar />
       
-      <div className="flex-1 flex items-center justify-center pb-32">
+      <div className="flex-1 flex items-center justify-center pb-32 bg-slate-50">
         <div className="max-w-2xl w-full px-8">
           {/* Welcome Header */}
           <div className="text-center mb-12">
@@ -81,7 +81,7 @@ const Index = () => {
       </div>
 
       {/* Fixed Bottom Chat Interface */}
-      <div className="fixed bottom-0 left-0 right-0 p-4 z-50">
+      <div className="fixed bottom-0 left-0 right-0 p-4 z-50 bg-slate-50">
         <div className="w-[90%] xl:w-[60%] mx-auto">
           <MockChatInterface />
         </div>
