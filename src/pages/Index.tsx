@@ -1,7 +1,6 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Truck, FileText, MapPin, DollarSign, Route, Clock } from "lucide-react";
+import { Truck, FileText, MapPin, DollarSign, Route, CreditCard } from "lucide-react";
 import NavigationSidebar from "@/components/NavigationSidebar";
 import MockChatInterface from "@/components/MockChatInterface";
 
@@ -26,9 +25,9 @@ const Index = () => {
       color: "text-purple-600"
     },
     {
-      icon: Clock,
-      title: "Check HOS compliance",
-      description: "Review hours of service status",
+      icon: CreditCard,
+      title: "QuickPay Available",
+      description: "You have $1,250 available for QuickPay",
       color: "text-orange-600"
     }
   ];
