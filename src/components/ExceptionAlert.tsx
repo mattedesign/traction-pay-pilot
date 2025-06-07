@@ -92,14 +92,14 @@ const ExceptionAlert = () => {
 
       {/* Resolution Status */}
       {resolutionStatus === "resolved" ? (
-        <Card className="border-green-200 bg-green-50">
+        <Card className="border-slate-200 bg-slate-50">
           <CardContent className="p-4">
-            <div className="flex items-center space-x-2 text-green-600">
+            <div className="flex items-center space-x-2 text-slate-600">
               <CheckCircle className="w-5 h-5" />
-              <span className="font-medium">Exception Resolved!</span>
+              <span className="font-medium">Exception Resolved - Status: Pending</span>
             </div>
-            <p className="text-sm text-green-700 mt-1">
-              Weight ticket submitted and verified. Invoice is now ready for broker approval.
+            <p className="text-sm text-slate-700 mt-1">
+              Weight ticket submitted and verified. Load status updated to pending for next steps.
             </p>
           </CardContent>
         </Card>
