@@ -6,6 +6,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Send, Mic, Bot, User, DollarSign, MapPin, Fuel, Clock } from "lucide-react";
 
+interface ChatMessage {
+  type: "ai" | "user";
+  content: string;
+  timestamp: Date;
+}
+
 interface ChatInterfaceProps {
   isPreview?: boolean;
   loadContext?: string;
@@ -13,9 +19,9 @@ interface ChatInterfaceProps {
 
 const ChatInterface = ({ isPreview = false, loadContext }: ChatInterfaceProps) => {
   const [message, setMessage] = useState("");
-  const [chatHistory, setChatHistory] = useState([
+  const [chatHistory, setChatHistory] = useState<ChatMessage[]>([
     {
-      type: "ai" as const,
+      type: "ai",
       content: "Hi! I'm your Traction AI assistant. I can help you with load information, payment status, route optimization, and more. What would you like to know?",
       timestamp: new Date()
     }
@@ -32,8 +38,8 @@ const ChatInterface = ({ isPreview = false, loadContext }: ChatInterfaceProps) =
   const handleSendMessage = () => {
     if (!message.trim()) return;
 
-    const userMessage = {
-      type: "user" as const,
+    const userMessage: ChatMessage = {
+      type: "user",
       content: message,
       timestamp: new Date()
     };
@@ -50,8 +56,8 @@ const ChatInterface = ({ isPreview = false, loadContext }: ChatInterfaceProps) =
       aiResponse = "I understand you're asking about " + message + ". Let me pull up your relevant load information and payment details to help you with this.";
     }
 
-    const aiMessage = {
-      type: "ai" as const,
+    const aiMessage: ChatMessage = {
+      type: "ai",
       content: aiResponse,
       timestamp: new Date()
     };

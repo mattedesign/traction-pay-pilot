@@ -1,9 +1,8 @@
-
 import { useParams, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, MapPin, Clock, DollarSign, FileText, Upload, Share2, Fuel } from "lucide-react";
+import { ArrowLeft, MapPin, Clock, DollarSign, FileText, Upload, Share2, Fuel, CreditCard } from "lucide-react";
 import ChatInterface from "@/components/ChatInterface";
 
 const LoadDetail = () => {
