@@ -1,16 +1,29 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Truck, FileText, MapPin, DollarSign, Route, CreditCard } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useRef } from "react";
 import NavigationSidebar from "@/components/NavigationSidebar";
 import MockChatInterface from "@/components/MockChatInterface";
 
 const Index = () => {
+  const navigate = useNavigate();
+  const chatRef = useRef<{ simulateTrackLoad: () => void }>(null);
+
+  const handleTrackLoad = () => {
+    if (chatRef.current) {
+      chatRef.current.simulateTrackLoad();
+    }
+  };
+
   const suggestedActions = [
     {
       icon: Truck,
       title: "Track a load",
       description: "Monitor load status and location",
-      color: "text-blue-600"
+      color: "text-blue-600",
+      onClick: handleTrackLoad
     },
     {
       icon: FileText,
@@ -54,7 +67,11 @@ const Index = () => {
           {/* Suggested Actions */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
             {suggestedActions.map((action, index) => (
-              <Card key={index} className="hover:shadow-md transition-shadow cursor-pointer border border-slate-200 bg-white">
+              <Card 
+                key={index} 
+                className="hover:shadow-md transition-shadow cursor-pointer border border-slate-200 bg-white"
+                onClick={action.onClick}
+              >
                 <CardContent className="p-6">
                   <div className="flex items-start space-x-4">
                     <div className={`w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center`}>
@@ -82,7 +99,7 @@ const Index = () => {
       {/* Fixed Bottom Chat Interface */}
       <div className="fixed bottom-0 left-0 right-0 p-4 z-50 bg-slate-50">
         <div className="w-[90%] xl:w-[60%] mx-auto">
-          <MockChatInterface />
+          <MockChatInterface ref={chatRef} onNavigateToLoad={navigate} />
         </div>
       </div>
     </div>
