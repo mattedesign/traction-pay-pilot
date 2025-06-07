@@ -1,17 +1,67 @@
+
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Fuel, Clock, Navigation, MapPin, Route, TrendingDown, ExternalLink } from "lucide-react";
+import { Fuel, Clock, Navigation, MapPin, Route, TrendingDown, ExternalLink, ChevronDown, ChevronUp } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+
+interface RouteOption {
+  id: string;
+  name: string;
+  description: string;
+  fuelCost: number;
+  driveTime: string;
+  distance: string;
+  fuelStops: number;
+  savings: number;
+  recommended?: boolean;
+}
 
 const RouteOptimization = () => {
   const { toast } = useToast();
+  const [showComparison, setShowComparison] = useState(false);
 
-  const handleViewRoute = () => {
-    console.log("Opening detailed route view");
+  const routeOptions: RouteOption[] = [
+    {
+      id: "optimal",
+      name: "AI Optimized Route",
+      description: "Via I-71 N → I-270 W • Avoids high-fuel zones",
+      fuelCost: 52.30,
+      driveTime: "1h 15m",
+      distance: "68 miles",
+      fuelStops: 3,
+      savings: 12.50,
+      recommended: true
+    },
+    {
+      id: "fastest",
+      name: "Fastest Route", 
+      description: "Via I-77 N → I-270 W • Direct highway route",
+      fuelCost: 58.80,
+      driveTime: "1h 12m",
+      distance: "65 miles",
+      fuelStops: 2,
+      savings: 6.00
+    },
+    {
+      id: "standard",
+      name: "Standard Route",
+      description: "Via US-30 W → I-71 N • Traditional trucker route",
+      fuelCost: 64.80,
+      driveTime: "1h 25m", 
+      distance: "72 miles",
+      fuelStops: 4,
+      savings: 0
+    }
+  ];
+
+  const handleViewRoute = (routeId?: string) => {
+    const route = routeId ? routeOptions.find(r => r.id === routeId) : routeOptions[0];
+    console.log(`Opening detailed route view for: ${route?.name}`);
     toast({
       title: "Route Details",
-      description: "Opening optimized route with fuel stops and real-time traffic data...",
+      description: `Opening ${route?.name} with fuel stops and real-time traffic data...`,
     });
     
     // Open Google Maps with a route from Shreve, OH to Grove City, OH
@@ -30,6 +80,10 @@ const RouteOptimization = () => {
     
     // Open GasBuddy for route fuel planning
     window.open("https://www.gasbuddy.com/trip", "_blank");
+  };
+
+  const toggleComparison = () => {
+    setShowComparison(!showComparison);
   };
 
   return (
@@ -120,8 +174,84 @@ const RouteOptimization = () => {
           </div>
         </div>
 
+        {/* Route Comparison Toggle */}
+        <Button 
+          variant="ghost" 
+          className="w-full text-slate-600 hover:text-slate-800 hover:bg-slate-50 border border-slate-200" 
+          onClick={toggleComparison}
+        >
+          {showComparison ? (
+            <>
+              <ChevronUp className="w-4 h-4 mr-2" />
+              Hide Route Comparison
+            </>
+          ) : (
+            <>
+              <ChevronDown className="w-4 h-4 mr-2" />
+              Compare All Routes by Fuel Cost
+            </>
+          )}
+        </Button>
+
+        {/* Route Comparison Table */}
+        {showComparison && (
+          <div className="bg-white border border-slate-200 rounded-lg overflow-hidden">
+            <div className="bg-slate-50 px-4 py-3 border-b border-slate-200">
+              <h3 className="font-medium text-slate-800">Route Comparison</h3>
+              <p className="text-sm text-slate-600">Choose the best route for your needs</p>
+            </div>
+            <div className="divide-y divide-slate-100">
+              {routeOptions.map((route) => (
+                <div key={route.id} className="p-4 hover:bg-slate-50 transition-colors duration-200">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center space-x-2">
+                      <span className="font-medium text-slate-700">{route.name}</span>
+                      {route.recommended && (
+                        <Badge variant="outline" className="border-green-200 bg-green-50 text-green-700 text-xs">
+                          Recommended
+                        </Badge>
+                      )}
+                    </div>
+                    <div className="text-right">
+                      <p className="text-lg font-bold text-slate-700">${route.fuelCost.toFixed(2)}</p>
+                      {route.savings > 0 && (
+                        <p className="text-xs text-green-600 font-medium">Save ${route.savings.toFixed(2)}</p>
+                      )}
+                    </div>
+                  </div>
+                  <p className="text-sm text-slate-500 mb-3">{route.description}</p>
+                  <div className="grid grid-cols-3 gap-4 text-sm">
+                    <div className="text-center">
+                      <p className="text-xs text-slate-500">Time</p>
+                      <p className="font-medium text-slate-700">{route.driveTime}</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-xs text-slate-500">Distance</p>
+                      <p className="font-medium text-slate-700">{route.distance}</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-xs text-slate-500">Fuel Stops</p>
+                      <p className="font-medium text-slate-700">{route.fuelStops}</p>
+                    </div>
+                  </div>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="w-full mt-3 border-slate-300 hover:bg-slate-50" 
+                    onClick={() => handleViewRoute(route.id)}
+                  >
+                    <Navigation className="w-4 h-4 mr-2" />
+                    Select This Route
+                    <ExternalLink className="w-4 h-4 ml-2" />
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         <div className="space-y-2">
-          <Button className="w-full bg-slate-700 hover:bg-slate-800 font-medium transition-colors duration-200" onClick={handleViewRoute}>
+          <Button className="w-full bg-slate-700 hover:bg-slate-800 font-medium transition-colors duration-200" onClick={() => handleViewRoute()}>
             <Navigation className="w-4 h-4 mr-2" />
             View Detailed Route & Navigation
             <ExternalLink className="w-4 h-4 ml-2" />
