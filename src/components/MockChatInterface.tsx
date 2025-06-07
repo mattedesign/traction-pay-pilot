@@ -9,6 +9,11 @@ interface Message {
   type: "ai" | "user";
   content: string;
   timestamp: Date;
+  showPrompt?: boolean;
+  promptActions?: {
+    yes: () => void;
+    no: () => void;
+  };
 }
 
 interface MockChatInterfaceProps {
@@ -59,6 +64,48 @@ const MockChatInterface = forwardRef<MockChatInterfaceRef, MockChatInterfaceProp
       }, 50); // Typing speed
     };
 
+    const handlePromptResponse = (response: 'yes' | 'no', messageIndex: number) => {
+      // Add user response message
+      const userResponse: Message = {
+        type: "user",
+        content: response === 'yes' ? "Yes" : "No",
+        timestamp: new Date()
+      };
+      
+      // Remove prompt from the original message
+      setMessages(prev => {
+        const updated = [...prev];
+        updated[messageIndex] = { ...updated[messageIndex], showPrompt: false };
+        return [...updated, userResponse];
+      });
+
+      if (response === 'yes' && onNavigateToLoad) {
+        // Add AI response and navigate
+        setTimeout(() => {
+          const aiResponse: Message = {
+            type: "ai",
+            content: "Taking you to the detailed load view now...",
+            timestamp: new Date()
+          };
+          setMessages(prev => [...prev, aiResponse]);
+          
+          setTimeout(() => {
+            onNavigateToLoad("/load/1234");
+          }, 1000);
+        }, 500);
+      } else if (response === 'no') {
+        // Add AI response for no
+        setTimeout(() => {
+          const aiResponse: Message = {
+            type: "ai",
+            content: "No problem! Let me know if you need anything else.",
+            timestamp: new Date()
+          };
+          setMessages(prev => [...prev, aiResponse]);
+        }, 500);
+      }
+    };
+
     const simulateTrackLoad = () => {
       // Focus the input and simulate typing
       simulateTyping("Load Status for 1234", () => {
@@ -72,22 +119,20 @@ const MockChatInterface = forwardRef<MockChatInterfaceRef, MockChatInterfaceProp
         setMessage("");
         setIsTyping(true);
 
-        // Show loading for 2 seconds, then navigate
+        // Show loading for 2 seconds, then show response with prompt
         setTimeout(() => {
           const aiResponse: Message = {
             type: "ai",
-            content: "Load #1234 is currently pending pickup. I'm taking you to the detailed view...",
-            timestamp: new Date()
+            content: "Load #1234 is currently pending pickup at 3875 S Elyria Rd, Shreve, OH 44676. Delivery scheduled for today at 4:30 PM to Grove City, OH. Would you like to view the detailed load information?",
+            timestamp: new Date(),
+            showPrompt: true,
+            promptActions: {
+              yes: () => handlePromptResponse('yes', 1), // Will be at index 1 (after user message)
+              no: () => handlePromptResponse('no', 1)
+            }
           };
           setMessages(prev => [...prev, aiResponse]);
           setIsTyping(false);
-          
-          // Navigate to load detail after showing response
-          setTimeout(() => {
-            if (onNavigateToLoad) {
-              onNavigateToLoad("/load/1234");
-            }
-          }, 1000);
         }, 2000);
       });
     };
@@ -157,14 +202,35 @@ const MockChatInterface = forwardRef<MockChatInterfaceRef, MockChatInterfaceProp
                     <Bot className="w-4 h-4 text-white" />
                   )}
                 </div>
-                <Card className={`${msg.type === "user" ? "bg-blue-50 border-blue-200" : "bg-slate-50 border-slate-200"}`}>
-                  <CardContent className="p-3">
-                    <p className="text-sm">{msg.content}</p>
-                    <p className="text-xs text-slate-500 mt-1">
-                      {msg.timestamp.toLocaleTimeString()}
-                    </p>
-                  </CardContent>
-                </Card>
+                <div className="flex flex-col space-y-2">
+                  <Card className={`${msg.type === "user" ? "bg-blue-50 border-blue-200" : "bg-slate-50 border-slate-200"}`}>
+                    <CardContent className="p-3">
+                      <p className="text-sm">{msg.content}</p>
+                      <p className="text-xs text-slate-500 mt-1">
+                        {msg.timestamp.toLocaleTimeString()}
+                      </p>
+                    </CardContent>
+                  </Card>
+                  
+                  {msg.showPrompt && msg.promptActions && (
+                    <div className="flex space-x-2">
+                      <Button 
+                        size="sm" 
+                        onClick={msg.promptActions.yes}
+                        className="bg-blue-600 hover:bg-blue-700"
+                      >
+                        Yes
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        onClick={msg.promptActions.no}
+                      >
+                        No
+                      </Button>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           ))}
