@@ -1,5 +1,4 @@
 
-import APIKeyInput from "./APIKeyInput";
 import ChatHistory from "./ChatHistory";
 import SuggestedQuestions from "./SuggestedQuestions";
 import ChatInput from "./ChatInput";
@@ -17,23 +16,13 @@ interface ChatContainerProps {
 }
 
 const ChatContainer = ({
-  isInitialized,
   isLoading,
   chatHistory,
   currentSuggestions,
   message,
   onMessageChange,
-  onSendMessage,
-  onAPIKeySubmit
+  onSendMessage
 }: ChatContainerProps) => {
-  if (!isInitialized) {
-    return (
-      <div className="space-y-4">
-        <APIKeyInput onKeySubmit={onAPIKeySubmit} isLoading={isLoading} />
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-4">
       <ChatHistory messages={chatHistory} isLoading={isLoading} />

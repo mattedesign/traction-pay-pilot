@@ -1,7 +1,7 @@
 
-import SuggestedQuestions from "./SuggestedQuestions";
-import ChatInput from "./ChatInput";
 import ChatContainer from "./ChatContainer";
+import ChatPreview from "./ChatPreview";
+import ChatSetup from "./ChatSetup";
 import { useChatMessages } from "../hooks/useChatMessages";
 import { useChatHandlers } from "../hooks/useChatHandlers";
 import { useSuggestedQuestions } from "../hooks/useSuggestedQuestions";
@@ -44,25 +44,11 @@ ${loadContext ? `Context: Currently discussing ${loadContext}` : ''}`;
   });
 
   if (isPreview) {
-    return (
-      <div className="space-y-4">
-        <SuggestedQuestions 
-          questions={currentSuggestions} 
-          onQuestionClick={() => {}} 
-          isPreview={true}
-        />
-        <ChatInput
-          message=""
-          onMessageChange={() => {}}
-          onSendMessage={() => {}}
-          isLoading={false}
-          isPreview={true}
-        />
-        <p className="text-xs text-slate-500 text-center">
-          Click a demo scenario above to interact with the AI assistant
-        </p>
-      </div>
-    );
+    return <ChatPreview currentSuggestions={currentSuggestions} />;
+  }
+
+  if (!isInitialized) {
+    return <ChatSetup onAPIKeySubmit={handleAPIKeySubmit} isLoading={isLoading} />;
   }
 
   return (
