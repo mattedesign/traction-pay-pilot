@@ -6,7 +6,7 @@ import EldSharing from "./EldSharing";
 import DocumentUploadSection from "./DocumentUploadSection";
 import FinancialServices from "./FinancialServices";
 import MockChatInterface from "./MockChatInterface";
-import { FileText, Brain, Upload } from "lucide-react";
+import { FileText, Brain, Upload, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 
