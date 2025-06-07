@@ -48,7 +48,7 @@ const Index = () => {
               Traction
             </h1>
             <p className="text-xl text-slate-600 max-w-lg mx-auto">
-              Start with a task, and let Traction complete it for you. Not sure where to start? Try a template
+              Less Friction, More Traction to Carriers
             </p>
           </div>
 
