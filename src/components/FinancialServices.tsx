@@ -1,7 +1,6 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { DollarSign, CreditCard, TrendingUp } from "lucide-react";
+import { DollarSign, CreditCard, TrendingUp, ExternalLink, Info } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface FinancialServicesProps {
@@ -32,13 +31,22 @@ const FinancialServices = ({ loadAmount }: FinancialServicesProps) => {
     console.log("Opening fuel card comparison");
     toast({
       title: "Fuel Card Comparison",
-      description: "Loading best fuel card rates along your route...",
+      description: "Opening comprehensive fuel card comparison tool...",
     });
 
-    // Simulate opening fuel card comparison
-    setTimeout(() => {
-      window.open("https://www.google.com/maps/search/gas+stations", "_blank");
-    }, 1000);
+    // Open Fleet One fuel card comparison
+    window.open("https://www.fleetone.com/fuel-cards", "_blank");
+  };
+
+  const handleLearnMoreFuelAdvance = () => {
+    console.log("Opening fuel advance information");
+    toast({
+      title: "Fuel Advance Info",
+      description: "Opening detailed information about fuel advances...",
+    });
+
+    // Open freight factoring information
+    window.open("https://www.freightfactoring.com/freight-factoring/fuel-advances/", "_blank");
   };
 
   return (
@@ -87,14 +95,26 @@ const FinancialServices = ({ loadAmount }: FinancialServicesProps) => {
             <p className="text-sm font-medium text-slate-700">Fuel Advance</p>
             <p className="text-lg font-bold text-green-600">${fuelAdvanceAmount}</p>
             <p className="text-xs text-slate-500">available now</p>
-            <Button 
-              size="sm" 
-              variant="outline" 
-              className="mt-2 border-green-200 bg-green-50 text-green-700 hover:bg-green-100 hover:border-green-300 w-full transition-all duration-200" 
-              onClick={handleFuelAdvance}
-            >
-              Apply Now
-            </Button>
+            <div className="space-y-1 mt-2">
+              <Button 
+                size="sm" 
+                variant="outline" 
+                className="border-green-200 bg-green-50 text-green-700 hover:bg-green-100 hover:border-green-300 w-full transition-all duration-200" 
+                onClick={handleFuelAdvance}
+              >
+                Apply Now
+              </Button>
+              <Button 
+                size="sm" 
+                variant="ghost" 
+                className="w-full text-xs text-slate-500 hover:text-slate-700 h-6" 
+                onClick={handleLearnMoreFuelAdvance}
+              >
+                <Info className="w-3 h-3 mr-1" />
+                Learn More
+                <ExternalLink className="w-3 h-3 ml-1" />
+              </Button>
+            </div>
           </div>
           <div className="bg-slate-50 border border-slate-100 rounded-lg p-4 text-center hover:bg-slate-100 transition-colors duration-200">
             <div className="flex items-center justify-center mb-2">
@@ -111,7 +131,8 @@ const FinancialServices = ({ loadAmount }: FinancialServicesProps) => {
               className="mt-2 border-slate-300 bg-white text-slate-700 hover:bg-slate-50 hover:border-slate-400 w-full transition-all duration-200" 
               onClick={handleFuelCards}
             >
-              Compare
+              Compare Cards
+              <ExternalLink className="w-4 h-4 ml-1" />
             </Button>
           </div>
         </div>

@@ -1,8 +1,7 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Fuel, Clock, Navigation, MapPin, Route, TrendingDown } from "lucide-react";
+import { Fuel, Clock, Navigation, MapPin, Route, TrendingDown, ExternalLink } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const RouteOptimization = () => {
@@ -15,10 +14,22 @@ const RouteOptimization = () => {
       description: "Opening optimized route with fuel stops and real-time traffic data...",
     });
     
-    // Simulate opening route in external app
-    setTimeout(() => {
-      window.open("https://maps.google.com", "_blank");
-    }, 1000);
+    // Open Google Maps with a route from Shreve, OH to Grove City, OH
+    const origin = "3875 S Elyria Rd, Shreve, OH 44676";
+    const destination = "3920 Southwest Blvd, Grove City, OH 43123";
+    const mapsUrl = `https://www.google.com/maps/dir/${encodeURIComponent(origin)}/${encodeURIComponent(destination)}`;
+    window.open(mapsUrl, "_blank");
+  };
+
+  const handleFuelStops = () => {
+    console.log("Opening fuel stop finder");
+    toast({
+      title: "Fuel Stop Finder",
+      description: "Finding cheapest fuel stops along your route...",
+    });
+    
+    // Open GasBuddy for route fuel planning
+    window.open("https://www.gasbuddy.com/trip", "_blank");
   };
 
   return (
@@ -109,10 +120,19 @@ const RouteOptimization = () => {
           </div>
         </div>
 
-        <Button className="w-full bg-slate-700 hover:bg-slate-800 font-medium transition-colors duration-200" onClick={handleViewRoute}>
-          <Navigation className="w-4 h-4 mr-2" />
-          View Detailed Route & Fuel Stops
-        </Button>
+        <div className="space-y-2">
+          <Button className="w-full bg-slate-700 hover:bg-slate-800 font-medium transition-colors duration-200" onClick={handleViewRoute}>
+            <Navigation className="w-4 h-4 mr-2" />
+            View Detailed Route & Navigation
+            <ExternalLink className="w-4 h-4 ml-2" />
+          </Button>
+          
+          <Button variant="outline" className="w-full border-slate-300 hover:bg-slate-50 font-medium transition-colors duration-200" onClick={handleFuelStops}>
+            <Fuel className="w-4 h-4 mr-2" />
+            Find Cheapest Fuel Stops
+            <ExternalLink className="w-4 h-4 ml-2" />
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );

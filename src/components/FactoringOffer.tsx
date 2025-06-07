@@ -1,7 +1,8 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { DollarSign, Clock, TrendingUp } from "lucide-react";
+import { DollarSign, Clock, TrendingUp, ExternalLink } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 interface FactorData {
   available: boolean;
@@ -15,6 +16,19 @@ interface FactoringOfferProps {
 }
 
 const FactoringOffer = ({ factorData }: FactoringOfferProps) => {
+  const { toast } = useToast();
+
+  const handleLearnMore = () => {
+    console.log("Opening factoring information");
+    toast({
+      title: "Factoring Information",
+      description: "Opening comprehensive guide to freight factoring...",
+    });
+
+    // Open freight factoring information
+    window.open("https://www.freightfactoring.com/what-is-freight-factoring/", "_blank");
+  };
+
   return (
     <Card className="border-purple-200 bg-purple-50">
       <CardHeader>
@@ -58,8 +72,9 @@ const FactoringOffer = ({ factorData }: FactoringOfferProps) => {
           </p>
         </div>
 
-        <Button variant="outline" className="w-full border-purple-300">
+        <Button variant="outline" className="w-full border-purple-300" onClick={handleLearnMore}>
           Learn More About Factoring
+          <ExternalLink className="w-4 h-4 ml-2" />
         </Button>
       </CardContent>
     </Card>

@@ -1,8 +1,7 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Share2, CheckCircle, Signal } from "lucide-react";
+import { Share2, CheckCircle, Signal, Info, ExternalLink } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const EldSharing = () => {
@@ -16,6 +15,17 @@ const EldSharing = () => {
       title: "ELD Sharing Enabled",
       description: "Your broker now has access to real-time location updates. Premium rates unlocked!",
     });
+  };
+
+  const handleLearnMore = () => {
+    console.log("Opening ELD sharing information");
+    toast({
+      title: "ELD Information",
+      description: "Opening comprehensive guide to ELD sharing benefits...",
+    });
+
+    // Open FMCSA ELD information
+    window.open("https://www.fmcsa.dot.gov/hours-service/elds", "_blank");
   };
 
   return (
@@ -83,27 +93,40 @@ const EldSharing = () => {
           </div>
         </div>
         
-        {isShared ? (
-          <Button variant="outline" className="w-full border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100" disabled>
-            <CheckCircle className="w-4 h-4 mr-2" />
-            ELD Sharing Active
-            <div className="ml-auto flex space-x-1">
-              <div className="w-2 h-2 bg-slate-400 rounded-full animate-pulse"></div>
-              <div className="w-2 h-2 bg-slate-400 rounded-full animate-pulse delay-150"></div>
-              <div className="w-2 h-2 bg-slate-400 rounded-full animate-pulse delay-300"></div>
-            </div>
-          </Button>
-        ) : (
+        <div className="space-y-2">
+          {isShared ? (
+            <Button variant="outline" className="w-full border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100" disabled>
+              <CheckCircle className="w-4 h-4 mr-2" />
+              ELD Sharing Active
+              <div className="ml-auto flex space-x-1">
+                <div className="w-2 h-2 bg-slate-400 rounded-full animate-pulse"></div>
+                <div className="w-2 h-2 bg-slate-400 rounded-full animate-pulse delay-150"></div>
+                <div className="w-2 h-2 bg-slate-400 rounded-full animate-pulse delay-300"></div>
+              </div>
+            </Button>
+          ) : (
+            <Button 
+              variant="outline" 
+              className="w-full border-slate-300 hover:border-slate-400 hover:bg-slate-50 font-medium transition-all duration-200 bg-white" 
+              onClick={handleEnableSharing}
+            >
+              <Share2 className="w-4 h-4 mr-2" />
+              Enable ELD Sharing for This Load
+              <Signal className="w-4 h-4 ml-auto text-slate-400" />
+            </Button>
+          )}
+          
           <Button 
-            variant="outline" 
-            className="w-full border-slate-300 hover:border-slate-400 hover:bg-slate-50 font-medium transition-all duration-200 bg-white" 
-            onClick={handleEnableSharing}
+            variant="ghost" 
+            size="sm" 
+            className="w-full text-slate-500 hover:text-slate-700 h-8" 
+            onClick={handleLearnMore}
           >
-            <Share2 className="w-4 h-4 mr-2" />
-            Enable ELD Sharing for This Load
-            <Signal className="w-4 h-4 ml-auto text-slate-400" />
+            <Info className="w-3 h-3 mr-1" />
+            Learn about ELD sharing requirements
+            <ExternalLink className="w-3 h-3 ml-1" />
           </Button>
-        )}
+        </div>
       </CardContent>
     </Card>
   );
