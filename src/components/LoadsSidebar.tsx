@@ -1,7 +1,8 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Truck, MapPin } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Truck, MapPin, ExternalLink } from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
 
 interface Load {
@@ -78,14 +79,30 @@ const LoadsSidebar = () => {
   const { loadId } = useParams();
   const navigate = useNavigate();
 
+  const handleViewDashboard = () => {
+    console.log("Navigating to loads dashboard");
+    navigate("/loads");
+  };
+
   return (
     <div className="w-80 bg-white text-slate-900 min-h-screen overflow-y-auto flex flex-col shadow-sm" style={{ borderRight: 'rgba(0, 0, 0, 0.06) 1px solid' }}>
       {/* Loads Header */}
       <div className="p-6 border-b border-slate-200">
-        <h2 className="text-xl font-semibold flex items-center">
-          <Truck className="w-6 h-6 mr-2" />
-          Loads
-        </h2>
+        <div className="flex items-center justify-between">
+          <h2 className="text-xl font-semibold flex items-center">
+            <Truck className="w-6 h-6 mr-2" />
+            Loads
+          </h2>
+          <Button 
+            variant="ghost" 
+            size="sm"
+            onClick={handleViewDashboard}
+            className="flex items-center space-x-1 text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+          >
+            <span className="text-sm">Dashboard</span>
+            <ExternalLink className="w-3 h-3" />
+          </Button>
+        </div>
       </div>
       
       {/* Loads List */}
