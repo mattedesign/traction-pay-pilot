@@ -35,58 +35,71 @@ const ExceptionAlert = () => {
   return (
     <div className="space-y-6">
       {/* Exception Alert */}
-      <Card className="border-orange-200 bg-orange-50">
+      <Card className={resolutionStatus === "resolved" ? "border-slate-200 bg-slate-50" : "border-orange-200 bg-orange-50"}>
         <CardHeader>
           <div className="flex items-center space-x-3">
-            <AlertTriangle className="w-6 h-6 text-orange-600" />
+            <AlertTriangle className={`w-6 h-6 ${resolutionStatus === "resolved" ? "text-slate-600" : "text-orange-600"}`} />
             <div>
-              <CardTitle className="text-orange-900">Exception Detected - Load #{exceptionData.loadId}</CardTitle>
-              <CardDescription className="text-orange-700">
-                {exceptionData.type} found during document analysis
+              <CardTitle className={resolutionStatus === "resolved" ? "text-slate-900" : "text-orange-900"}>
+                {resolutionStatus === "resolved" ? "Exception Resolved - Load #" : "Exception Detected - Load #"}{exceptionData.loadId}
+              </CardTitle>
+              <CardDescription className={resolutionStatus === "resolved" ? "text-slate-700" : "text-orange-700"}>
+                {resolutionStatus === "resolved" 
+                  ? "Weight discrepancy resolved - load status pending" 
+                  : `${exceptionData.type} found during document analysis`}
               </CardDescription>
             </div>
             <Badge 
               variant="outline" 
               className={`${
+                resolutionStatus === "resolved" ? "border-slate-300 text-slate-700 bg-slate-50" :
                 exceptionData.severity === "high" ? "border-red-300 text-red-700 bg-red-50" :
                 exceptionData.severity === "medium" ? "border-orange-300 text-orange-700 bg-orange-50" :
                 "border-yellow-300 text-yellow-700 bg-yellow-50"
               }`}
             >
-              {exceptionData.severity.toUpperCase()}
+              {resolutionStatus === "resolved" ? "PENDING" : exceptionData.severity.toUpperCase()}
             </Badge>
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="bg-white border border-orange-200 rounded-lg p-4">
-            <h3 className="font-medium text-orange-900 mb-2">Issue Details</h3>
-            <p className="text-sm text-orange-800 mb-3">{exceptionData.description}</p>
+          <div className={`border rounded-lg p-4 ${resolutionStatus === "resolved" ? "bg-white border-slate-200" : "bg-white border-orange-200"}`}>
+            <h3 className={`font-medium mb-2 ${resolutionStatus === "resolved" ? "text-slate-900" : "text-orange-900"}`}>Issue Details</h3>
+            <p className={`text-sm mb-3 ${resolutionStatus === "resolved" ? "text-slate-800" : "text-orange-800"}`}>
+              {resolutionStatus === "resolved" 
+                ? "Weight ticket submitted and verified. Load proceeding to next steps."
+                : exceptionData.description}
+            </p>
             
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-orange-50 border border-orange-200 rounded p-3">
-                <div className="flex items-center space-x-2 mb-2">
-                  <FileText className="w-4 h-4 text-orange-600" />
-                  <span className="text-sm font-medium text-orange-900">Rate Confirmation</span>
+            {resolutionStatus === "pending" && (
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-orange-50 border border-orange-200 rounded p-3">
+                  <div className="flex items-center space-x-2 mb-2">
+                    <FileText className="w-4 h-4 text-orange-600" />
+                    <span className="text-sm font-medium text-orange-900">Rate Confirmation</span>
+                  </div>
+                  <p className="text-sm text-orange-700">{exceptionData.rateConfirmation}</p>
                 </div>
-                <p className="text-sm text-orange-700">{exceptionData.rateConfirmation}</p>
-              </div>
-              <div className="bg-orange-50 border border-orange-200 rounded p-3">
-                <div className="flex items-center space-x-2 mb-2">
-                  <FileText className="w-4 h-4 text-orange-600" />
-                  <span className="text-sm font-medium text-orange-900">Bill of Lading</span>
+                <div className="bg-orange-50 border border-orange-200 rounded p-3">
+                  <div className="flex items-center space-x-2 mb-2">
+                    <FileText className="w-4 h-4 text-orange-600" />
+                    <span className="text-sm font-medium text-orange-900">Bill of Lading</span>
+                  </div>
+                  <p className="text-sm text-orange-700">{exceptionData.billOfLading}</p>
                 </div>
-                <p className="text-sm text-orange-700">{exceptionData.billOfLading}</p>
               </div>
-            </div>
+            )}
           </div>
 
-          <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-            <div className="flex items-center space-x-2 mb-1">
-              <Clock className="w-4 h-4 text-red-600" />
-              <span className="text-sm font-medium text-red-900">Potential Impact</span>
+          {resolutionStatus === "pending" && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+              <div className="flex items-center space-x-2 mb-1">
+                <Clock className="w-4 h-4 text-red-600" />
+                <span className="text-sm font-medium text-red-900">Potential Impact</span>
+              </div>
+              <p className="text-sm text-red-700">{exceptionData.impact}</p>
             </div>
-            <p className="text-sm text-red-700">{exceptionData.impact}</p>
-          </div>
+          )}
         </CardContent>
       </Card>
 
