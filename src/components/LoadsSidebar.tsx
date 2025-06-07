@@ -85,9 +85,9 @@ const LoadsSidebar = () => {
   };
 
   return (
-    <div className="w-80 bg-slate-900 text-white h-full overflow-y-auto flex flex-col">
+    <div className="w-80 bg-white text-slate-900 h-full overflow-y-auto flex flex-col">
       {/* Loads Header */}
-      <div className="p-6 border-b border-slate-700">
+      <div className="p-6 border-b border-slate-200">
         <div className="flex items-center justify-between mb-2">
           <h2 className="text-xl font-semibold flex items-center">
             <Truck className="w-6 h-6 mr-2" />
@@ -97,7 +97,7 @@ const LoadsSidebar = () => {
             variant="ghost"
             size="sm"
             onClick={handleBackClick}
-            className="text-slate-300 hover:text-white hover:bg-slate-700"
+            className="text-slate-600 hover:text-slate-900 hover:bg-slate-100"
           >
             <ArrowLeft className="w-4 h-4" />
           </Button>
@@ -111,35 +111,35 @@ const LoadsSidebar = () => {
             key={load.id}
             className={`cursor-pointer transition-all duration-200 hover:shadow-md ${
               loadId === load.id 
-                ? "bg-slate-700 border-blue-500" 
-                : "bg-slate-800 border-slate-600 hover:bg-slate-700"
+                ? "bg-slate-100 border-slate-300" 
+                : "bg-slate-50 border-slate-200 hover:bg-slate-100"
             }`}
             onClick={() => navigate(`/load/${load.id}`)}
           >
             <CardHeader className="pb-2">
               <div className="flex justify-between items-start">
-                <CardTitle className="text-sm font-medium text-white">
+                <CardTitle className="text-sm font-medium text-slate-900">
                   Load #{load.id}
                 </CardTitle>
                 <Badge className={getStatusColor(load.status)}>
                   {getStatusLabel(load.status)}
                 </Badge>
               </div>
-              <p className="text-xs text-slate-300">{load.broker}</p>
+              <p className="text-xs text-slate-600">{load.broker}</p>
             </CardHeader>
             <CardContent className="pt-0">
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-slate-400">Rate</span>
-                  <span className="text-sm font-semibold text-green-400">{load.amount}</span>
+                  <span className="text-xs text-slate-500">Rate</span>
+                  <span className="text-sm font-semibold text-green-600">{load.amount}</span>
                 </div>
                 
-                <div className="flex items-center text-xs text-slate-300">
+                <div className="flex items-center text-xs text-slate-600">
                   <MapPin className="w-3 h-3 mr-1" />
                   <span className="truncate">{load.origin} → {load.destination}</span>
                 </div>
                 
-                <div className="flex items-center justify-between text-xs text-slate-400">
+                <div className="flex items-center justify-between text-xs text-slate-500">
                   <span>{load.pickupTime}</span>
                   <span>{load.distance}</span>
                 </div>

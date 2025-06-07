@@ -21,7 +21,7 @@ const NavigationSidebar = () => {
   };
 
   return (
-    <div className="w-16 bg-slate-800 text-white h-full flex flex-col items-center py-4 space-y-4">
+    <div className="w-16 bg-slate-800 text-white min-h-screen flex flex-col items-center py-4 space-y-4">
       {navigationItems.map((item) => (
         <Button
           key={item.label}
