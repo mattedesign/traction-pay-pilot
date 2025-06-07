@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Key, Eye, EyeOff } from 'lucide-react';
+import { Key, Eye, EyeOff, AlertCircle } from 'lucide-react';
 
 interface APIKeyInputProps {
   onKeySubmit: (key: string) => void;
@@ -26,13 +26,23 @@ const APIKeyInput = ({ onKeySubmit, isLoading = false }: APIKeyInputProps) => {
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
           <Key className="w-5 h-5 text-blue-600" />
-          <span>AI Service Setup</span>
+          <span>AI Demo Setup</span>
         </CardTitle>
         <CardDescription>
-          Enter your Anthropic API key to enable the AI assistant. The key is stored locally and not sent to our servers.
+          This demo uses a CORS proxy to enable frontend-only AI functionality. Enter your Anthropic API key to start chatting.
         </CardDescription>
       </CardHeader>
       <CardContent>
+        <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+          <div className="flex items-start space-x-2">
+            <AlertCircle className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />
+            <div className="text-sm text-amber-800">
+              <p className="font-medium">Demo Notice:</p>
+              <p>This uses a public CORS proxy for demonstration. Your API key is stored locally and only used for requests.</p>
+            </div>
+          </div>
+        </div>
+        
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="relative">
             <Input
@@ -53,7 +63,7 @@ const APIKeyInput = ({ onKeySubmit, isLoading = false }: APIKeyInputProps) => {
             </Button>
           </div>
           <Button type="submit" disabled={!key.trim() || isLoading} className="w-full">
-            {isLoading ? 'Connecting...' : 'Connect AI Assistant'}
+            {isLoading ? 'Connecting...' : 'Start AI Demo'}
           </Button>
         </form>
         <p className="text-xs text-slate-500 mt-2">

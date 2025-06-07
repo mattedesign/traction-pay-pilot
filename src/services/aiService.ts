@@ -12,6 +12,7 @@ interface AIResponse {
 export class AIService {
   private apiKey: string;
   private baseUrl = 'https://api.anthropic.com/v1/messages';
+  private corsProxy = 'https://cors-anywhere.herokuapp.com/';
 
   constructor(apiKey: string) {
     this.apiKey = apiKey;
@@ -22,14 +23,15 @@ export class AIService {
     systemPrompt: string = "You are a helpful AI assistant specialized in trucking operations, logistics, and transportation industry knowledge. Provide practical, accurate, and industry-specific advice."
   ): Promise<AIResponse> {
     try {
-      console.log('Attempting to send request to Anthropic API...');
+      console.log('Attempting to send request to Anthropic API via CORS proxy...');
       
-      const response = await fetch(this.baseUrl, {
+      const response = await fetch(`${this.corsProxy}${this.baseUrl}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'x-api-key': this.apiKey,
-          'anthropic-version': '2023-06-01'
+          'anthropic-version': '2023-06-01',
+          'X-Requested-With': 'XMLHttpRequest'
         },
         body: JSON.stringify({
           model: 'claude-3-5-sonnet-20241022',
@@ -66,11 +68,10 @@ export class AIService {
     } catch (error) {
       console.error('AI Service Error:', error);
       
-      // Handle network/CORS errors specifically
       if (error instanceof TypeError && (error.message.includes('fetch') || error.message.includes('Failed to fetch'))) {
         return {
-          content: "❌ **Browser Security Limitation**\n\nDirect API calls to Anthropic from the browser are blocked by CORS (Cross-Origin Resource Sharing) policies for security reasons.\n\n**To use AI features, you need:**\n1. A backend server to proxy API calls\n2. Or use Lovable's Supabase integration for secure AI functionality\n\n**Recommended Solution:**\nConnect this project to Supabase using the green button in the top-right corner, then create an Edge Function to handle AI requests securely.",
-          error: 'CORS/Network error - Direct browser calls to Anthropic API are not supported'
+          content: "❌ **Connection Error**\n\nUnable to connect to the AI service. This could be due to:\n\n1. **CORS Proxy Issues**: The demo CORS proxy might be down\n2. **Network Problems**: Check your internet connection\n3. **API Key Issues**: Verify your Anthropic API key is correct\n\n**Alternative Solutions:**\n- Try refreshing the page and entering your API key again\n- For production use, consider setting up your own CORS proxy\n- Or use Lovable's Supabase integration for secure backend functionality",
+          error: 'Network/CORS error'
         };
       }
       

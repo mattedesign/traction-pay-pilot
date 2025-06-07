@@ -40,7 +40,7 @@ export const useChatHandlers = ({
     setMessage("");
 
     try {
-      console.log('Preparing to send message to AI...');
+      console.log('Preparing to send message to AI via CORS proxy...');
       
       // Convert chat history to AI service format
       const messages = [...chatHistory, userMessage].map(msg => ({
@@ -56,11 +56,11 @@ export const useChatHandlers = ({
         // Add error message to chat
         addAIMessage(response.content);
         
-        // Show different toast messages based on error type
-        if (response.error.includes('CORS') || response.error.includes('Network')) {
+        // Show appropriate toast messages
+        if (response.error.includes('Network') || response.error.includes('CORS')) {
           toast({
-            title: "Browser Security Limitation",
-            description: "Direct API calls are blocked. Consider using Supabase integration for secure AI functionality.",
+            title: "Connection Issue",
+            description: "CORS proxy might be down. Try refreshing the page or check your network connection.",
             variant: "destructive"
           });
         } else {
@@ -79,25 +79,25 @@ export const useChatHandlers = ({
       console.error('Chat error:', error);
       
       // Add error message to chat
-      addAIMessage("❌ Connection failed. This browser-based implementation has limitations due to CORS policies. For production use, consider setting up a backend service or using Lovable's Supabase integration.");
+      addAIMessage("❌ Connection failed. The CORS proxy might be temporarily unavailable. Please try again in a moment, or refresh the page to retry.");
       
       toast({
         title: "Connection Error",
-        description: "Browser security limitations prevent direct API calls. Consider using a backend service.",
+        description: "Failed to connect to AI service. Please try again.",
         variant: "destructive"
       });
     }
   };
 
   const handleAPIKeySubmit = async (key: string) => {
-    console.log('Setting up AI service with provided key...');
+    console.log('Setting up AI service with provided key for demo...');
     
     try {
       initializeService(key);
       
       toast({
-        title: "AI Assistant Ready",
-        description: "Your API key has been configured. You can now start chatting with the AI assistant.",
+        title: "Demo AI Assistant Ready",
+        description: "Your API key has been configured. You can now start chatting with the AI assistant via CORS proxy.",
       });
       
     } catch (error) {
