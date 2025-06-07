@@ -61,44 +61,44 @@ const LoadAssistant = ({ loadId }: LoadAssistantProps) => {
   };
 
   return (
-    <Card className="bg-slate-50 border-slate-200 relative overflow-hidden">
+    <Card className="bg-white border-slate-200 relative overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200">
       {/* AI Brain Network Visualization */}
-      <div className="absolute top-2 right-2 w-20 h-16 opacity-10">
+      <div className="absolute top-2 right-2 w-20 h-16 opacity-6">
         <svg viewBox="0 0 80 64" className="w-full h-full">
           {/* Neural network nodes */}
-          <circle cx="20" cy="16" r="3" className="fill-purple-400">
-            <animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite" />
+          <circle cx="20" cy="16" r="3" className="fill-slate-300">
+            <animate attributeName="opacity" values="0.3;0.6;0.3" dur="2s" repeatCount="indefinite" />
           </circle>
-          <circle cx="40" cy="32" r="4" className="fill-purple-500">
-            <animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite" begin="0.5s" />
+          <circle cx="40" cy="32" r="4" className="fill-slate-400">
+            <animate attributeName="opacity" values="0.3;0.6;0.3" dur="2s" repeatCount="indefinite" begin="0.5s" />
           </circle>
-          <circle cx="60" cy="16" r="3" className="fill-purple-400">
-            <animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite" begin="1s" />
+          <circle cx="60" cy="16" r="3" className="fill-slate-300">
+            <animate attributeName="opacity" values="0.3;0.6;0.3" dur="2s" repeatCount="indefinite" begin="1s" />
           </circle>
-          <circle cx="60" cy="48" r="3" className="fill-purple-400">
-            <animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite" begin="0.3s" />
+          <circle cx="60" cy="48" r="3" className="fill-slate-300">
+            <animate attributeName="opacity" values="0.3;0.6;0.3" dur="2s" repeatCount="indefinite" begin="0.3s" />
           </circle>
           {/* Connections */}
-          <line x1="20" y1="16" x2="40" y2="32" stroke="currentColor" strokeWidth="1" className="text-purple-300" opacity="0.6" />
-          <line x1="40" y1="32" x2="60" y2="16" stroke="currentColor" strokeWidth="1" className="text-purple-300" opacity="0.6" />
-          <line x1="40" y1="32" x2="60" y2="48" stroke="currentColor" strokeWidth="1" className="text-purple-300" opacity="0.6" />
+          <line x1="20" y1="16" x2="40" y2="32" stroke="currentColor" strokeWidth="1" className="text-slate-200" opacity="0.6" />
+          <line x1="40" y1="32" x2="60" y2="16" stroke="currentColor" strokeWidth="1" className="text-slate-200" opacity="0.6" />
+          <line x1="40" y1="32" x2="60" y2="48" stroke="currentColor" strokeWidth="1" className="text-slate-200" opacity="0.6" />
         </svg>
       </div>
 
       <CardHeader className="relative z-10">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center">
-            <Bot className="w-5 h-5 text-slate-600" />
+          <div className="w-10 h-10 bg-slate-50 rounded-lg flex items-center justify-center">
+            <Bot className="w-5 h-5 text-slate-500" />
           </div>
           <div>
             <CardTitle className="flex items-center space-x-2">
-              <span className="text-slate-900">Load Assistant</span>
-              <div className="flex items-center space-x-1 bg-purple-50 px-2 py-1 rounded-full">
+              <span className="text-slate-800">Load Assistant</span>
+              <div className="flex items-center space-x-1 bg-purple-50 px-2 py-1 rounded-full border border-purple-100">
                 <Sparkles className="w-3 h-3 text-purple-600" />
                 <span className="text-xs font-medium text-purple-700">AI Powered</span>
               </div>
             </CardTitle>
-            <CardDescription className="text-slate-600">
+            <CardDescription className="text-slate-500">
               Ask questions about this load, routing, payments, or requirements
             </CardDescription>
           </div>
@@ -106,14 +106,14 @@ const LoadAssistant = ({ loadId }: LoadAssistantProps) => {
       </CardHeader>
       <CardContent className="space-y-4 relative z-10">
         {/* Messages */}
-        <div className="h-40 overflow-y-auto space-y-3 p-3 border border-slate-200 rounded-lg bg-white">
+        <div className="h-40 overflow-y-auto space-y-3 p-3 border border-slate-200 rounded-lg bg-slate-50">
           {messages.map((message) => (
             <div 
               key={message.id} 
               className={`flex items-start space-x-2 ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               {message.sender === 'assistant' && (
-                <div className="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
+                <div className="w-6 h-6 bg-purple-50 rounded-full flex items-center justify-center flex-shrink-0 border border-purple-100">
                   <Bot className="w-3 h-3 text-purple-600" />
                 </div>
               )}
@@ -121,7 +121,7 @@ const LoadAssistant = ({ loadId }: LoadAssistantProps) => {
                 className={`max-w-xs px-3 py-2 rounded-lg text-sm ${
                   message.sender === 'user' 
                     ? 'bg-blue-600 text-white ml-2' 
-                    : 'bg-slate-50 border border-slate-200 text-slate-700'
+                    : 'bg-white border border-slate-200 text-slate-700'
                 }`}
               >
                 {message.text}
@@ -135,10 +135,10 @@ const LoadAssistant = ({ loadId }: LoadAssistantProps) => {
           ))}
           {isTyping && (
             <div className="flex items-start space-x-2">
-              <div className="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center">
+              <div className="w-6 h-6 bg-purple-50 rounded-full flex items-center justify-center border border-purple-100">
                 <Bot className="w-3 h-3 text-purple-600" />
               </div>
-              <div className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2">
+              <div className="bg-white border border-slate-200 rounded-lg px-3 py-2">
                 <div className="flex space-x-1">
                   <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce"></div>
                   <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce delay-100"></div>
@@ -151,7 +151,7 @@ const LoadAssistant = ({ loadId }: LoadAssistantProps) => {
 
         {/* Quick Questions */}
         <div className="space-y-2">
-          <p className="text-sm font-medium text-slate-700 flex items-center">
+          <p className="text-sm font-medium text-slate-600 flex items-center">
             <Sparkles className="w-3 h-3 mr-1 text-purple-600" />
             Quick questions:
           </p>
@@ -161,7 +161,7 @@ const LoadAssistant = ({ loadId }: LoadAssistantProps) => {
                 key={question}
                 variant="outline" 
                 size="sm" 
-                className="text-xs p-2 h-auto text-left justify-start bg-white border-slate-200 hover:bg-purple-50 hover:border-purple-200"
+                className="text-xs p-2 h-auto text-left justify-start bg-white border-slate-200 hover:bg-purple-50 hover:border-purple-200 transition-all duration-200"
                 onClick={() => handleQuickQuestion(question)}
               >
                 {question}
@@ -178,13 +178,13 @@ const LoadAssistant = ({ loadId }: LoadAssistantProps) => {
             onChange={(e) => setInputValue(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleSendMessage(inputValue)}
             placeholder="Ask me anything about this load..."
-            className="flex-1 px-3 py-2 border border-slate-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 bg-white"
+            className="flex-1 px-3 py-2 border border-slate-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 bg-white transition-all duration-200"
           />
           <Button 
             size="sm" 
             onClick={() => handleSendMessage(inputValue)}
             disabled={!inputValue.trim() || isTyping}
-            className="bg-purple-600 hover:bg-purple-700"
+            className="bg-purple-600 hover:bg-purple-700 transition-colors duration-200"
           >
             <Send className="w-4 h-4" />
           </Button>
