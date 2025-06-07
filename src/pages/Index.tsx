@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Truck, FileText, MapPin, DollarSign, Route, CreditCard } from "lucide-react";
@@ -64,7 +63,7 @@ const Index = () => {
       <div className="flex-1 flex flex-col bg-slate-50 relative">
         {/* Main Content Area - Hide when chat is focused */}
         {!isChatFocused && (
-          <div className="flex-1 flex items-center justify-center p-8">
+          <div className="flex-1 flex items-center justify-center">
             <div className="flex flex-col items-center">
               {/* Welcome Header */}
               <div className="text-center mb-12">
