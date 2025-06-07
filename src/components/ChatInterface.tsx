@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useAI } from "../hooks/useAI";
 import APIKeyInput from "./APIKeyInput";
@@ -147,48 +146,21 @@ ${loadContext ? `Context: Currently discussing ${loadContext}` : ''}`;
   };
 
   const handleAPIKeySubmit = async (key: string) => {
-    console.log('Testing API key...');
+    console.log('Setting up AI service with provided key...');
     
     try {
       initializeService(key);
       
-      // Test the API key with a simple request
-      const testResponse = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': key,
-          'anthropic-version': '2023-06-01'
-        },
-        body: JSON.stringify({
-          model: 'claude-3-5-sonnet-20241022',
-          max_tokens: 10,
-          system: "You are a helpful assistant.",
-          messages: [{ role: 'user', content: 'Hi' }]
-        })
-      });
-
-      if (!testResponse.ok) {
-        const errorText = await testResponse.text();
-        console.error('API key test failed:', errorText);
-        
-        if (testResponse.status === 401) {
-          throw new Error('Invalid API key. Please check your Anthropic API key.');
-        } else {
-          throw new Error(`API test failed: ${testResponse.status}`);
-        }
-      }
-      
       toast({
-        title: "AI Assistant Connected",
-        description: "Claude Sonnet is now ready to help with your trucking operations.",
+        title: "AI Assistant Ready",
+        description: "Your API key has been configured. You can now start chatting with the AI assistant.",
       });
       
     } catch (error) {
-      console.error('API key test error:', error);
+      console.error('API key setup error:', error);
       toast({
-        title: "Connection Failed",
-        description: error instanceof Error ? error.message : "Failed to connect to AI service.",
+        title: "Setup Error",
+        description: "There was an issue setting up the AI service. Please try again.",
         variant: "destructive"
       });
     }
