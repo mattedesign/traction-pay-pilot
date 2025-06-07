@@ -1,116 +1,88 @@
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Truck, MessageSquare, FileText, DollarSign } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Card, CardContent } from "@/components/ui/card";
+import { Truck, FileText, MapPin, DollarSign, Route, Clock } from "lucide-react";
 import NavigationSidebar from "@/components/NavigationSidebar";
 import MockChatInterface from "@/components/MockChatInterface";
 
 const Index = () => {
-  const navigate = useNavigate();
+  const suggestedActions = [
+    {
+      icon: Truck,
+      title: "Track a load",
+      description: "Monitor load status and location",
+      color: "text-blue-600"
+    },
+    {
+      icon: FileText,
+      title: "Check payment status",
+      description: "View invoice and payment details",
+      color: "text-green-600"
+    },
+    {
+      icon: Route,
+      title: "Plan optimal route",
+      description: "Get best routes for fuel efficiency",
+      color: "text-purple-600"
+    },
+    {
+      icon: Clock,
+      title: "Check HOS compliance",
+      description: "Review hours of service status",
+      color: "text-orange-600"
+    }
+  ];
 
   return (
     <div className="min-h-screen flex w-full" style={{ backgroundColor: '#F5F6FA' }}>
       <NavigationSidebar />
       
-      <div className="flex-1">
-        <div className="container mx-auto px-4 py-12">
+      <div className="flex-1 flex items-center justify-center">
+        <div className="max-w-2xl w-full px-8">
+          {/* Welcome Header */}
           <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold text-slate-900 mb-4">
-              AI-Powered Load Management
-            </h1>
-            <p className="text-xl text-slate-600 max-w-2xl mx-auto">
-              Streamline your trucking operations with intelligent load tracking, AI assistance, and comprehensive logistics management.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-            <Card className="hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Truck className="w-6 h-6 mr-2 text-blue-600" />
-                  Load Tracking
-                </CardTitle>
-                <CardDescription>
-                  Monitor your loads in real-time with detailed status updates
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button 
-                  onClick={() => navigate("/load/1234")}
-                  className="w-full"
-                >
-                  View Sample Load
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card className="hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <MessageSquare className="w-6 h-6 mr-2 text-green-600" />
-                  AI Assistant
-                </CardTitle>
-                <CardDescription>
-                  Get instant answers about regulations, routes, and operations
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button 
-                  onClick={() => navigate("/load/1234")}
-                  variant="outline" 
-                  className="w-full"
-                >
-                  Try AI Chat
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card className="hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <FileText className="w-6 h-6 mr-2 text-purple-600" />
-                  Smart Analytics
-                </CardTitle>
-                <CardDescription>
-                  Gain insights into route optimization and performance metrics
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button 
-                  onClick={() => navigate("/load/5678")}
-                  variant="outline" 
-                  className="w-full"
-                >
-                  View Intelligence
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-
-          <div className="bg-white rounded-lg shadow-sm p-8 text-center">
-            <h2 className="text-2xl font-semibold mb-4">Sample Loads Available</h2>
-            <p className="text-slate-600 mb-6">
-              Explore different load scenarios and see how our AI assistant can help with your trucking operations.
-            </p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <Button onClick={() => navigate("/load/1234")}>
-                Load #1234 - Pending Pickup
-              </Button>
-              <Button onClick={() => navigate("/load/5678")} variant="outline">
-                Load #5678 - In Transit
-              </Button>
-              <Button onClick={() => navigate("/load/9012")} variant="outline">
-                Load #9012 - Delivered
-              </Button>
+            <div className="w-16 h-16 bg-slate-900 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Truck className="w-8 h-8 text-white" />
             </div>
+            <h1 className="text-4xl font-bold text-slate-900 mb-4">
+              LoadMaster AI
+            </h1>
+            <p className="text-xl text-slate-600 max-w-lg mx-auto">
+              Start with a task, and let LoadMaster AI complete it for you. Not sure where to start? Try a template
+            </p>
+          </div>
+
+          {/* Suggested Actions */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            {suggestedActions.map((action, index) => (
+              <Card key={index} className="hover:shadow-md transition-shadow cursor-pointer border border-slate-200 bg-white">
+                <CardContent className="p-6">
+                  <div className="flex items-start space-x-4">
+                    <div className={`w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center`}>
+                      <action.icon className={`w-5 h-5 ${action.color}`} />
+                    </div>
+                    <div>
+                      <h3 className="font-medium text-slate-900 mb-1">{action.title}</h3>
+                      <p className="text-sm text-slate-600">{action.description}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Additional Help */}
+          <div className="text-center">
+            <p className="text-sm text-slate-500 mb-4">
+              LoadMaster AI might provide inaccurate information. Always verify critical details.
+            </p>
           </div>
         </div>
+      </div>
 
-        {/* Floating Chat Interface */}
-        <div className="fixed bottom-6 right-6 w-96 h-96 bg-white rounded-lg shadow-xl border border-slate-200 p-4 z-50">
-          <MockChatInterface />
-        </div>
+      {/* Floating Chat Interface */}
+      <div className="fixed bottom-6 right-6 w-96 h-96 bg-white rounded-lg shadow-xl border border-slate-200 p-4 z-50">
+        <MockChatInterface />
       </div>
     </div>
   );
