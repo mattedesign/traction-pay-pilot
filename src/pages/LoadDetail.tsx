@@ -1,12 +1,7 @@
 
 import { useParams } from "react-router-dom";
-import LoadHeader from "@/components/LoadHeader";
-import LoadInformation from "@/components/LoadInformation";
-import RouteOptimization from "@/components/RouteOptimization";
-import EldSharing from "@/components/EldSharing";
-import DocumentUploadSection from "@/components/DocumentUploadSection";
-import FinancialServices from "@/components/FinancialServices";
-import LoadAssistant from "@/components/LoadAssistant";
+import LoadsSidebar from "@/components/LoadsSidebar";
+import LoadMainContent from "@/components/LoadMainContent";
 
 const LoadDetail = () => {
   const { loadId } = useParams();
@@ -39,6 +34,19 @@ const LoadDetail = () => {
         mode: "truck",
         broker: "Phoenix Freight Co",
         documents: ["Rate Confirmation"]
+      },
+      "9012": {
+        loadId: "9012",
+        status: "delivered",
+        amount: "$650.00",
+        origin: "Houston, TX",
+        destination: "Dallas, TX",
+        pickupTime: "May 28, 9:00 AM",
+        deliveryTime: "May 28, 2:00 PM",
+        distance: "240 miles",
+        mode: "truck",
+        broker: "Delta Shipping",
+        documents: ["POD", "Invoice"]
       }
     };
     return loads[id] || loads["1234"];
@@ -47,30 +55,9 @@ const LoadDetail = () => {
   const loadData = getLoadData(loadId || "1234");
 
   return (
-    <div className="min-h-screen bg-slate-50"> {/* Light gray background */}
-      <LoadHeader 
-        loadId={loadData.loadId}
-        broker={loadData.broker}
-        status={loadData.status}
-      />
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid lg:grid-cols-2 gap-8">
-          {/* Load Information */}
-          <div className="space-y-6">
-            <LoadInformation loadData={loadData} />
-            <RouteOptimization />
-            <EldSharing />
-          </div>
-
-          {/* Documents & Actions */}
-          <div className="space-y-6">
-            <DocumentUploadSection />
-            <FinancialServices loadAmount={loadData.amount} />
-            <LoadAssistant loadId={loadData.loadId} />
-          </div>
-        </div>
-      </div>
+    <div className="min-h-screen bg-slate-50 flex">
+      <LoadsSidebar />
+      <LoadMainContent loadData={loadData} />
     </div>
   );
 };
