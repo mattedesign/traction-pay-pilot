@@ -5,7 +5,7 @@ import RouteOptimization from "./RouteOptimization";
 import EldSharing from "./EldSharing";
 import DocumentUploadSection from "./DocumentUploadSection";
 import FinancialServices from "./FinancialServices";
-import ChatInterface from "./ChatInterface";
+import MockChatInterface from "./MockChatInterface";
 import { FileText, Brain, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -114,7 +114,7 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
             <p className="text-sm text-slate-600">Ask about this load, regulations, routes, and more</p>
           </div>
           <div className="flex-1 p-4 overflow-hidden">
-            <ChatInterface 
+            <MockChatInterface 
               loadContext={`Load #${loadData.loadId} from ${loadData.origin} to ${loadData.destination}, Rate: ${loadData.amount}`}
             />
           </div>
