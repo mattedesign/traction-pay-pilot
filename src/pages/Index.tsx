@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Truck, MessageSquare, FileText, DollarSign } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import MockChatInterface from "@/components/MockChatInterface";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -100,6 +101,11 @@ const Index = () => {
             </Button>
           </div>
         </div>
+      </div>
+
+      {/* Floating Chat Interface */}
+      <div className="fixed bottom-6 right-6 w-96 h-96 bg-white rounded-lg shadow-xl border border-slate-200 p-4 z-50">
+        <MockChatInterface />
       </div>
     </div>
   );
