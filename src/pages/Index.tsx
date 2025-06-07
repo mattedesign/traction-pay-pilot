@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Truck, FileText, MapPin, DollarSign, Route, CreditCard } from "lucide-react";
@@ -9,11 +8,17 @@ import MockChatInterface from "@/components/MockChatInterface";
 
 const Index = () => {
   const navigate = useNavigate();
-  const chatRef = useRef<{ simulateTrackLoad: () => void }>(null);
+  const chatRef = useRef<{ simulateTrackLoad: () => void; simulatePlanRoute: () => void }>(null);
 
   const handleTrackLoad = () => {
     if (chatRef.current) {
       chatRef.current.simulateTrackLoad();
+    }
+  };
+
+  const handlePlanRoute = () => {
+    if (chatRef.current) {
+      chatRef.current.simulatePlanRoute();
     }
   };
 
@@ -35,7 +40,8 @@ const Index = () => {
       icon: Route,
       title: "Plan optimal route",
       description: "Get best routes for fuel efficiency",
-      color: "text-purple-600"
+      color: "text-purple-600",
+      onClick: handlePlanRoute
     },
     {
       icon: CreditCard,

@@ -1,4 +1,3 @@
-
 import { useState, forwardRef, useImperativeHandle, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,6 +22,7 @@ interface MockChatInterfaceProps {
 
 interface MockChatInterfaceRef {
   simulateTrackLoad: () => void;
+  simulatePlanRoute: () => void;
 }
 
 const MockChatInterface = forwardRef<MockChatInterfaceRef, MockChatInterfaceProps>(
@@ -64,7 +64,7 @@ const MockChatInterface = forwardRef<MockChatInterfaceRef, MockChatInterfaceProp
       }, 50); // Typing speed
     };
 
-    const handlePromptResponse = (response: 'yes' | 'no', messageIndex: number) => {
+    const handlePromptResponse = (response: 'yes' | 'no', messageIndex: number, navigationType: 'load' | 'route') => {
       // Add user response message
       const userResponse: Message = {
         type: "user",
@@ -84,13 +84,19 @@ const MockChatInterface = forwardRef<MockChatInterfaceRef, MockChatInterfaceProp
         setTimeout(() => {
           const aiResponse: Message = {
             type: "ai",
-            content: "Taking you to the detailed load view now...",
+            content: navigationType === 'load' 
+              ? "Taking you to the detailed load view now..." 
+              : "Taking you to the route optimization page now...",
             timestamp: new Date()
           };
           setMessages(prev => [...prev, aiResponse]);
           
           setTimeout(() => {
-            onNavigateToLoad("/load/1234");
+            if (navigationType === 'load') {
+              onNavigateToLoad("/load/1234");
+            } else {
+              onNavigateToLoad("/route-options");
+            }
           }, 1000);
         }, 500);
       } else if (response === 'no') {
@@ -127,8 +133,39 @@ const MockChatInterface = forwardRef<MockChatInterfaceRef, MockChatInterfaceProp
             timestamp: new Date(),
             showPrompt: true,
             promptActions: {
-              yes: () => handlePromptResponse('yes', 1), // Will be at index 1 (after user message)
-              no: () => handlePromptResponse('no', 1)
+              yes: () => handlePromptResponse('yes', messages.length + 1, 'load'),
+              no: () => handlePromptResponse('no', messages.length + 1, 'load')
+            }
+          };
+          setMessages(prev => [...prev, aiResponse]);
+          setIsTyping(false);
+        }, 2000);
+      });
+    };
+
+    const simulatePlanRoute = () => {
+      // Focus the input and simulate typing
+      simulateTyping("Plan Optimal Route for Load #0000", () => {
+        // Add the user message
+        const userMessage: Message = {
+          type: "user",
+          content: "Plan Optimal Route for Load #0000",
+          timestamp: new Date()
+        };
+        setMessages(prev => [...prev, userMessage]);
+        setMessage("");
+        setIsTyping(true);
+
+        // Show loading for 2 seconds, then show response with prompt
+        setTimeout(() => {
+          const aiResponse: Message = {
+            type: "ai",
+            content: "I've analyzed Load #0000 route from Chicago, IL to Dallas, TX. I found 3 optimized route options that can save you up to $45 in fuel costs and 2 hours of drive time. Would you like to see the detailed route suggestions?",
+            timestamp: new Date(),
+            showPrompt: true,
+            promptActions: {
+              yes: () => handlePromptResponse('yes', messages.length + 1, 'route'),
+              no: () => handlePromptResponse('no', messages.length + 1, 'route')
             }
           };
           setMessages(prev => [...prev, aiResponse]);
@@ -138,7 +175,8 @@ const MockChatInterface = forwardRef<MockChatInterfaceRef, MockChatInterfaceProp
     };
 
     useImperativeHandle(ref, () => ({
-      simulateTrackLoad
+      simulateTrackLoad,
+      simulatePlanRoute
     }));
 
     const handleSendMessage = async () => {
