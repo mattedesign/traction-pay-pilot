@@ -22,6 +22,8 @@ export class AIService {
     systemPrompt: string = "You are a helpful AI assistant specialized in trucking operations, logistics, and transportation industry knowledge. Provide practical, accurate, and industry-specific advice."
   ): Promise<AIResponse> {
     try {
+      console.log('Sending request to Anthropic API...');
+      
       const response = await fetch(this.baseUrl, {
         method: 'POST',
         headers: {
@@ -40,18 +42,39 @@ export class AIService {
         })
       });
 
+      console.log('Response status:', response.status);
+      
       if (!response.ok) {
-        throw new Error(`API request failed: ${response.status}`);
+        const errorText = await response.text();
+        console.error('API Error Response:', errorText);
+        
+        if (response.status === 401) {
+          throw new Error('Invalid API key. Please check your Anthropic API key.');
+        } else if (response.status === 429) {
+          throw new Error('Rate limit exceeded. Please try again in a moment.');
+        } else {
+          throw new Error(`API request failed: ${response.status} - ${errorText}`);
+        }
       }
 
       const data = await response.json();
+      console.log('API Response received successfully');
+      
       return {
         content: data.content[0].text
       };
     } catch (error) {
       console.error('AI Service Error:', error);
+      
+      if (error instanceof TypeError && error.message.includes('fetch')) {
+        return {
+          content: "Network error: Unable to connect to the AI service. Please check your internet connection and try again.",
+          error: 'Network connection failed'
+        };
+      }
+      
       return {
-        content: "I'm having trouble connecting to the AI service right now. Please try again in a moment.",
+        content: error instanceof Error ? error.message : "An unexpected error occurred. Please try again.",
         error: error instanceof Error ? error.message : 'Unknown error'
       };
     }

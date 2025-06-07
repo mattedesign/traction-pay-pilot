@@ -1,10 +1,9 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Send, Mic, Bot, User } from "lucide-react";
+import { Send, Mic, Bot, User, AlertCircle } from "lucide-react";
 import { useAI } from "../hooks/useAI";
 import APIKeyInput from "./APIKeyInput";
 import { useToast } from "@/hooks/use-toast";
@@ -92,6 +91,8 @@ ${loadContext ? `Context: Currently discussing ${loadContext}` : ''}`;
     setMessage("");
 
     try {
+      console.log('Preparing to send message to AI...');
+      
       // Convert chat history to AI service format
       const messages = [...chatHistory, userMessage].map(msg => ({
         role: msg.type === "user" ? "user" as const : "assistant" as const,
@@ -101,11 +102,22 @@ ${loadContext ? `Context: Currently discussing ${loadContext}` : ''}`;
       const response = await sendMessage(messages);
       
       if (response.error) {
+        console.error('AI Service returned error:', response.error);
+        
+        // Add error message to chat
+        const errorMessage: ChatMessage = {
+          type: "ai",
+          content: `⚠️ ${response.content}`,
+          timestamp: new Date()
+        };
+        setChatHistory(prev => [...prev, errorMessage]);
+        
         toast({
           title: "AI Service Error",
           description: response.error,
           variant: "destructive"
         });
+        return;
       }
 
       const aiMessage: ChatMessage = {
@@ -115,22 +127,72 @@ ${loadContext ? `Context: Currently discussing ${loadContext}` : ''}`;
       };
 
       setChatHistory(prev => [...prev, aiMessage]);
+      
     } catch (error) {
       console.error('Chat error:', error);
+      
+      // Add error message to chat
+      const errorMessage: ChatMessage = {
+        type: "ai",
+        content: "❌ I'm having trouble connecting right now. Please check your API key and try again.",
+        timestamp: new Date()
+      };
+      setChatHistory(prev => [...prev, errorMessage]);
+      
       toast({
         title: "Connection Error",
-        description: "Failed to get AI response. Please check your API key and try again.",
+        description: "Failed to get AI response. Please check your API key and internet connection.",
         variant: "destructive"
       });
     }
   };
 
-  const handleAPIKeySubmit = (key: string) => {
-    initializeService(key);
-    toast({
-      title: "AI Assistant Connected",
-      description: "Claude Sonnet is now ready to help with your trucking operations.",
-    });
+  const handleAPIKeySubmit = async (key: string) => {
+    console.log('Testing API key...');
+    
+    try {
+      initializeService(key);
+      
+      // Test the API key with a simple request
+      const testResponse = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': key,
+          'anthropic-version': '2023-06-01'
+        },
+        body: JSON.stringify({
+          model: 'claude-3-5-sonnet-20241022',
+          max_tokens: 10,
+          system: "You are a helpful assistant.",
+          messages: [{ role: 'user', content: 'Hi' }]
+        })
+      });
+
+      if (!testResponse.ok) {
+        const errorText = await testResponse.text();
+        console.error('API key test failed:', errorText);
+        
+        if (testResponse.status === 401) {
+          throw new Error('Invalid API key. Please check your Anthropic API key.');
+        } else {
+          throw new Error(`API test failed: ${testResponse.status}`);
+        }
+      }
+      
+      toast({
+        title: "AI Assistant Connected",
+        description: "Claude Sonnet is now ready to help with your trucking operations.",
+      });
+      
+    } catch (error) {
+      console.error('API key test error:', error);
+      toast({
+        title: "Connection Failed",
+        description: error instanceof Error ? error.message : "Failed to connect to AI service.",
+        variant: "destructive"
+      });
+    }
   };
 
   if (isPreview) {
