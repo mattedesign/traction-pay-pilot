@@ -23,11 +23,11 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
   };
 
   return (
-    <div className="flex-1 bg-white flex flex-col">
+    <div className="flex-1 bg-white flex flex-col min-h-screen">
       {/* Main content area */}
       <div className="flex-1 border-r border-slate-200">
         <Tabs defaultValue="details" className="h-full flex flex-col">
-          <div className="border-b border-slate-200 bg-white px-6 py-4">
+          <div className="border-b border-slate-200 bg-white px-6 py-4 shrink-0">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center space-x-4">
                 <Button 
@@ -61,16 +61,17 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
           
           <div className="flex-1 overflow-hidden pb-80">
             <TabsContent value="details" className="h-full p-6 overflow-y-auto">
-              <div className="max-w-4xl space-y-6">
+              <div className="max-w-4xl space-y-6 w-full">
                 <LoadInformation loadData={loadData} />
                 <RouteOptimization />
                 <EldSharing />
+                <DocumentUploadSection />
                 <FinancialServices loadAmount={loadData.amount} />
               </div>
             </TabsContent>
             
             <TabsContent value="intelligence" className="h-full p-6 overflow-y-auto">
-              <div className="max-w-4xl">
+              <div className="max-w-4xl w-full">
                 <div className="bg-slate-50 rounded-lg p-6">
                   <h3 className="text-lg font-semibold mb-4">Load Intelligence</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -109,11 +110,11 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
       {/* Bottom AI assistant panel - persistent horizontally */}
       <div className="fixed bottom-0 left-80 right-0 h-80 bg-white border-t border-slate-200 shadow-lg z-10">
         <div className="h-full flex flex-col">
-          <div className="p-4 border-b border-slate-200 bg-slate-50">
+          <div className="p-4 border-b border-slate-200 bg-slate-50 shrink-0">
             <h3 className="text-lg font-semibold text-slate-900">AI Assistant</h3>
             <p className="text-sm text-slate-600">Ask about this load, regulations, routes, and more</p>
           </div>
-          <div className="flex-1 p-4 overflow-hidden">
+          <div className="flex-1 p-4 overflow-hidden min-h-0">
             <MockChatInterface 
               loadContext={`Load #${loadData.loadId} from ${loadData.origin} to ${loadData.destination}, Rate: ${loadData.amount}`}
             />

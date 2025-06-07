@@ -55,7 +55,7 @@ const LoadDetail = () => {
   const loadData = getLoadData(loadId || "1234");
 
   return (
-    <div className="min-h-screen bg-slate-50 flex">
+    <div className="min-h-screen bg-slate-50 flex w-full">
       <LoadsSidebar />
       <LoadMainContent loadData={loadData} />
     </div>
