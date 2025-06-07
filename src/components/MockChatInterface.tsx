@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,13 +17,7 @@ interface MockChatInterfaceProps {
 const MockChatInterface = ({ loadContext }: MockChatInterfaceProps) => {
   const [message, setMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      type: "ai",
-      content: "Hi! I'm your AI assistant. I can help with load details, route planning, compliance questions, and more. What would you like to know?",
-      timestamp: new Date()
-    }
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
 
   const mockResponses = [
     "Based on your load details, I recommend taking I-71 South for optimal fuel efficiency and minimal traffic delays.",

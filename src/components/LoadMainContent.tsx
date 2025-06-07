@@ -6,7 +6,7 @@ import EldSharing from "./EldSharing";
 import DocumentUploadSection from "./DocumentUploadSection";
 import FinancialServices from "./FinancialServices";
 import MockChatInterface from "./MockChatInterface";
-import { FileText, Brain, ArrowLeft } from "lucide-react";
+import { FileText, Brain, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 
@@ -47,10 +47,14 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
               </div>
             </div>
             
-            <TabsList className="grid w-full grid-cols-2 bg-slate-100">
+            <TabsList className="grid w-full grid-cols-3 bg-slate-100">
               <TabsTrigger value="details" className="flex items-center space-x-2 text-slate-700">
                 <FileText className="w-4 h-4" />
                 <span>Load Details</span>
+              </TabsTrigger>
+              <TabsTrigger value="documents" className="flex items-center space-x-2 text-slate-700">
+                <Upload className="w-4 h-4" />
+                <span>Documents</span>
               </TabsTrigger>
               <TabsTrigger value="intelligence" className="flex items-center space-x-2 text-slate-700">
                 <Brain className="w-4 h-4" />
@@ -65,8 +69,13 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
                 <LoadInformation loadData={loadData} />
                 <RouteOptimization />
                 <EldSharing />
-                <DocumentUploadSection />
                 <FinancialServices loadAmount={loadData.amount} />
+              </div>
+            </TabsContent>
+
+            <TabsContent value="documents" className="h-full p-6 overflow-y-auto">
+              <div className="max-w-4xl w-full">
+                <DocumentUploadSection />
               </div>
             </TabsContent>
             
