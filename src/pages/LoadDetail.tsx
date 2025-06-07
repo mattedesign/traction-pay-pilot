@@ -1,5 +1,6 @@
 
 import { useParams } from "react-router-dom";
+import NavigationSidebar from "@/components/NavigationSidebar";
 import LoadsSidebar from "@/components/LoadsSidebar";
 import LoadMainContent from "@/components/LoadMainContent";
 
@@ -56,6 +57,7 @@ const LoadDetail = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 flex w-full">
+      <NavigationSidebar />
       <LoadsSidebar />
       <LoadMainContent loadData={loadData} />
     </div>

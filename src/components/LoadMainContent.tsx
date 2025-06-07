@@ -107,8 +107,8 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
         </Tabs>
       </div>
 
-      {/* Bottom AI assistant panel - persistent horizontally */}
-      <div className="fixed bottom-0 left-80 right-0 h-80 bg-white border-t border-slate-200 shadow-lg z-10">
+      {/* Bottom AI assistant panel - adjusted for new layout */}
+      <div className="fixed bottom-0 left-96 right-0 h-80 bg-white border-t border-slate-200 shadow-lg z-10">
         <div className="h-full flex flex-col">
           <div className="p-4 border-b border-slate-200 bg-slate-50 shrink-0">
             <h3 className="text-lg font-semibold text-slate-900">AI Assistant</h3>

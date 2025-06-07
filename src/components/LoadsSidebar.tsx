@@ -2,7 +2,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Truck, MapPin, ArrowLeft, Home, FileText, CreditCard, Search, HelpCircle, Banknote } from "lucide-react";
+import { Truck, MapPin, ArrowLeft } from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
 
 interface Load {
@@ -49,15 +49,6 @@ const mockLoads: Load[] = [
   }
 ];
 
-const navigationItems = [
-  { icon: Home, label: "Home", path: "/" },
-  { icon: Truck, label: "Loads", path: "/loads" },
-  { icon: FileText, label: "Invoices", path: "/invoices" },
-  { icon: Banknote, label: "Banking", path: "/banking" },
-  { icon: Search, label: "Search", path: "/search" },
-  { icon: HelpCircle, label: "Support", path: "/support" }
-];
-
 const getStatusColor = (status: string) => {
   switch (status) {
     case "pending_pickup":
@@ -93,31 +84,8 @@ const LoadsSidebar = () => {
     navigate("/");
   };
 
-  const handleNavClick = (path: string) => {
-    console.log(`Navigating to ${path}`);
-    navigate(path);
-  };
-
   return (
     <div className="w-80 bg-slate-900 text-white h-full overflow-y-auto flex flex-col">
-      {/* Navigation Section */}
-      <div className="p-4 border-b border-slate-700">
-        <div className="grid grid-cols-3 gap-2">
-          {navigationItems.map((item) => (
-            <Button
-              key={item.label}
-              variant="ghost"
-              size="sm"
-              onClick={() => handleNavClick(item.path)}
-              className="flex flex-col items-center space-y-1 h-auto py-3 text-slate-300 hover:text-white hover:bg-slate-700"
-            >
-              <item.icon className="w-5 h-5" />
-              <span className="text-xs">{item.label}</span>
-            </Button>
-          ))}
-        </div>
-      </div>
-
       {/* Loads Header */}
       <div className="p-6 border-b border-slate-700">
         <div className="flex items-center justify-between mb-2">
