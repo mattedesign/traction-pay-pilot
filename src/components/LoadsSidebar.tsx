@@ -85,7 +85,7 @@ const LoadsSidebar = () => {
   };
 
   return (
-    <div className="w-80 bg-white text-slate-900 h-full overflow-y-auto flex flex-col">
+    <div className="w-80 bg-white text-slate-900 min-h-screen overflow-y-auto flex flex-col shadow-sm" style={{ borderRight: 'rgba(0, 0, 0, 0.06) 1px solid' }}>
       {/* Loads Header */}
       <div className="p-6 border-b border-slate-200">
         <div className="flex items-center justify-between mb-2">
