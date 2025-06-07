@@ -113,23 +113,27 @@ const MockChatInterface = ({ loadContext }: MockChatInterfaceProps) => {
         )}
       </div>
 
-      {/* Input area */}
-      <div className="flex space-x-2">
-        <Input 
-          placeholder="Ask about loads, routes, payments, compliance..."
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          onKeyPress={handleKeyPress}
-          className="flex-1"
-          disabled={isTyping}
-          style={{ borderRadius: '16px' }}
-        />
-        <Button 
-          onClick={handleSendMessage} 
-          disabled={isTyping || !message.trim()}
-        >
-          <Send className="w-4 h-4" />
-        </Button>
+      {/* Input area - centered horizontally */}
+      <div className="flex justify-center">
+        <div className="flex space-x-3 w-full max-w-2xl">
+          <Input 
+            placeholder="Ask about loads, routes, payments, compliance..."
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            onKeyPress={handleKeyPress}
+            className="flex-1 h-14 text-lg"
+            disabled={isTyping}
+            style={{ borderRadius: '24px' }}
+          />
+          <Button 
+            onClick={handleSendMessage} 
+            disabled={isTyping || !message.trim()}
+            className="h-14 w-14 rounded-full"
+            size="icon"
+          >
+            <Send className="w-5 h-5" />
+          </Button>
+        </div>
       </div>
     </div>
   );
