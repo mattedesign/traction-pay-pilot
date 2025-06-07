@@ -84,13 +84,13 @@ const EldSharing = () => {
         </div>
         
         {isShared ? (
-          <Button variant="outline" className="w-full border-green-200 bg-green-50 text-green-700 hover:bg-green-100" disabled>
+          <Button variant="outline" className="w-full border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100" disabled>
             <CheckCircle className="w-4 h-4 mr-2" />
             ELD Sharing Active
             <div className="ml-auto flex space-x-1">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse delay-150"></div>
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse delay-300"></div>
+              <div className="w-2 h-2 bg-slate-400 rounded-full animate-pulse"></div>
+              <div className="w-2 h-2 bg-slate-400 rounded-full animate-pulse delay-150"></div>
+              <div className="w-2 h-2 bg-slate-400 rounded-full animate-pulse delay-300"></div>
             </div>
           </Button>
         ) : (

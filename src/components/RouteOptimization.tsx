@@ -40,15 +40,15 @@ const RouteOptimization = () => {
           {/* End point */}
           <circle cx="118" cy="40" r="3" className="fill-slate-300" />
           {/* Fuel stops */}
-          <circle cx="45" cy="32" r="2" className="fill-amber-400">
+          <circle cx="45" cy="32" r="2" className="fill-slate-400">
             <animate attributeName="opacity" values="0.4;0.8;0.4" dur="2s" repeatCount="indefinite" />
           </circle>
-          <circle cx="83" cy="48" r="2" className="fill-amber-400">
+          <circle cx="83" cy="48" r="2" className="fill-slate-400">
             <animate attributeName="opacity" values="0.4;0.8;0.4" dur="2s" repeatCount="indefinite" begin="0.7s" />
           </circle>
           {/* Traffic indicators */}
-          <rect x="30" y="38" width="8" height="4" rx="2" className="fill-red-200 opacity-60" />
-          <rect x="70" y="38" width="12" height="4" rx="2" className="fill-green-200 opacity-60" />
+          <rect x="30" y="38" width="8" height="4" rx="2" className="fill-slate-200 opacity-60" />
+          <rect x="70" y="38" width="12" height="4" rx="2" className="fill-slate-200 opacity-60" />
         </svg>
       </div>
 
@@ -75,7 +75,7 @@ const RouteOptimization = () => {
                 <span className="text-xs font-medium text-slate-600">AI Optimized</span>
               </div>
             </div>
-            <Badge variant="outline" className="border-green-200 text-green-700 bg-green-50">
+            <Badge variant="outline" className="border-slate-200 text-slate-700 bg-slate-50">
               <TrendingDown className="w-3 h-3 mr-1" />
               Save $12.50
             </Badge>
@@ -90,11 +90,11 @@ const RouteOptimization = () => {
           <div className="bg-slate-50 border border-slate-100 rounded-lg p-4 text-center hover:bg-slate-100 transition-colors duration-200">
             <div className="flex items-center justify-center mb-2">
               <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center border border-slate-200">
-                <Fuel className="w-4 h-4 text-green-600" />
+                <Fuel className="w-4 h-4 text-slate-600" />
               </div>
             </div>
             <p className="text-sm font-medium text-slate-700">Fuel Cost</p>
-            <p className="text-xl font-bold text-green-600">$52.30</p>
+            <p className="text-xl font-bold text-slate-600">$52.30</p>
             <p className="text-xs text-slate-500">vs $64.80 standard</p>
           </div>
           <div className="bg-slate-50 border border-slate-100 rounded-lg p-4 text-center hover:bg-slate-100 transition-colors duration-200">

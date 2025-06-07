@@ -47,17 +47,17 @@ const FinancialServices = ({ loadAmount }: FinancialServicesProps) => {
       <div className="absolute top-2 right-2 w-24 h-16 opacity-8">
         <svg viewBox="0 0 96 64" className="w-full h-full">
           {/* Dollar sign */}
-          <text x="48" y="35" fontSize="20" textAnchor="middle" className="fill-green-300 font-bold">$</text>
+          <text x="48" y="35" fontSize="20" textAnchor="middle" className="fill-slate-300 font-bold">$</text>
           {/* Flow arrows */}
-          <path d="M20,32 Q35,20 48,32" stroke="currentColor" strokeWidth="2" fill="none" className="text-green-200" markerEnd="url(#arrowhead)">
+          <path d="M20,32 Q35,20 48,32" stroke="currentColor" strokeWidth="2" fill="none" className="text-slate-200" markerEnd="url(#arrowhead)">
             <animate attributeName="stroke-dasharray" values="0,100;20,100;0,100" dur="3s" repeatCount="indefinite" />
           </path>
-          <path d="M48,32 Q63,44 78,32" stroke="currentColor" strokeWidth="2" fill="none" className="text-green-200" markerEnd="url(#arrowhead)">
+          <path d="M48,32 Q63,44 78,32" stroke="currentColor" strokeWidth="2" fill="none" className="text-slate-200" markerEnd="url(#arrowhead)">
             <animate attributeName="stroke-dasharray" values="0,100;20,100;0,100" dur="3s" repeatCount="indefinite" begin="1s" />
           </path>
           <defs>
             <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-              <polygon points="0 0, 10 3.5, 0 7" className="fill-green-200" />
+              <polygon points="0 0, 10 3.5, 0 7" className="fill-slate-200" />
             </marker>
           </defs>
         </svg>
