@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useAI } from "./useAI";
 import { useToast } from "@/hooks/use-toast";
 import { ChatMessage } from "./useChatMessages";
+import { validateAPIKey, storeAPIKey, getAPIKey, clearAPIKey, sanitizeInput } from "@/utils/security";
 
 interface UseChatHandlersProps {
   systemPrompt: string;
@@ -25,7 +26,9 @@ export const useChatHandlers = ({
   });
 
   const handleSendMessage = async () => {
-    if (!message.trim() || isLoading) return;
+    const sanitizedMessage = sanitizeInput(message);
+    
+    if (!sanitizedMessage.trim() || isLoading) return;
 
     if (!isInitialized) {
       toast({
@@ -36,16 +39,16 @@ export const useChatHandlers = ({
       return;
     }
 
-    const userMessage = addUserMessage(message);
+    const userMessage = addUserMessage(sanitizedMessage);
     setMessage("");
 
     try {
-      console.log('Preparing to send message to AI via CORS proxy...');
+      console.log('Sending secure message to AI via CORS proxy...');
       
       // Convert chat history to AI service format
       const messages = [...chatHistory, userMessage].map(msg => ({
         role: msg.type === "user" ? "user" as const : "assistant" as const,
-        content: msg.content
+        content: sanitizeInput(msg.content)
       }));
 
       const response = await sendMessage(messages);
@@ -53,16 +56,21 @@ export const useChatHandlers = ({
       if (response.error) {
         console.error('AI Service returned error:', response.error);
         
-        // Add error message to chat
         addAIMessage(response.content);
         
-        // Show appropriate toast messages
         if (response.error.includes('Network') || response.error.includes('CORS')) {
           toast({
             title: "Connection Issue",
             description: "CORS proxy might be down. Try refreshing the page or check your network connection.",
             variant: "destructive"
           });
+        } else if (response.error.includes('401') || response.error.includes('authentication')) {
+          toast({
+            title: "Authentication Error",
+            description: "Your API key may be invalid or expired. Please check your key.",
+            variant: "destructive"
+          });
+          clearAPIKey(); // Clear potentially invalid key
         } else {
           toast({
             title: "AI Service Error",
@@ -78,7 +86,6 @@ export const useChatHandlers = ({
     } catch (error) {
       console.error('Chat error:', error);
       
-      // Add error message to chat
       addAIMessage("❌ Connection failed. The CORS proxy might be temporarily unavailable. Please try again in a moment, or refresh the page to retry.");
       
       toast({
@@ -90,25 +97,46 @@ export const useChatHandlers = ({
   };
 
   const handleAPIKeySubmit = async (key: string) => {
-    console.log('Setting up AI service with provided key for demo...');
+    console.log('Setting up secure AI service with validated key...');
     
     try {
+      if (!validateAPIKey(key)) {
+        toast({
+          title: "Invalid API Key",
+          description: "Please enter a valid Anthropic API key starting with 'sk-ant-'",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Store key securely
+      storeAPIKey(key);
+      
       initializeService(key);
       
       toast({
-        title: "Demo AI Assistant Ready",
-        description: "Your API key has been configured. You can now start chatting with the AI assistant via CORS proxy.",
+        title: "Secure AI Assistant Ready",
+        description: "Your API key has been validated and stored securely. You can now start chatting.",
       });
       
     } catch (error) {
       console.error('API key setup error:', error);
+      clearAPIKey(); // Clear any problematic key
       toast({
         title: "Setup Error",
-        description: "There was an issue setting up the AI service. Please try again.",
+        description: "There was an issue setting up the AI service. Please try again with a valid API key.",
         variant: "destructive"
       });
     }
   };
+
+  // Auto-load stored API key on hook initialization
+  useState(() => {
+    const storedKey = getAPIKey();
+    if (storedKey) {
+      initializeService(storedKey);
+    }
+  });
 
   return {
     message,
