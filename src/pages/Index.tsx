@@ -48,7 +48,7 @@ const Index = () => {
               Traction
             </h1>
             <p className="text-xl text-slate-600 max-w-lg mx-auto">
-              Less Friction, More Traction to Carriers
+              Less Friction, More Traction For Carriers
             </p>
           </div>
 
