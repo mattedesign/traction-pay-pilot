@@ -1,8 +1,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Truck, MapPin, ArrowLeft } from "lucide-react";
+import { Truck, MapPin } from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
 
 interface Load {
@@ -79,29 +78,14 @@ const LoadsSidebar = () => {
   const { loadId } = useParams();
   const navigate = useNavigate();
 
-  const handleBackClick = () => {
-    console.log("Navigating back to dashboard");
-    navigate("/");
-  };
-
   return (
     <div className="w-80 bg-white text-slate-900 min-h-screen overflow-y-auto flex flex-col shadow-sm" style={{ borderRight: 'rgba(0, 0, 0, 0.06) 1px solid' }}>
       {/* Loads Header */}
       <div className="p-6 border-b border-slate-200">
-        <div className="flex items-center justify-between mb-2">
-          <h2 className="text-xl font-semibold flex items-center">
-            <Truck className="w-6 h-6 mr-2" />
-            Loads
-          </h2>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleBackClick}
-            className="text-slate-600 hover:text-slate-900 hover:bg-slate-100"
-          >
-            <ArrowLeft className="w-4 h-4" />
-          </Button>
-        </div>
+        <h2 className="text-xl font-semibold flex items-center">
+          <Truck className="w-6 h-6 mr-2" />
+          Loads
+        </h2>
       </div>
       
       {/* Loads List */}

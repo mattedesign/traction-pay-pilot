@@ -6,22 +6,13 @@ import EldSharing from "./EldSharing";
 import DocumentUploadSection from "./DocumentUploadSection";
 import FinancialServices from "./FinancialServices";
 import MockChatInterface from "./MockChatInterface";
-import { FileText, Brain, Upload, ArrowLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { FileText, Brain, Upload } from "lucide-react";
 
 interface LoadMainContentProps {
   loadData: any;
 }
 
 const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
-  const navigate = useNavigate();
-
-  const handleBackClick = () => {
-    console.log("Navigating back to dashboard");
-    navigate("/");
-  };
-
   return (
     <div className="flex-1 flex flex-col min-h-screen" style={{ backgroundColor: '#F5F6FA' }}>
       {/* Main content area */}
@@ -29,21 +20,11 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
         <Tabs defaultValue="details" className="h-full flex flex-col">
           <div className="border-b border-slate-200 bg-white px-6 py-4 shrink-0">
             <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center space-x-4">
-                <Button 
-                  variant="ghost" 
-                  onClick={handleBackClick}
-                  className="flex items-center space-x-2 hover:bg-slate-100 text-slate-700"
-                >
-                  <ArrowLeft className="w-4 h-4" />
-                  <span>Back</span>
-                </Button>
-                <div>
-                  <h1 className="text-2xl font-semibold text-slate-900">
-                    Load #{loadData.loadId}
-                  </h1>
-                  <p className="text-slate-600">{loadData.broker}</p>
-                </div>
+              <div>
+                <h1 className="text-2xl font-semibold text-slate-900">
+                  Load #{loadData.loadId}
+                </h1>
+                <p className="text-slate-600">{loadData.broker}</p>
               </div>
             </div>
             
@@ -63,7 +44,7 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
             </TabsList>
           </div>
           
-          <div className="flex-1 overflow-hidden pb-80">
+          <div className="flex-1 overflow-hidden pb-64">
             <TabsContent value="details" className="h-full p-6 overflow-y-auto">
               <div className="max-w-4xl space-y-6 w-full">
                 <LoadInformation loadData={loadData} />
@@ -116,12 +97,11 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
         </Tabs>
       </div>
 
-      {/* Bottom AI assistant panel - adjusted for new layout */}
-      <div className="fixed bottom-0 left-96 right-0 h-80 bg-white border-t border-slate-200 shadow-lg z-10">
+      {/* Bottom AI assistant panel - compact header and adjusted height */}
+      <div className="fixed bottom-0 left-96 right-0 h-64 bg-white border-t border-slate-200 shadow-lg z-10">
         <div className="h-full flex flex-col">
-          <div className="p-4 border-b border-slate-200 bg-slate-50 shrink-0">
-            <h3 className="text-lg font-semibold text-slate-900">AI Assistant</h3>
-            <p className="text-sm text-slate-600">Ask about this load, regulations, routes, and more</p>
+          <div className="p-2 border-b border-slate-200 bg-slate-50 shrink-0">
+            <h3 className="text-sm font-semibold text-slate-900">AI Assistant</h3>
           </div>
           <div className="flex-1 p-4 overflow-hidden min-h-0">
             <MockChatInterface 
