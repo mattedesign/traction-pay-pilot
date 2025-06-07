@@ -1,10 +1,13 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Send, Mic, Bot, User, DollarSign, MapPin, Fuel, Clock } from "lucide-react";
+import { Send, Mic, Bot, User } from "lucide-react";
+import { useAI } from "../hooks/useAI";
+import APIKeyInput from "./APIKeyInput";
+import { useToast } from "@/hooks/use-toast";
 
 interface ChatMessage {
   type: "ai" | "user";
@@ -22,14 +25,34 @@ const ChatInterface = ({ isPreview = false, loadContext }: ChatInterfaceProps) =
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([
     {
       type: "ai",
-      content: "Hi there! I'm here to help with your trucking operations. Whether you need help with load details, payment questions, route planning, or regulatory compliance, I'm ready to assist. What's on your mind?",
+      content: "Hi there! I'm your AI assistant powered by Claude Sonnet. I'm here to help with your trucking operations, including load details, payment questions, route planning, and regulatory compliance. What can I help you with today?",
       timestamp: new Date()
     }
   ]);
 
+  const { toast } = useToast();
+  
+  const systemPrompt = `You are an expert AI assistant specialized in trucking operations, logistics, and transportation industry. You have deep knowledge of:
+- DOT regulations and compliance (HOS, ELD, safety requirements)
+- Load management and freight operations
+- Route optimization and fuel efficiency
+- Payment terms, factoring, and cash flow management
+- Equipment maintenance and inspections
+- Border crossings and international freight
+- Detention time and accessorial charges
+- Truck stops, parking, and driver amenities
+
+Provide practical, accurate, and industry-specific advice. Be conversational but professional. Always prioritize safety and legal compliance in your recommendations.
+
+${loadContext ? `Context: Currently discussing ${loadContext}` : ''}`;
+
+  const { isLoading, isInitialized, initializeService, sendMessage } = useAI({ 
+    systemPrompt 
+  });
+
   const suggestedQuestions = [
     "How do I handle a weight discrepancy on my BOL?",
-    "What's the best fuel route from Chicago to Denver?",
+    "What's the best fuel route from Chicago to Denver?", 
     "When should I expect payment on this load?",
     "Help me find cheapest fuel stops on I-80",
     "How do I submit my ELD logs for this trip?",
@@ -47,8 +70,17 @@ const ChatInterface = ({ isPreview = false, loadContext }: ChatInterfaceProps) =
 
   const [currentSuggestions] = useState(getRandomSuggestions());
 
-  const handleSendMessage = () => {
-    if (!message.trim()) return;
+  const handleSendMessage = async () => {
+    if (!message.trim() || isLoading) return;
+
+    if (!isInitialized) {
+      toast({
+        title: "API Key Required",
+        description: "Please enter your Anthropic API key to use the AI assistant.",
+        variant: "destructive"
+      });
+      return;
+    }
 
     const userMessage: ChatMessage = {
       type: "user",
@@ -56,38 +88,49 @@ const ChatInterface = ({ isPreview = false, loadContext }: ChatInterfaceProps) =
       timestamp: new Date()
     };
 
-    // More realistic AI responses based on message content
-    let aiResponse = "";
-    const msgLower = message.toLowerCase();
-    
-    if (msgLower.includes("weight") && (msgLower.includes("discrepancy") || msgLower.includes("difference"))) {
-      aiResponse = "Weight discrepancies are common but manageable. First, check if you have a weight ticket from the shipper. If not, you'll want to get one at the nearest certified scale. Most brokers understand that BOL weights aren't always accurate - drivers often estimate. Document everything with photos and keep your scale ticket. Would you like me to help you draft an email to the broker explaining the situation?";
-    } else if (msgLower.includes("fuel") && (msgLower.includes("route") || msgLower.includes("cheap") || msgLower.includes("stop"))) {
-      aiResponse = "I can help you find the most cost-effective fuel route. Based on current diesel prices and your fuel card discounts, I'd recommend planning stops every 300-400 miles. Pilot Flying J and TA/Petro typically offer the best rewards programs. Want me to map out specific stops for your route? Also, don't forget to factor in whether you need overnight parking - sometimes it's worth paying a few cents more per gallon for a safe parking spot.";
-    } else if (msgLower.includes("payment") || msgLower.includes("paid") || msgLower.includes("invoice")) {
-      aiResponse = "Payment timing depends on your broker's terms and whether all paperwork is complete. Most brokers pay within 15-30 days of delivery, but some offer QuickPay for a small fee (usually 1-3%). Make sure you've submitted your signed BOL, delivery receipt, and any required photos. If it's been over 30 days, you have every right to follow up. Need help checking the status or drafting a professional follow-up message?";
-    } else if (msgLower.includes("eld") || msgLower.includes("log") || msgLower.includes("hours")) {
-      aiResponse = "ELD compliance is crucial for avoiding violations. Make sure your device is properly recording drive time, on-duty time, and sleeper berth periods. If you're having technical issues, document them with screenshots - the FMCSA understands that technology isn't perfect. For this trip, ensure you're logging pre-trip and post-trip inspections correctly. Need help understanding the 14-hour rule or planning your next rest break?";
-    } else if (msgLower.includes("canada") || msgLower.includes("border") || msgLower.includes("cross")) {
-      aiResponse = "Canadian runs require additional documentation. You'll need your passport or FAST card, commercial invoice, packing list, and sometimes a PARS sticker. Make sure your carrier has Canadian authority and proper insurance coverage. Border wait times can be unpredictable, so plan extra time. The ArriveCAN app is also required for entry. Have you crossed into Canada before, or is this your first international load?";
-    } else if (msgLower.includes("detention") || msgLower.includes("wait") || msgLower.includes("delay")) {
-      aiResponse = "Detention time is billable after the free time expires (usually 2 hours for loading/unloading). Document everything: arrival time, when you checked in, when loading/unloading started and finished. Take photos of your arrival and any delays. Most detention pays $25-50 per hour. If the shipper or receiver won't sign your detention form, note the refusal and report it to your broker. Every minute over free time is money you've earned.";
-    } else if (msgLower.includes("truck stop") || msgLower.includes("parking")) {
-      aiResponse = "Finding safe overnight parking is always a priority. Truck stops usually charge $10-15 for reserved parking, but it's worth it for security and amenities. Free parking can be found at some Walmarts, rest areas (where legal), and industrial areas, but always check local ordinances. Apps like Trucker Path and ParkMyTruck can help you find available spots. For your route, I'd recommend booking ahead if you're running tight on hours.";
-    } else if (msgLower.includes("cost per mile") || msgLower.includes("profit") || msgLower.includes("expense")) {
-      aiResponse = "Calculating cost per mile helps you determine profitable loads. Include fuel, maintenance, insurance, permits, depreciation, and your time. Most owner-operators need at least $1.50-2.00 per mile to break even, depending on their operation. Factor in deadhead miles too - that empty return trip costs money. Track everything: fuel receipts, maintenance costs, tolls. The more accurate your data, the better decisions you can make about which loads to accept.";
-    } else {
-      aiResponse = "I understand your question. Let me help you with that. As an AI assistant focused on trucking operations, I have access to current industry information, regulations, and best practices. Feel free to ask about anything related to your loads, compliance, route planning, or business operations. What specific aspect would you like me to dive deeper into?";
-    }
-
-    const aiMessage: ChatMessage = {
-      type: "ai",
-      content: aiResponse,
-      timestamp: new Date()
-    };
-
-    setChatHistory([...chatHistory, userMessage, aiMessage]);
+    setChatHistory(prev => [...prev, userMessage]);
     setMessage("");
+
+    try {
+      // Convert chat history to AI service format
+      const messages = [...chatHistory, userMessage].map(msg => ({
+        role: msg.type === "user" ? "user" as const : "assistant" as const,
+        content: msg.content
+      }));
+
+      const response = await sendMessage(messages);
+      
+      if (response.error) {
+        toast({
+          title: "AI Service Error",
+          description: response.error,
+          variant: "destructive"
+        });
+      }
+
+      const aiMessage: ChatMessage = {
+        type: "ai",
+        content: response.content,
+        timestamp: new Date()
+      };
+
+      setChatHistory(prev => [...prev, aiMessage]);
+    } catch (error) {
+      console.error('Chat error:', error);
+      toast({
+        title: "Connection Error",
+        description: "Failed to get AI response. Please check your API key and try again.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleAPIKeySubmit = (key: string) => {
+    initializeService(key);
+    toast({
+      title: "AI Assistant Connected",
+      description: "Claude Sonnet is now ready to help with your trucking operations.",
+    });
   };
 
   if (isPreview) {
@@ -121,6 +164,14 @@ const ChatInterface = ({ isPreview = false, loadContext }: ChatInterfaceProps) =
     );
   }
 
+  if (!isInitialized) {
+    return (
+      <div className="space-y-4">
+        <APIKeyInput onKeySubmit={handleAPIKeySubmit} isLoading={isLoading} />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-4">
       {/* Chat History */}
@@ -148,6 +199,24 @@ const ChatInterface = ({ isPreview = false, loadContext }: ChatInterfaceProps) =
             </div>
           </div>
         ))}
+        {isLoading && (
+          <div className="flex justify-start">
+            <div className="flex items-start space-x-2 max-w-[80%]">
+              <div className="w-8 h-8 rounded-full flex items-center justify-center bg-slate-600">
+                <Bot className="w-4 h-4 text-white" />
+              </div>
+              <Card className="bg-slate-50 border-slate-200">
+                <CardContent className="p-3">
+                  <div className="flex space-x-1">
+                    <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce"></div>
+                    <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce delay-100"></div>
+                    <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce delay-200"></div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Quick Actions */}
@@ -172,11 +241,12 @@ const ChatInterface = ({ isPreview = false, loadContext }: ChatInterfaceProps) =
           onChange={(e) => setMessage(e.target.value)}
           onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
           className="flex-1"
+          disabled={isLoading}
         />
-        <Button variant="outline" size="icon">
+        <Button variant="outline" size="icon" disabled={isLoading}>
           <Mic className="w-4 h-4" />
         </Button>
-        <Button onClick={handleSendMessage}>
+        <Button onClick={handleSendMessage} disabled={isLoading || !message.trim()}>
           <Send className="w-4 h-4" />
         </Button>
       </div>
