@@ -1,15 +1,15 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Truck, FileText, MapPin, DollarSign, Route, CreditCard } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import NavigationSidebar from "@/components/NavigationSidebar";
 import MockChatInterface from "@/components/MockChatInterface";
 
 const Index = () => {
   const navigate = useNavigate();
   const chatRef = useRef<{ simulateTrackLoad: () => void; simulatePlanRoute: () => void }>(null);
+  const [isChatFocused, setIsChatFocused] = useState(false);
 
   const handleTrackLoad = () => {
     if (chatRef.current) {
@@ -21,6 +21,10 @@ const Index = () => {
     if (chatRef.current) {
       chatRef.current.simulatePlanRoute();
     }
+  };
+
+  const handleChatFocus = (focused: boolean) => {
+    setIsChatFocused(focused);
   };
 
   const suggestedActions = [
@@ -57,56 +61,62 @@ const Index = () => {
       <NavigationSidebar />
       
       <div className="flex-1 flex flex-col bg-slate-50 relative">
-        {/* Main Content Area */}
-        <div className="flex-1 flex flex-col items-center justify-center p-8">
-          {/* Welcome Header */}
-          <div className="text-center mb-12">
-            <div className="w-16 h-16 bg-slate-900 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Truck className="w-8 h-8 text-white" />
+        {/* Main Content Area - Hide when chat is focused */}
+        {!isChatFocused && (
+          <div className="flex-1 flex flex-col items-center justify-center p-8">
+            {/* Welcome Header */}
+            <div className="text-center mb-12">
+              <div className="w-16 h-16 bg-slate-900 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Truck className="w-8 h-8 text-white" />
+              </div>
+              <h1 className="text-4xl font-bold text-slate-900 mb-4">
+                Traction
+              </h1>
+              <p className="text-xl text-slate-600 max-w-lg mx-auto">
+                Less Friction, More Traction For Carriers
+              </p>
             </div>
-            <h1 className="text-4xl font-bold text-slate-900 mb-4">
-              Traction
-            </h1>
-            <p className="text-xl text-slate-600 max-w-lg mx-auto">
-              Less Friction, More Traction For Carriers
-            </p>
-          </div>
 
-          {/* Suggested Actions */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-            {suggestedActions.map((action, index) => (
-              <Card 
-                key={index} 
-                className="hover:shadow-md transition-shadow cursor-pointer border border-slate-200 bg-white"
-                onClick={action.onClick}
-              >
-                <CardContent className="p-6">
-                  <div className="flex items-start space-x-4">
-                    <div className={`w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center`}>
-                      <action.icon className={`w-5 h-5 ${action.color}`} />
+            {/* Suggested Actions */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+              {suggestedActions.map((action, index) => (
+                <Card 
+                  key={index} 
+                  className="hover:shadow-md transition-shadow cursor-pointer border border-slate-200 bg-white"
+                  onClick={action.onClick}
+                >
+                  <CardContent className="p-6">
+                    <div className="flex items-start space-x-4">
+                      <div className={`w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center`}>
+                        <action.icon className={`w-5 h-5 ${action.color}`} />
+                      </div>
+                      <div>
+                        <h3 className="font-medium text-slate-900 mb-1">{action.title}</h3>
+                        <p className="text-sm text-slate-600">{action.description}</p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="font-medium text-slate-900 mb-1">{action.title}</h3>
-                      <p className="text-sm text-slate-600">{action.description}</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
 
-          {/* Additional Help */}
-          <div className="text-center">
-            <p className="text-sm text-slate-500 mb-4">
-              Traction might provide inaccurate information. Always verify critical details.
-            </p>
+            {/* Additional Help */}
+            <div className="text-center">
+              <p className="text-sm text-slate-500 mb-4">
+                Traction might provide inaccurate information. Always verify critical details.
+              </p>
+            </div>
           </div>
-        </div>
+        )}
 
-        {/* Fixed Bottom Chat Interface - Input Height Only */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 bg-slate-50">
-          <div className="w-full max-w-4xl mx-auto h-16">
-            <MockChatInterface ref={chatRef} onNavigateToLoad={navigate} />
+        {/* Chat Interface - Expand when focused */}
+        <div className={`${isChatFocused ? 'flex-1' : 'absolute bottom-0 left-0 right-0'} p-4 bg-slate-50`}>
+          <div className={`w-full max-w-4xl mx-auto ${isChatFocused ? 'h-full' : 'h-16'}`}>
+            <MockChatInterface 
+              ref={chatRef} 
+              onNavigateToLoad={navigate} 
+              onFocusChange={handleChatFocus}
+            />
           </div>
         </div>
       </div>

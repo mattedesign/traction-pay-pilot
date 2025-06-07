@@ -1,4 +1,4 @@
-import { useState, forwardRef, useImperativeHandle, useRef } from "react";
+import { useState, forwardRef, useImperativeHandle, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -18,6 +18,7 @@ interface Message {
 interface MockChatInterfaceProps {
   loadContext?: string;
   onNavigateToLoad?: (path: string) => void;
+  onFocusChange?: (focused: boolean) => void;
 }
 
 interface MockChatInterfaceRef {
@@ -26,10 +27,11 @@ interface MockChatInterfaceRef {
 }
 
 const MockChatInterface = forwardRef<MockChatInterfaceRef, MockChatInterfaceProps>(
-  ({ loadContext, onNavigateToLoad }, ref) => {
+  ({ loadContext, onNavigateToLoad, onFocusChange }, ref) => {
     const [message, setMessage] = useState("");
     const [isTyping, setIsTyping] = useState(false);
     const [messages, setMessages] = useState<Message[]>([]);
+    const [isFocused, setIsFocused] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
 
     const mockResponses = [
@@ -112,7 +114,24 @@ const MockChatInterface = forwardRef<MockChatInterfaceRef, MockChatInterfaceProp
       }
     };
 
+    const handleInputFocus = () => {
+      setIsFocused(true);
+      onFocusChange?.(true);
+    };
+
+    const handleInputBlur = () => {
+      // Only hide if there are no messages
+      if (messages.length === 0) {
+        setIsFocused(false);
+        onFocusChange?.(false);
+      }
+    };
+
     const simulateTrackLoad = () => {
+      // Focus the chat first
+      setIsFocused(true);
+      onFocusChange?.(true);
+      
       // Focus the input and simulate typing
       simulateTyping("Load Status for 1234", () => {
         // Add the user message
@@ -144,6 +163,10 @@ const MockChatInterface = forwardRef<MockChatInterfaceRef, MockChatInterfaceProp
     };
 
     const simulatePlanRoute = () => {
+      // Focus the chat first
+      setIsFocused(true);
+      onFocusChange?.(true);
+      
       // Focus the input and simulate typing
       simulateTyping("Plan Optimal Route for Load #0000", () => {
         // Add the user message
@@ -226,72 +249,74 @@ const MockChatInterface = forwardRef<MockChatInterfaceRef, MockChatInterfaceProp
 
     return (
       <div className="h-full flex flex-col">
-        {/* Messages area */}
-        <div className="flex-1 overflow-y-auto space-y-3 mb-4">
-          {messages.map((msg, index) => (
-            <div key={index} className={`flex ${msg.type === "user" ? "justify-end" : "justify-start"}`}>
-              <div className={`flex items-start space-x-2 max-w-[80%] ${msg.type === "user" ? "flex-row-reverse space-x-reverse" : ""}`}>
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                  msg.type === "user" ? "bg-blue-600" : "bg-slate-600"
-                }`}>
-                  {msg.type === "user" ? (
-                    <User className="w-4 h-4 text-white" />
-                  ) : (
-                    <Bot className="w-4 h-4 text-white" />
-                  )}
+        {/* Messages area - only show when focused or has messages */}
+        {(isFocused || messages.length > 0) && (
+          <div className="flex-1 overflow-y-auto space-y-3 mb-4">
+            {messages.map((msg, index) => (
+              <div key={index} className={`flex ${msg.type === "user" ? "justify-end" : "justify-start"}`}>
+                <div className={`flex items-start space-x-2 max-w-[80%] ${msg.type === "user" ? "flex-row-reverse space-x-reverse" : ""}`}>
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                    msg.type === "user" ? "bg-blue-600" : "bg-slate-600"
+                  }`}>
+                    {msg.type === "user" ? (
+                      <User className="w-4 h-4 text-white" />
+                    ) : (
+                      <Bot className="w-4 h-4 text-white" />
+                    )}
+                  </div>
+                  <div className="flex flex-col space-y-2">
+                    <Card className={`${msg.type === "user" ? "bg-blue-50 border-blue-200" : "bg-slate-50 border-slate-200"}`}>
+                      <CardContent className="p-3">
+                        <p className="text-sm">{msg.content}</p>
+                        <p className="text-xs text-slate-500 mt-1">
+                          {msg.timestamp.toLocaleTimeString()}
+                        </p>
+                      </CardContent>
+                    </Card>
+                    
+                    {msg.showPrompt && msg.promptActions && (
+                      <div className="flex space-x-2">
+                        <Button 
+                          size="sm" 
+                          onClick={msg.promptActions.yes}
+                          className="bg-blue-600 hover:bg-blue-700"
+                        >
+                          Yes
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          variant="outline" 
+                          onClick={msg.promptActions.no}
+                        >
+                          No
+                        </Button>
+                      </div>
+                    )}
+                  </div>
                 </div>
-                <div className="flex flex-col space-y-2">
-                  <Card className={`${msg.type === "user" ? "bg-blue-50 border-blue-200" : "bg-slate-50 border-slate-200"}`}>
+              </div>
+            ))}
+            
+            {isTyping && (
+              <div className="flex justify-start">
+                <div className="flex items-start space-x-2 max-w-[80%]">
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center bg-slate-600">
+                    <Bot className="w-4 h-4 text-white" />
+                  </div>
+                  <Card className="bg-slate-50 border-slate-200">
                     <CardContent className="p-3">
-                      <p className="text-sm">{msg.content}</p>
-                      <p className="text-xs text-slate-500 mt-1">
-                        {msg.timestamp.toLocaleTimeString()}
-                      </p>
+                      <div className="flex space-x-1">
+                        <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce"></div>
+                        <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce delay-100"></div>
+                        <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce delay-200"></div>
+                      </div>
                     </CardContent>
                   </Card>
-                  
-                  {msg.showPrompt && msg.promptActions && (
-                    <div className="flex space-x-2">
-                      <Button 
-                        size="sm" 
-                        onClick={msg.promptActions.yes}
-                        className="bg-blue-600 hover:bg-blue-700"
-                      >
-                        Yes
-                      </Button>
-                      <Button 
-                        size="sm" 
-                        variant="outline" 
-                        onClick={msg.promptActions.no}
-                      >
-                        No
-                      </Button>
-                    </div>
-                  )}
                 </div>
               </div>
-            </div>
-          ))}
-          
-          {isTyping && (
-            <div className="flex justify-start">
-              <div className="flex items-start space-x-2 max-w-[80%]">
-                <div className="w-8 h-8 rounded-full flex items-center justify-center bg-slate-600">
-                  <Bot className="w-4 h-4 text-white" />
-                </div>
-                <Card className="bg-slate-50 border-slate-200">
-                  <CardContent className="p-3">
-                    <div className="flex space-x-1">
-                      <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce"></div>
-                      <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce delay-100"></div>
-                      <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce delay-200"></div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        )}
 
         {/* Input area - centered horizontally */}
         <div className="flex justify-center">
@@ -302,6 +327,8 @@ const MockChatInterface = forwardRef<MockChatInterfaceRef, MockChatInterfaceProp
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               onKeyPress={handleKeyPress}
+              onFocus={handleInputFocus}
+              onBlur={handleInputBlur}
               className="flex-1 h-14 text-lg"
               disabled={isTyping}
               style={{ borderRadius: '24px' }}
