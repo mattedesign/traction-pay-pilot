@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -121,6 +122,7 @@ const MockChatInterface = ({ loadContext }: MockChatInterfaceProps) => {
           onKeyPress={handleKeyPress}
           className="flex-1"
           disabled={isTyping}
+          style={{ borderRadius: '16px' }}
         />
         <Button 
           onClick={handleSendMessage} 

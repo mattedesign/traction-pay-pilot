@@ -81,14 +81,8 @@ const Index = () => {
       </div>
 
       {/* Fixed Bottom Chat Interface */}
-      <div 
-        className="fixed bottom-0 left-0 right-0 bg-white p-4 z-50 shadow-lg" 
-        style={{ 
-          borderTop: '1px solid rgba(0, 0, 0, 0.06)',
-          boxShadow: '0 -4px 6px -1px rgba(0, 0, 0, 0.1), 0 -2px 4px -1px rgba(0, 0, 0, 0.06)'
-        }}
-      >
-        <div className="max-w-4xl mx-auto">
+      <div className="fixed bottom-0 left-0 right-0 p-4 z-50">
+        <div className="w-[90%] xl:w-[60%] mx-auto">
           <MockChatInterface />
         </div>
       </div>
