@@ -105,16 +105,25 @@ ${loadContext ? `Context: Currently discussing ${loadContext}` : ''}`;
         // Add error message to chat
         const errorMessage: ChatMessage = {
           type: "ai",
-          content: `⚠️ ${response.content}`,
+          content: response.content,
           timestamp: new Date()
         };
         setChatHistory(prev => [...prev, errorMessage]);
         
-        toast({
-          title: "AI Service Error",
-          description: response.error,
-          variant: "destructive"
-        });
+        // Show different toast messages based on error type
+        if (response.error.includes('CORS') || response.error.includes('Network')) {
+          toast({
+            title: "Browser Security Limitation",
+            description: "Direct API calls are blocked. Consider using Supabase integration for secure AI functionality.",
+            variant: "destructive"
+          });
+        } else {
+          toast({
+            title: "AI Service Error",
+            description: response.error,
+            variant: "destructive"
+          });
+        }
         return;
       }
 
@@ -132,14 +141,14 @@ ${loadContext ? `Context: Currently discussing ${loadContext}` : ''}`;
       // Add error message to chat
       const errorMessage: ChatMessage = {
         type: "ai",
-        content: "❌ I'm having trouble connecting right now. Please check your API key and try again.",
+        content: "❌ Connection failed. This browser-based implementation has limitations due to CORS policies. For production use, consider setting up a backend service or using Lovable's Supabase integration.",
         timestamp: new Date()
       };
       setChatHistory(prev => [...prev, errorMessage]);
       
       toast({
         title: "Connection Error",
-        description: "Failed to get AI response. Please check your API key and internet connection.",
+        description: "Browser security limitations prevent direct API calls. Consider using a backend service.",
         variant: "destructive"
       });
     }

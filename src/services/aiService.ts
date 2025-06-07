@@ -22,7 +22,7 @@ export class AIService {
     systemPrompt: string = "You are a helpful AI assistant specialized in trucking operations, logistics, and transportation industry knowledge. Provide practical, accurate, and industry-specific advice."
   ): Promise<AIResponse> {
     try {
-      console.log('Sending request to Anthropic API...');
+      console.log('Attempting to send request to Anthropic API...');
       
       const response = await fetch(this.baseUrl, {
         method: 'POST',
@@ -66,10 +66,11 @@ export class AIService {
     } catch (error) {
       console.error('AI Service Error:', error);
       
-      if (error instanceof TypeError && error.message.includes('fetch')) {
+      // Handle network/CORS errors specifically
+      if (error instanceof TypeError && (error.message.includes('fetch') || error.message.includes('Failed to fetch'))) {
         return {
-          content: "Network error: Unable to connect to the AI service. Please check your internet connection and try again.",
-          error: 'Network connection failed'
+          content: "❌ **Browser Security Limitation**\n\nDirect API calls to Anthropic from the browser are blocked by CORS (Cross-Origin Resource Sharing) policies for security reasons.\n\n**To use AI features, you need:**\n1. A backend server to proxy API calls\n2. Or use Lovable's Supabase integration for secure AI functionality\n\n**Recommended Solution:**\nConnect this project to Supabase using the green button in the top-right corner, then create an Edge Function to handle AI requests securely.",
+          error: 'CORS/Network error - Direct browser calls to Anthropic API are not supported'
         };
       }
       
