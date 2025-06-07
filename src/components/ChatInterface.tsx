@@ -1,11 +1,10 @@
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Send, Mic, Bot, User, AlertCircle } from "lucide-react";
+
+import { useState } from "react";
 import { useAI } from "../hooks/useAI";
 import APIKeyInput from "./APIKeyInput";
+import ChatHistory from "./ChatHistory";
+import SuggestedQuestions from "./SuggestedQuestions";
+import ChatInput from "./ChatInput";
 import { useToast } from "@/hooks/use-toast";
 
 interface ChatMessage {
@@ -198,27 +197,18 @@ ${loadContext ? `Context: Currently discussing ${loadContext}` : ''}`;
   if (isPreview) {
     return (
       <div className="space-y-4">
-        <div className="flex flex-wrap gap-2">
-          {currentSuggestions.slice(0, 3).map((question, index) => (
-            <Badge 
-              key={index} 
-              variant="outline" 
-              className="cursor-pointer hover:bg-blue-50 text-xs"
-            >
-              {question}
-            </Badge>
-          ))}
-        </div>
-        <div className="flex space-x-2">
-          <Input 
-            placeholder="Ask about loads, routes, payments, compliance..."
-            className="flex-1"
-            disabled
-          />
-          <Button disabled>
-            <Send className="w-4 h-4" />
-          </Button>
-        </div>
+        <SuggestedQuestions 
+          questions={currentSuggestions} 
+          onQuestionClick={() => {}} 
+          isPreview={true}
+        />
+        <ChatInput
+          message=""
+          onMessageChange={() => {}}
+          onSendMessage={() => {}}
+          isLoading={false}
+          isPreview={true}
+        />
         <p className="text-xs text-slate-500 text-center">
           Click a demo scenario above to interact with the AI assistant
         </p>
@@ -236,82 +226,17 @@ ${loadContext ? `Context: Currently discussing ${loadContext}` : ''}`;
 
   return (
     <div className="space-y-4">
-      {/* Chat History */}
-      <div className="max-h-96 overflow-y-auto space-y-3">
-        {chatHistory.map((msg, index) => (
-          <div key={index} className={`flex ${msg.type === "user" ? "justify-end" : "justify-start"}`}>
-            <div className={`flex items-start space-x-2 max-w-[80%] ${msg.type === "user" ? "flex-row-reverse space-x-reverse" : ""}`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                msg.type === "user" ? "bg-blue-600" : "bg-slate-600"
-              }`}>
-                {msg.type === "user" ? (
-                  <User className="w-4 h-4 text-white" />
-                ) : (
-                  <Bot className="w-4 h-4 text-white" />
-                )}
-              </div>
-              <Card className={`${msg.type === "user" ? "bg-blue-50 border-blue-200" : "bg-slate-50 border-slate-200"}`}>
-                <CardContent className="p-3">
-                  <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
-                  <p className="text-xs text-slate-500 mt-1">
-                    {msg.timestamp.toLocaleTimeString()}
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        ))}
-        {isLoading && (
-          <div className="flex justify-start">
-            <div className="flex items-start space-x-2 max-w-[80%]">
-              <div className="w-8 h-8 rounded-full flex items-center justify-center bg-slate-600">
-                <Bot className="w-4 h-4 text-white" />
-              </div>
-              <Card className="bg-slate-50 border-slate-200">
-                <CardContent className="p-3">
-                  <div className="flex space-x-1">
-                    <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce"></div>
-                    <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce delay-100"></div>
-                    <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce delay-200"></div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Quick Actions */}
-      <div className="flex flex-wrap gap-2">
-        {currentSuggestions.map((question, index) => (
-          <Badge 
-            key={index} 
-            variant="outline" 
-            className="cursor-pointer hover:bg-blue-50 text-xs"
-            onClick={() => setMessage(question)}
-          >
-            {question}
-          </Badge>
-        ))}
-      </div>
-
-      {/* Input */}
-      <div className="flex space-x-2">
-        <Input 
-          placeholder="Ask about loads, routes, payments, compliance..."
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
-          className="flex-1"
-          disabled={isLoading}
-        />
-        <Button variant="outline" size="icon" disabled={isLoading}>
-          <Mic className="w-4 h-4" />
-        </Button>
-        <Button onClick={handleSendMessage} disabled={isLoading || !message.trim()}>
-          <Send className="w-4 h-4" />
-        </Button>
-      </div>
+      <ChatHistory messages={chatHistory} isLoading={isLoading} />
+      <SuggestedQuestions 
+        questions={currentSuggestions} 
+        onQuestionClick={setMessage}
+      />
+      <ChatInput
+        message={message}
+        onMessageChange={setMessage}
+        onSendMessage={handleSendMessage}
+        isLoading={isLoading}
+      />
     </div>
   );
 };
