@@ -44,7 +44,7 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
             </TabsList>
           </div>
           
-          <div className="flex-1 overflow-hidden pb-64">
+          <div className="flex-1 overflow-hidden pb-20">
             <TabsContent value="details" className="h-full p-6 overflow-y-auto">
               <div className="max-w-4xl space-y-6 w-full">
                 <LoadInformation loadData={loadData} />
@@ -97,18 +97,11 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
         </Tabs>
       </div>
 
-      {/* Bottom AI assistant panel - compact header and adjusted height */}
-      <div className="fixed bottom-0 left-96 right-0 h-64 bg-white border-t border-slate-200 shadow-lg z-10">
-        <div className="h-full flex flex-col">
-          <div className="p-2 border-b border-slate-200 bg-slate-50 shrink-0">
-            <h3 className="text-sm font-semibold text-slate-900">AI Assistant</h3>
-          </div>
-          <div className="flex-1 p-4 overflow-hidden min-h-0">
-            <MockChatInterface 
-              loadContext={`Load #${loadData.loadId} from ${loadData.origin} to ${loadData.destination}, Rate: ${loadData.amount}`}
-            />
-          </div>
-        </div>
+      {/* Floating AI chat input at bottom */}
+      <div className="fixed bottom-4 left-96 right-4 bg-white border border-slate-200 rounded-lg shadow-lg z-10 p-4">
+        <MockChatInterface 
+          loadContext={`Load #${loadData.loadId} from ${loadData.origin} to ${loadData.destination}, Rate: ${loadData.amount}`}
+        />
       </div>
     </div>
   );
