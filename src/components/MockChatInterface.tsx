@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { Send, Bot, User } from "lucide-react";
+import { Send, Bot, User, Paperclip } from "lucide-react";
 
 interface Message {
   type: "ai" | "user";
@@ -63,6 +63,20 @@ const MockChatInterface = ({ loadContext }: MockChatInterfaceProps) => {
     if (e.key === "Enter") {
       handleSendMessage();
     }
+  };
+
+  const handleAttachment = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.pdf,.jpg,.jpeg,.png,.doc,.docx';
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) {
+        console.log('File selected:', file.name);
+        // Here you would handle the file upload
+      }
+    };
+    input.click();
   };
 
   return (
@@ -125,6 +139,15 @@ const MockChatInterface = ({ loadContext }: MockChatInterfaceProps) => {
             disabled={isTyping}
             style={{ borderRadius: '24px' }}
           />
+          <Button 
+            onClick={handleAttachment} 
+            disabled={isTyping}
+            className="h-14 w-14 rounded-full"
+            size="icon"
+            variant="outline"
+          >
+            <Paperclip className="w-5 h-5" />
+          </Button>
           <Button 
             onClick={handleSendMessage} 
             disabled={isTyping || !message.trim()}

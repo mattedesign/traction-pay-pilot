@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Send, Mic } from "lucide-react";
+import { Send, Mic, Paperclip } from "lucide-react";
 
 interface ChatInputProps {
   message: string;
@@ -24,6 +24,22 @@ const ChatInput = ({
     }
   };
 
+  const handleAttachment = () => {
+    if (isPreview) return;
+    
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.pdf,.jpg,.jpeg,.png,.doc,.docx';
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) {
+        console.log('File selected:', file.name);
+        // Here you would handle the file upload
+      }
+    };
+    input.click();
+  };
+
   return (
     <div className="flex space-x-2">
       <Input 
@@ -34,6 +50,14 @@ const ChatInput = ({
         className="flex-1"
         disabled={isLoading || isPreview}
       />
+      <Button 
+        variant="outline" 
+        size="icon" 
+        disabled={isLoading || isPreview}
+        onClick={handleAttachment}
+      >
+        <Paperclip className="w-4 h-4" />
+      </Button>
       <Button variant="outline" size="icon" disabled={isLoading || isPreview}>
         <Mic className="w-4 h-4" />
       </Button>
