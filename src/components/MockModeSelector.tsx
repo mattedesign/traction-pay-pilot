@@ -4,15 +4,21 @@ import { Search, MessageSquare } from "lucide-react";
 
 interface MockModeSelectorProps {
   mode: "search" | "chat";
+  onModeChange: (mode: "search" | "chat") => void;
 }
 
-const MockModeSelector = ({ mode }: MockModeSelectorProps) => {
+const MockModeSelector = ({ mode, onModeChange }: MockModeSelectorProps) => {
   return (
     <div className="flex flex-col space-y-2 mb-4">
       <div className="text-sm font-medium text-slate-700">Choose your tool:</div>
       <ToggleGroup 
         type="single" 
         value={mode} 
+        onValueChange={(value) => {
+          if (value) {
+            onModeChange(value as "search" | "chat");
+          }
+        }}
         className="justify-start"
       >
         <ToggleGroupItem 

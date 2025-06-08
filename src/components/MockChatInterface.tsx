@@ -33,6 +33,11 @@ const MockChatInterface = forwardRef<MockChatInterfaceRef, MockChatInterfaceProp
       }
     }));
 
+    const handleModeChange = (newMode: "search" | "chat") => {
+      setMode(newMode);
+      console.log('Mode changed to:', newMode);
+    };
+
     const handleSendMessage = () => {
       console.log('Mock send message:', message, 'Mode:', mode);
       
@@ -63,7 +68,7 @@ const MockChatInterface = forwardRef<MockChatInterfaceRef, MockChatInterfaceProp
 
     return (
       <div className="space-y-4">
-        <MockModeSelector mode={mode} />
+        <MockModeSelector mode={mode} onModeChange={handleModeChange} />
         
         <SuggestedQuestions 
           questions={currentSuggestions.slice(0, 3)} 
