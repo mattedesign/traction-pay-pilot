@@ -1,8 +1,7 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Upload, FileText, CheckCircle, Shield, AlertTriangle, ExclamationTriangle, Clock } from "lucide-react";
+import { Upload, FileText, CheckCircle, Shield, AlertTriangle, Clock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { validateFile, ALLOWED_FILE_TYPES } from "@/utils/security";
 import { LoadService } from "@/services/loadService";
@@ -172,7 +171,7 @@ const DocumentUploadSection = () => {
                 >
                   <div className="flex items-center justify-center space-x-1 mb-2">
                     {hasIssues ? (
-                      <ExclamationTriangle className="w-6 h-6 text-red-600" />
+                      <AlertTriangle className="w-6 h-6 text-red-600" />
                     ) : isUploaded ? (
                       <CheckCircle className="w-6 h-6 text-green-600" />
                     ) : docType.required ? (
@@ -195,7 +194,7 @@ const DocumentUploadSection = () => {
                   
                   {hasIssues ? (
                     <Button size="sm" variant="outline" className="border-red-300 text-red-700" disabled>
-                      <ExclamationTriangle className="w-3 h-3 mr-1" />
+                      <AlertTriangle className="w-3 h-3 mr-1" />
                       Issues Found
                     </Button>
                   ) : isUploaded ? (
@@ -224,7 +223,7 @@ const DocumentUploadSection = () => {
             <Card key={index} className="border-red-200 bg-red-50">
               <CardHeader className="pb-3">
                 <CardTitle className="text-red-900 text-base flex items-center">
-                  <ExclamationTriangle className="w-5 h-5 mr-2" />
+                  <AlertTriangle className="w-5 h-5 mr-2" />
                   Discrepancies Detected in {alert.docType}
                 </CardTitle>
               </CardHeader>
@@ -311,7 +310,7 @@ const DocumentUploadSection = () => {
                   <div key={index} className="flex items-center justify-between text-xs text-slate-600">
                     <span className="flex items-center">
                       {doc.discrepancies && doc.discrepancies.length > 0 && (
-                        <ExclamationTriangle className="w-3 h-3 text-red-500 mr-1" />
+                        <AlertTriangle className="w-3 h-3 text-red-500 mr-1" />
                       )}
                       {doc.type}: {doc.fileName}
                     </span>
