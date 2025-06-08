@@ -1,7 +1,6 @@
 
 import { useState, useEffect } from "react";
 import ChatInput from "./ChatInput";
-import ModeSelector from "./ModeSelector";
 import ChatHistory from "./ChatHistory";
 import ChatSetup from "./ChatSetup";
 import LoadResultsPresenter from "./LoadResultsPresenter";
@@ -105,8 +104,7 @@ Always provide practical, actionable advice in a clear, professional tone. Focus
   if (!isInitialized) {
     return (
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <ModeSelector mode={mode} onModeChange={handleModeChange} />
+        <div className="flex items-center justify-end">
           {isFocused && (
             <Button
               variant="ghost"
@@ -126,9 +124,8 @@ Always provide practical, actionable advice in a clear, professional tone. Focus
 
   return (
     <div className="space-y-4">
-      {/* Mode Selector with Close Button */}
-      <div className="flex items-center justify-between">
-        <ModeSelector mode={mode} onModeChange={handleModeChange} />
+      {/* Header with Close Button only */}
+      <div className="flex items-center justify-end">
         {isFocused && (
           <Button
             variant="ghost"
@@ -159,13 +156,14 @@ Always provide practical, actionable advice in a clear, professional tone. Focus
         </div>
       )}
       
-      {/* Chat Input - Always at bottom */}
+      {/* Chat Input - Always at bottom with mode integrated */}
       <ChatInput
         message={message}
         onMessageChange={handleMessageChange}
         onSendMessage={handleSend}
         isLoading={isLoading}
         mode={mode}
+        onModeChange={handleModeChange}
       />
     </div>
   );

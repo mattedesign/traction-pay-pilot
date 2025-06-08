@@ -3,10 +3,8 @@ import { useState, useEffect } from "react";
 import ChatHistory from "./ChatHistory";
 import SuggestedQuestions from "./SuggestedQuestions";
 import ChatInput from "./ChatInput";
-import ModeSelector from "./ModeSelector";
 import LoadResultsPresenter from "./LoadResultsPresenter";
 import { ChatMessage } from "../hooks/useChatMessages";
-import { useUnifiedChatHandler } from "../hooks/useUnifiedChatHandler";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 
@@ -59,11 +57,8 @@ const ChatContainer = ({
 
   return (
     <div className="space-y-4 h-full flex flex-col">
-      <div className="flex items-center justify-between">
-        <ModeSelector 
-          mode={mode} 
-          onModeChange={setMode}
-        />
+      {/* Header with close button only */}
+      <div className="flex items-center justify-end">
         {onClose && (
           <Button
             variant="ghost"
@@ -92,6 +87,7 @@ const ChatContainer = ({
         onSendMessage={handleSendMessage}
         isLoading={isLoading}
         mode={mode}
+        onModeChange={setMode}
       />
     </div>
   );

@@ -1,10 +1,10 @@
 
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Send, Mic, Paperclip } from "lucide-react";
+import { Send, Paperclip } from "lucide-react";
 import { validateFile, ALLOWED_FILE_TYPES } from "@/utils/security";
 import { useToast } from "@/hooks/use-toast";
+import ModeDropdown from "./ModeDropdown";
 
 interface ChatInputProps {
   message: string;
@@ -13,6 +13,7 @@ interface ChatInputProps {
   isLoading: boolean;
   isPreview?: boolean;
   mode?: "search" | "chat";
+  onModeChange?: (mode: "search" | "chat") => void;
 }
 
 const ChatInput = ({
@@ -21,26 +22,28 @@ const ChatInput = ({
   onSendMessage,
   isLoading,
   isPreview = false,
-  mode = "chat"
+  mode = "chat",
+  onModeChange
 }: ChatInputProps) => {
-  const {
-    toast
-  } = useToast();
+  const { toast } = useToast();
+
   const getPlaceholder = () => {
     if (mode === "search") {
       return "Search for loads by ID, broker, route, or status...";
     }
     return "Ask about loads, routes, payments, compliance...";
   };
+
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !isPreview && !isLoading) {
       onSendMessage();
     }
   };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Allow natural typing without sanitization - sanitization happens when message is sent
     onMessageChange(e.target.value);
   };
+
   const handleAttachment = () => {
     if (isPreview) return;
     const input = document.createElement('input');
@@ -67,17 +70,16 @@ const ChatInput = ({
           title: "File Validated",
           description: `${file.name} is ready for upload`
         });
-
-        // Here you would implement the actual secure file upload
-        // For now, we'll just log the validated file
       }
     };
     input.click();
   };
+
   const handleSend = () => {
     if (isPreview || isLoading || !message.trim()) return;
     onSendMessage();
   };
+
   return (
     <div className="relative">
       <Input
@@ -85,14 +87,31 @@ const ChatInput = ({
         value={message}
         onChange={handleInputChange}
         onKeyPress={handleKeyPress}
-        className="pl-12 pr-20 py-2 h-12 rounded-[18px]" // Reduced right padding and top/bottom padding
+        className="pl-24 pr-20 py-2 h-12 rounded-[18px]" // Increased left padding for mode dropdown
         disabled={isLoading || isPreview}
         maxLength={1000}
         autoComplete="off"
       />
       
-      {/* Attachment button on the left */}
-      <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
+      {/* Mode dropdown on the left */}
+      <div className="absolute left-2 top-1/2 transform -translate-y-1/2">
+        {onModeChange ? (
+          <ModeDropdown 
+            mode={mode} 
+            onModeChange={onModeChange}
+            isPreview={isPreview}
+          />
+        ) : (
+          <div className="h-8 w-16 flex items-center justify-center">
+            <span className="text-xs text-gray-500">
+              {mode === "search" ? "Search" : "Chat"}
+            </span>
+          </div>
+        )}
+      </div>
+
+      {/* Attachment button */}
+      <div className="absolute right-14 top-1/2 transform -translate-y-1/2">
         <Button
           variant="ghost"
           size="icon"
@@ -111,7 +130,7 @@ const ChatInput = ({
           onClick={handleSend} 
           disabled={isLoading || !message.trim() || isPreview} 
           title="Send message" 
-          className="rounded-lg h-9 px-3 text-sm font-medium disabled:opacity-100" // Changed to rounded-lg (8px) and increased height
+          className="rounded-lg h-9 px-3 text-sm font-medium disabled:opacity-100"
           style={{
             background: 'var(--Gradient-primary, linear-gradient(97deg, #8D58FE 5.35%, #6F7BF5 22.4%, #5399ED 50.15%, #43ACE8 77.04%, #15DFDB 94.96%))'
           }}
@@ -125,4 +144,3 @@ const ChatInput = ({
 };
 
 export default ChatInput;
-
