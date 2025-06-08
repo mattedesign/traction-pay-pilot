@@ -1,6 +1,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import ChatInterface from "./ChatInterface";
+import { LoadContextProvider } from "./LoadContextProvider";
 
 interface LoadChatSectionProps {
   loadId: string;
@@ -8,17 +9,19 @@ interface LoadChatSectionProps {
 
 const LoadChatSection = ({ loadId }: LoadChatSectionProps) => {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Ask About Load #{loadId}</CardTitle>
-        <CardDescription>
-          Get help with route planning, document requirements, or discrepancy resolution
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <ChatInterface loadContext={`Load #${loadId}`} />
-      </CardContent>
-    </Card>
+    <LoadContextProvider loadId={loadId}>
+      <Card>
+        <CardHeader>
+          <CardTitle>Ask About Load #{loadId}</CardTitle>
+          <CardDescription>
+            AI assistant with complete access to load details, documents, and communications
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ChatInterface loadContext={`Load #${loadId}`} />
+        </CardContent>
+      </Card>
+    </LoadContextProvider>
   );
 };
 

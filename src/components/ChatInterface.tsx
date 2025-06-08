@@ -3,7 +3,7 @@ import ChatContainer from "./ChatContainer";
 import ChatPreview from "./ChatPreview";
 import ChatSetup from "./ChatSetup";
 import { useChatMessages } from "../hooks/useChatMessages";
-import { useChatHandlers } from "../hooks/useChatHandlers";
+import { useEnhancedChatHandlers } from "../hooks/useEnhancedChatHandlers";
 import { useSuggestedQuestions } from "../hooks/useSuggestedQuestions";
 
 interface ChatInterfaceProps {
@@ -28,6 +28,8 @@ const ChatInterface = ({ isPreview = false, loadContext }: ChatInterfaceProps) =
 - Email communication analysis and response generation
 - Load discrepancy identification and resolution
 
+IMPORTANT: When provided with specific load context data, use that information to give detailed, accurate responses about that specific load. Reference the actual load details, status, financials, and documents when answering questions.
+
 Provide practical, accurate, and industry-specific advice. Be conversational but professional. Always prioritize safety and legal compliance in your recommendations.
 
 You can analyze emails, generate professional responses, identify discrepancies in load data, and provide comprehensive trucking industry guidance.
@@ -41,11 +43,12 @@ ${loadContext ? `Context: Currently discussing ${loadContext}` : ''}`;
     isInitialized,
     handleSendMessage,
     handleAPIKeySubmit
-  } = useChatHandlers({
+  } = useEnhancedChatHandlers({
     systemPrompt,
     chatHistory,
     addUserMessage,
-    addAIMessage
+    addAIMessage,
+    loadContext
   });
 
   if (isPreview) {
