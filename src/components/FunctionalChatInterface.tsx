@@ -103,9 +103,9 @@ Always provide practical, actionable advice in a clear, professional tone. Focus
   // Show setup if not initialized
   if (!isInitialized) {
     return (
-      <div className="h-full flex flex-col">
-        <div className="flex items-center justify-end mb-4">
-          {isFocused && (
+      <div className="flex flex-col space-y-4">
+        {isFocused && (
+          <div className="flex items-center justify-end">
             <Button
               variant="ghost"
               size="icon"
@@ -115,20 +115,18 @@ Always provide practical, actionable advice in a clear, professional tone. Focus
             >
               <X className="w-4 h-4" />
             </Button>
-          )}
-        </div>
-        <div className="flex-1">
-          <ChatSetup onAPIKeySubmit={handleAPIKeySubmit} isLoading={isLoading} />
-        </div>
+          </div>
+        )}
+        <ChatSetup onAPIKeySubmit={handleAPIKeySubmit} isLoading={isLoading} />
       </div>
     );
   }
 
   return (
-    <div className="h-full flex flex-col">
-      {/* Header with Close Button only */}
-      <div className="flex items-center justify-end mb-4">
-        {isFocused && (
+    <div className="flex flex-col space-y-4">
+      {/* Header with Close Button only when focused */}
+      {isFocused && (
+        <div className="flex items-center justify-end">
           <Button
             variant="ghost"
             size="icon"
@@ -138,27 +136,37 @@ Always provide practical, actionable advice in a clear, professional tone. Focus
           >
             <X className="w-4 h-4" />
           </Button>
-        )}
-      </div>
-      
-      {/* Chat History - Expand to fill available space when focused */}
-      {isFocused && chatHistory.length > 0 && (
-        <div className="flex-1 mb-4 overflow-y-auto border rounded-lg bg-slate-50 min-h-0">
-          <ChatHistory messages={chatHistory} isLoading={isLoading} />
-        </div>
-      )}
-
-      {/* Load Results - Show when available */}
-      {showingResults && loadResults.length > 0 && (
-        <div className="mb-4 max-h-48 overflow-y-auto">
-          <LoadResultsPresenter 
-            results={loadResults}
-            onLoadSelect={handleLoadSelect}
-          />
         </div>
       )}
       
-      {/* Chat Input - Always at bottom with mode integrated */}
+      {/* Chat History and Load Results in same container - Show when focused and has content */}
+      {isFocused && (
+        <div className="max-h-64 overflow-y-auto border rounded-lg bg-slate-50">
+          {/* Show search results if available */}
+          {showingResults && loadResults.length > 0 && (
+            <div className="p-4 border-b">
+              <LoadResultsPresenter 
+                results={loadResults}
+                onLoadSelect={handleLoadSelect}
+              />
+            </div>
+          )}
+          
+          {/* Show chat history if available */}
+          {chatHistory.length > 0 && (
+            <ChatHistory messages={chatHistory} isLoading={isLoading} />
+          )}
+          
+          {/* Show message when no content */}
+          {!showingResults && chatHistory.length === 0 && (
+            <div className="p-4 text-center text-slate-500 text-sm">
+              Start a conversation or search for loads
+            </div>
+          )}
+        </div>
+      )}
+      
+      {/* Chat Input - Always at bottom with fixed positioning */}
       <div className="shrink-0">
         <ChatInput
           message={message}
