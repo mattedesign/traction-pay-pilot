@@ -42,11 +42,8 @@ const LoadItem = ({ load, avatarIcon }: LoadItemProps) => {
         onClick={handleLoadClick}
       >
         <div className="flex items-center space-x-3">
-          <div 
-            className="w-8 h-8 rounded-full flex items-center justify-center"
-            style={{ backgroundColor: avatarIcon.color }}
-          >
-            <IconComponent className="w-4 h-4 text-white" />
+          <div className="w-8 h-8 bg-slate-100 border border-slate-200 rounded flex items-center justify-center">
+            <IconComponent className="w-4 h-4" style={{ color: avatarIcon.color }} />
           </div>
           <div>
             <div className="text-sm font-medium text-slate-900">Load #{load.id}</div>

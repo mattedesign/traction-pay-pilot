@@ -33,22 +33,22 @@ const LoadInformation = ({ loadData }: LoadInformationProps) => {
 
   const getBrokerLogo = (brokerName: string) => {
     const logos = [
-      { icon: Building2, color: 'bg-blue-600' },
-      { icon: Truck, color: 'bg-green-600' },
-      { icon: Package, color: 'bg-purple-600' },
-      { icon: ShoppingCart, color: 'bg-orange-600' },
-      { icon: Zap, color: 'bg-red-600' },
-      { icon: Globe, color: 'bg-indigo-600' },
-      { icon: Target, color: 'bg-teal-600' },
-      { icon: Briefcase, color: 'bg-pink-600' }
+      { icon: Building2, color: '#8B5CF6' },
+      { icon: Truck, color: '#3B82F6' },
+      { icon: Package, color: '#EF4444' },
+      { icon: ShoppingCart, color: '#10B981' },
+      { icon: Zap, color: '#F59E0B' },
+      { icon: Globe, color: '#6366F1' },
+      { icon: Target, color: '#EC4899' },
+      { icon: Briefcase, color: '#14B8A6' }
     ];
     
     const logoIndex = brokerName.length % logos.length;
     const { icon: IconComponent, color } = logos[logoIndex];
     
     return (
-      <div className={`w-8 h-8 ${color} rounded flex items-center justify-center`}>
-        <IconComponent className="w-4 h-4 text-white" />
+      <div className="w-8 h-8 bg-slate-100 border border-slate-200 rounded flex items-center justify-center">
+        <IconComponent className="w-4 h-4" style={{ color }} />
       </div>
     );
   };
