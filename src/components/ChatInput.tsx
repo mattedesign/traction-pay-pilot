@@ -76,27 +76,59 @@ const ChatInput = ({
     if (isPreview || isLoading || !message.trim()) return;
     onSendMessage();
   };
-  return <div className="flex space-x-2">
-      <Input placeholder={getPlaceholder()} value={message} onChange={handleInputChange} onKeyPress={handleKeyPress} className="flex-1" disabled={isLoading || isPreview} maxLength={1000} // Prevent excessive input
-    autoComplete="off" />
-      <Button variant="outline" size="icon" disabled={isLoading || isPreview} onClick={handleAttachment} title="Upload secure document">
-        <Paperclip className="w-4 h-4" />
-      </Button>
-      <Button variant="outline" size="icon" disabled={isLoading || isPreview} title="Voice input (coming soon)">
-        <Mic className="w-4 h-4" />
-      </Button>
+  return (
+    <div className="flex space-x-2">
+      {/* Input with embedded buttons */}
+      <div className="relative flex-1">
+        <Input
+          placeholder={getPlaceholder()}
+          value={message}
+          onChange={handleInputChange}
+          onKeyPress={handleKeyPress}
+          className="pr-20" // Add padding for the buttons
+          disabled={isLoading || isPreview}
+          maxLength={1000}
+          autoComplete="off"
+        />
+        
+        {/* Buttons inside the input */}
+        <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex space-x-1">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8"
+            disabled={isLoading || isPreview}
+            onClick={handleAttachment}
+            title="Upload secure document"
+          >
+            <Paperclip className="w-4 h-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8"
+            disabled={isLoading || isPreview}
+            title="Voice input (coming soon)"
+          >
+            <Mic className="w-4 h-4" />
+          </Button>
+        </div>
+      </div>
+
+      {/* Send button - same height as input */}
       <Button 
         onClick={handleSend} 
         disabled={isLoading || !message.trim() || isPreview} 
         title="Send message" 
-        className="rounded-xl"
+        className="rounded-xl h-12 w-12 p-0" // Match input height (h-12) and make square
         style={{
           background: 'var(--Gradient-primary, linear-gradient(97deg, #8D58FE 5.35%, #6F7BF5 22.4%, #5399ED 50.15%, #43ACE8 77.04%, #15DFDB 94.96%))'
         }}
       >
         <Send className="w-4 h-4" />
       </Button>
-    </div>;
+    </div>
+  );
 };
 
 export default ChatInput;
