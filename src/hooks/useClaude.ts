@@ -1,82 +1,65 @@
 
-import { useState, useCallback } from 'react';
-import { EnhancedAIService } from '../services/enhancedAIService';
-import { EmailContent } from '../types/emailAnalysis';
+import { useState } from "react";
+import { AIService } from "@/services/aiService";
+import { getAPIKey, clearAPIKey } from "@/utils/security";
 
-interface UseClaudeOptions {
-  systemPrompt?: string;
+interface UseClaude {
+  systemPrompt: string;
 }
 
-export const useClaude = (options: UseClaudeOptions = {}) => {
+export const useClaude = ({ systemPrompt }: UseClaude) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [apiKey, setApiKey] = useState<string>('');
-  const [claudeService, setClaudeService] = useState<EnhancedAIService | null>(null);
+  const [isInitialized, setIsInitialized] = useState(false);
+  const [aiService, setAIService] = useState<AIService | null>(null);
 
-  const initializeService = useCallback((key: string) => {
-    setApiKey(key);
-    setClaudeService(new EnhancedAIService(key));
-  }, []);
+  const initializeService = (apiKey: string) => {
+    try {
+      const service = new AIService(apiKey);
+      setAIService(service);
+      setIsInitialized(true);
+      console.log('Claude AI service initialized successfully');
+    } catch (error) {
+      console.error('Failed to initialize Claude service:', error);
+      clearAPIKey();
+      setIsInitialized(false);
+    }
+  };
 
-  const sendMessage = useCallback(async (
-    messages: Array<{ role: 'user' | 'assistant'; content: string }>
-  ) => {
-    if (!claudeService) {
-      throw new Error('Claude service not initialized. Please provide API key.');
+  const sendMessage = async (
+    messages: Array<{ role: 'user' | 'assistant'; content: string }>,
+    enhancedSystemPrompt?: string
+  ): Promise<string> => {
+    if (!aiService || !isInitialized) {
+      throw new Error('AI service not initialized');
     }
 
     setIsLoading(true);
     try {
-      const response = await claudeService.sendMessage(messages, options.systemPrompt);
-      return typeof response === 'string' ? response : response.content;
+      const promptToUse = enhancedSystemPrompt || systemPrompt;
+      const response = await aiService.sendMessage(messages, promptToUse);
+      
+      if (response.error) {
+        throw new Error(response.error);
+      }
+      
+      return response.content;
     } finally {
       setIsLoading(false);
     }
-  }, [claudeService, options.systemPrompt]);
+  };
 
-  const analyzeEmail = useCallback(async (emailContent: EmailContent) => {
-    if (!claudeService) {
-      throw new Error('Claude service not initialized. Please provide API key.');
+  // Auto-initialize if API key exists
+  useState(() => {
+    const storedKey = getAPIKey();
+    if (storedKey) {
+      initializeService(storedKey);
     }
-
-    setIsLoading(true);
-    try {
-      return await claudeService.analyzeEmail(emailContent);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [claudeService]);
-
-  const generateEmailResponse = useCallback(async (
-    originalEmail: {
-      subject: string;
-      body: string;
-      from: string;
-    },
-    context: {
-      loadId?: string;
-      customerHistory?: any[];
-      urgentIssues?: string[];
-    }
-  ) => {
-    if (!claudeService) {
-      throw new Error('Claude service not initialized. Please provide API key.');
-    }
-
-    setIsLoading(true);
-    try {
-      return await claudeService.generateEmailResponse(originalEmail, context);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [claudeService]);
+  });
 
   return {
     isLoading,
-    apiKey,
-    isInitialized: !!claudeService,
+    isInitialized,
     initializeService,
-    sendMessage,
-    analyzeEmail,
-    generateEmailResponse
+    sendMessage
   };
 };

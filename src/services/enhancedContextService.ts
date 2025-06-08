@@ -1,4 +1,3 @@
-
 import { LoadDataService, LoadDataContext } from './loadDataService';
 import { QueryAnalysis } from './queryAnalysisService';
 
@@ -149,7 +148,7 @@ export class EnhancedContextService {
 
   private static findRelatedLoads(loadDetails: any): any[] {
     // Find loads with same broker or similar route
-    const allLoads = LoadDataService.getAllLoads ? LoadDataService.getAllLoads() : [];
+    const allLoads = LoadDataService.getAllLoads();
     return allLoads
       .filter(load => 
         load.id !== loadDetails.id && 

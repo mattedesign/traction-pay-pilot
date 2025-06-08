@@ -39,6 +39,15 @@ export class LoadDataService {
     }
   }
 
+  static getAllLoads(): any[] {
+    try {
+      return LoadService.getAllLoads();
+    } catch (error) {
+      console.error('Error fetching all loads:', error);
+      return [];
+    }
+  }
+
   static getLoadDocuments(loadId: string): string[] {
     // Mock document retrieval - in real app would fetch from database
     const documentMap: Record<string, string[]> = {
