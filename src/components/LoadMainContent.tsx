@@ -2,11 +2,13 @@
 import { useState, useEffect } from "react";
 import LoadHeader from "./LoadHeader";
 import LoadInformation from "./LoadInformation";
+import FinancialSummaryCard from "./FinancialSummaryCard";
 import DocumentUploadSection from "./DocumentUploadSection";
 import EmailThreadDisplay from "./EmailThreadDisplay";
 import LoadChatSection from "./LoadChatSection";
 import PaymentChatSection from "./PaymentChatSection";
 import LoadAcceptanceCard from "./LoadAcceptanceCard";
+import FloatingChatWidget from "./FloatingChatWidget";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { EmailService, EmailThread } from "@/services/emailService";
@@ -74,6 +76,9 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
               {/* Load Information */}
               <LoadInformation loadData={load} />
               
+              {/* Financial Summary Card */}
+              <FinancialSummaryCard loadData={load} />
+              
               {/* Email Communications */}
               <Card>
                 <CardHeader>
@@ -109,6 +114,9 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
           </Tabs>
         </div>
       </div>
+      
+      {/* Floating Chat Widget */}
+      <FloatingChatWidget loadId={load.id} />
     </div>
   );
 };
