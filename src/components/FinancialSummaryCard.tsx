@@ -26,6 +26,11 @@ const FinancialSummaryCard = ({ loadData }: FinancialSummaryCardProps) => {
   };
 
   const getPaymentStatus = () => {
+    // Special handling for TMS-001
+    if (loadData.id === "TMS-001") {
+      return { label: "Awaiting Invoice", color: "bg-purple-50 border-purple-200 text-purple-700" };
+    }
+    
     switch (loadData.status) {
       case "pending_acceptance":
         return { label: "Payment Pending", color: "bg-orange-50 border-orange-200 text-orange-700" };
@@ -46,6 +51,14 @@ const FinancialSummaryCard = ({ loadData }: FinancialSummaryCardProps) => {
   const getFundingMethod = () => {
     // Default to Standard Pay ACH if no specific method is set
     return "Standard Pay ACH";
+  };
+
+  // Get payment options title - special handling for TMS-001
+  const getPaymentOptionsTitle = () => {
+    if (loadData.id === "TMS-001") {
+      return "Payment Options Upon Invoice Acceptance";
+    }
+    return "Payment Options";
   };
 
   const paymentStatus = getPaymentStatus();
@@ -103,7 +116,7 @@ const FinancialSummaryCard = ({ loadData }: FinancialSummaryCardProps) => {
 
         {/* Payment Breakdown */}
         <div className="border-t pt-4">
-          <h4 className="text-sm font-medium text-slate-700 mb-3">Payment Options</h4>
+          <h4 className="text-sm font-medium text-slate-700 mb-3">{getPaymentOptionsTitle()}</h4>
           <div className="space-y-3">
             {/* Advance Payment - only show if not ready_to_invoice */}
             {showAdvancePayment && (
