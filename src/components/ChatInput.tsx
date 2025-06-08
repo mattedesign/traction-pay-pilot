@@ -87,14 +87,14 @@ const ChatInput = ({
         value={message}
         onChange={handleInputChange}
         onKeyPress={handleKeyPress}
-        className="pl-24 pr-20 py-2 h-12 rounded-[18px]" // Increased left padding for mode dropdown
+        className="pl-28 pr-24 py-3 h-12 rounded-[18px]" // Increased left padding more and right padding
         disabled={isLoading || isPreview}
         maxLength={1000}
         autoComplete="off"
       />
       
       {/* Mode dropdown on the left */}
-      <div className="absolute left-2 top-1/2 transform -translate-y-1/2">
+      <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
         {onModeChange ? (
           <ModeDropdown 
             mode={mode} 
@@ -103,7 +103,7 @@ const ChatInput = ({
           />
         ) : (
           <div className="h-8 w-16 flex items-center justify-center">
-            <span className="text-xs text-gray-500">
+            <span className="text-xs text-muted-foreground">
               {mode === "search" ? "Search" : "Chat"}
             </span>
           </div>
@@ -111,7 +111,7 @@ const ChatInput = ({
       </div>
 
       {/* Attachment button */}
-      <div className="absolute right-14 top-1/2 transform -translate-y-1/2">
+      <div className="absolute right-16 top-1/2 transform -translate-y-1/2">
         <Button
           variant="ghost"
           size="icon"

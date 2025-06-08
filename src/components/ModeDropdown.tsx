@@ -47,7 +47,7 @@ const ModeDropdown = ({ mode, onModeChange, isPreview = false }: ModeDropdownPro
       <Button
         variant="ghost"
         size="sm"
-        className="h-8 px-2 flex items-center space-x-1 text-xs font-medium"
+        className="h-8 px-2 flex items-center space-x-1 text-xs font-medium text-muted-foreground hover:text-foreground"
         onClick={() => !isPreview && setIsOpen(!isOpen)}
         disabled={isPreview}
       >
@@ -57,11 +57,11 @@ const ModeDropdown = ({ mode, onModeChange, isPreview = false }: ModeDropdownPro
       </Button>
 
       {isOpen && (
-        <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-md shadow-lg z-50 min-w-[140px]">
+        <div className="absolute top-full left-0 mt-1 bg-background border border-border rounded-md shadow-lg z-50 min-w-[140px]">
           <div className="py-1">
             <button
-              className={`w-full px-3 py-2 text-left text-sm flex items-center space-x-2 hover:bg-gray-50 ${
-                mode === "search" ? "bg-gray-50 text-blue-600" : "text-gray-700"
+              className={`w-full px-3 py-2 text-left text-sm flex items-center space-x-2 hover:bg-accent ${
+                mode === "search" ? "bg-accent text-accent-foreground" : "text-foreground"
               }`}
               onClick={() => handleModeSelect("search")}
             >
@@ -69,8 +69,8 @@ const ModeDropdown = ({ mode, onModeChange, isPreview = false }: ModeDropdownPro
               <span>Search Loads</span>
             </button>
             <button
-              className={`w-full px-3 py-2 text-left text-sm flex items-center space-x-2 hover:bg-gray-50 ${
-                mode === "chat" ? "bg-gray-50 text-blue-600" : "text-gray-700"
+              className={`w-full px-3 py-2 text-left text-sm flex items-center space-x-2 hover:bg-accent ${
+                mode === "chat" ? "bg-accent text-accent-foreground" : "text-foreground"
               }`}
               onClick={() => handleModeSelect("chat")}
             >
