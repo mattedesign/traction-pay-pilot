@@ -23,7 +23,7 @@ export class AIService {
     systemPrompt: string = "You are a helpful AI assistant specialized in trucking operations, logistics, and transportation industry knowledge. Provide practical, accurate, and industry-specific advice."
   ): Promise<AIResponse> {
     try {
-      console.log('Attempting to send request to Anthropic API via CORS proxy...');
+      console.log('Sending request to Claude 4 Sonnet via CORS proxy...');
       
       const response = await fetch(`${this.corsProxy}${this.baseUrl}`, {
         method: 'POST',
@@ -34,8 +34,8 @@ export class AIService {
           'X-Requested-With': 'XMLHttpRequest'
         },
         body: JSON.stringify({
-          model: 'claude-3-5-sonnet-20241022',
-          max_tokens: 1000,
+          model: 'claude-sonnet-4-20250514', // Updated to latest Claude 4 Sonnet
+          max_tokens: 2048, // Increased for more detailed responses
           system: systemPrompt,
           messages: messages.map(msg => ({
             role: msg.role,
@@ -60,7 +60,7 @@ export class AIService {
       }
 
       const data = await response.json();
-      console.log('API Response received successfully');
+      console.log('Claude 4 Sonnet response received successfully');
       
       return {
         content: data.content[0].text

@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useClaude } from "./useClaude";
 import { useToast } from "@/hooks/use-toast";
 import { ChatMessage } from "./useChatMessages";
-import { LoadDataService, LoadDataContext } from "@/services/loadDataService";
+import { IntelligentResponseService } from "@/services/intelligentResponseService";
 import { validateAPIKey, storeAPIKey, getAPIKey, clearAPIKey, sanitizeInput } from "@/utils/security";
 
 interface UseEnhancedChatHandlersProps {
@@ -28,53 +28,6 @@ export const useEnhancedChatHandlers = ({
     systemPrompt 
   });
 
-  const processMessageWithContext = async (userMessage: string): Promise<string> => {
-    let enhancedMessage = userMessage;
-    let contextData: LoadDataContext | null = null;
-
-    // Extract load ID from message
-    const extractedLoadId = LoadDataService.extractLoadIdFromMessage(userMessage);
-    
-    // Try to get load context from extracted ID or provided context
-    const loadId = extractedLoadId || (loadContext ? loadContext.match(/Load #(\d+)/)?.[1] : null);
-    
-    if (loadId) {
-      console.log(`Fetching context for Load #${loadId}`);
-      contextData = await LoadDataService.getLoadContext(loadId);
-      
-      if (contextData) {
-        const formattedContext = LoadDataService.formatLoadContextForAI(contextData);
-        enhancedMessage = `${formattedContext}\n\n**USER QUESTION:** ${userMessage}`;
-        
-        toast({
-          title: "Load Context Added",
-          description: `Retrieved detailed information for Load #${loadId}`,
-        });
-      } else {
-        // Load ID mentioned but not found
-        enhancedMessage = `**NOTE:** User mentioned Load #${loadId} but this load was not found in the system.\n\n**USER QUESTION:** ${userMessage}`;
-        
-        toast({
-          title: "Load Not Found",
-          description: `Load #${loadId} was not found in the system`,
-          variant: "destructive"
-        });
-      }
-    } else if (loadContext) {
-      // We're in a load-specific chat but no specific load mentioned
-      const contextLoadId = loadContext.match(/Load #(\d+)/)?.[1];
-      if (contextLoadId) {
-        contextData = await LoadDataService.getLoadContext(contextLoadId);
-        if (contextData) {
-          const formattedContext = LoadDataService.formatLoadContextForAI(contextData);
-          enhancedMessage = `${formattedContext}\n\n**USER QUESTION:** ${userMessage}`;
-        }
-      }
-    }
-
-    return enhancedMessage;
-  };
-
   const handleSendMessage = async () => {
     const sanitizedMessage = sanitizeInput(message);
     
@@ -93,20 +46,46 @@ export const useEnhancedChatHandlers = ({
     setMessage("");
 
     try {
-      console.log('Processing message with enhanced context...');
+      console.log('Processing message with intelligent response system...');
       
-      // Process message with load context
-      const enhancedMessage = await processMessageWithContext(sanitizedMessage);
+      // Use intelligent response service to analyze and prepare context
+      const responseContext = await IntelligentResponseService.analyzeAndPrepareResponse(
+        sanitizedMessage,
+        loadContext
+      );
       
-      // Convert chat history to Claude service format, using enhanced message for the latest
-      const messages = [...chatHistory, { ...userMessage, content: enhancedMessage }].map(msg => ({
+      console.log('Response context prepared:', {
+        hasContext: responseContext.hasLoadContext,
+        loadId: responseContext.loadContext?.loadId
+      });
+      
+      // Build enhanced system prompt
+      let enhancedSystemPrompt = systemPrompt;
+      if (responseContext.systemPromptAddition) {
+        enhancedSystemPrompt += '\n\n' + responseContext.systemPromptAddition;
+      }
+      
+      // Prepare message for Claude
+      const messageForClaude = responseContext.messageEnhancement;
+      
+      // Convert chat history to Claude service format
+      const messages = [...chatHistory, { ...userMessage, content: messageForClaude }].map(msg => ({
         role: msg.type === "user" ? "user" as const : "assistant" as const,
         content: sanitizeInput(msg.content)
       }));
 
-      const response = await sendMessage(messages);
+      console.log('Sending to Claude with enhanced context...');
+      const response = await sendMessage(messages, enhancedSystemPrompt);
       
       addAIMessage(response);
+      
+      // Show context notification if load context was used
+      if (responseContext.hasLoadContext && responseContext.loadContext) {
+        toast({
+          title: "Enhanced Context Applied",
+          description: `Using detailed context for Load #${responseContext.loadContext.loadId}`,
+        });
+      }
       
     } catch (error) {
       console.error('Enhanced chat error:', error);
@@ -135,7 +114,7 @@ export const useEnhancedChatHandlers = ({
   };
 
   const handleAPIKeySubmit = async (key: string) => {
-    console.log('Setting up enhanced Claude AI service with validated key...');
+    console.log('Setting up enhanced Claude AI service with intelligent routing...');
     
     try {
       if (!validateAPIKey(key)) {
@@ -152,7 +131,7 @@ export const useEnhancedChatHandlers = ({
       
       toast({
         title: "Enhanced Claude AI Ready",
-        description: "Your Claude AI assistant is now ready with load context awareness.",
+        description: "Your Claude AI assistant is now ready with intelligent load context awareness and query routing.",
       });
       
     } catch (error) {
