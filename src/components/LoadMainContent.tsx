@@ -66,7 +66,7 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
           <LoadInformation loadData={load} />
           
           {/* Document Upload Section */}
-          <DocumentUploadSection loadId={load.id} />
+          <DocumentUploadSection />
           
           {/* Email Communications */}
           <Card>
