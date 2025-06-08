@@ -7,7 +7,6 @@ import EmailThreadDisplay from "./EmailThreadDisplay";
 import LoadChatSection from "./LoadChatSection";
 import PaymentChatSection from "./PaymentChatSection";
 import LoadAcceptanceCard from "./LoadAcceptanceCard";
-import NotificationBell from "./NotificationBell";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { EmailService, EmailThread } from "@/services/emailService";
 import { LoadRepository } from "@/services/loadRepository";
@@ -48,10 +47,9 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
 
   return (
     <div className="flex-1 flex flex-col h-screen overflow-hidden">
-      {/* Header with notification bell */}
-      <div className="border-b border-slate-200 bg-white px-6 py-4 flex items-center justify-between">
+      {/* Header without notification bell */}
+      <div className="border-b border-slate-200 bg-white px-6 py-4">
         <LoadHeader loadData={load} />
-        <NotificationBell />
       </div>
       
       <div className="flex-1 overflow-y-auto p-6">

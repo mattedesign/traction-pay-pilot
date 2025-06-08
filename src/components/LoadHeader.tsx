@@ -2,7 +2,7 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft } from "lucide-react";
+import { X } from "lucide-react";
 import { Load } from "@/types/load";
 
 interface LoadHeaderProps {
@@ -34,8 +34,8 @@ const LoadHeader = ({ loadData }: LoadHeaderProps) => {
     }
   };
 
-  const handleBackClick = () => {
-    console.log("Navigating back to dashboard");
+  const handleCloseClick = () => {
+    console.log("Navigating to Load Summary page");
     navigate("/");
   };
 
@@ -43,11 +43,12 @@ const LoadHeader = ({ loadData }: LoadHeaderProps) => {
     <div className="flex items-center space-x-4">
       <Button 
         variant="ghost" 
-        onClick={handleBackClick}
-        className="flex items-center space-x-2 hover:bg-slate-100"
+        size="icon"
+        onClick={handleCloseClick}
+        className="hover:bg-slate-100"
+        title="Close and return to Load Summary"
       >
-        <ArrowLeft className="w-4 h-4" />
-        <span>Back to Dashboard</span>
+        <X className="w-5 h-5" />
       </Button>
       <div>
         <h1 className="text-xl font-bold text-slate-900">Load #{loadData.id}</h1>
