@@ -1,32 +1,31 @@
 
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Toaster } from "@/components/ui/toaster";
 import Index from "./pages/Index";
-import LoadDetail from "./pages/LoadDetail";
-import Login from "./pages/Login";
-import NotFound from "./pages/NotFound";
 import LoadsPage from "./pages/LoadsPage";
+import NewLoadPage from "./pages/NewLoadPage";
+import LoadDetail from "./pages/LoadDetail";
 import InvoicesPage from "./pages/InvoicesPage";
 import BankingPage from "./pages/BankingPage";
 import SearchPage from "./pages/SearchPage";
 import SupportPage from "./pages/SupportPage";
+import Login from "./pages/Login";
+import NotFound from "./pages/NotFound";
 import RouteOptionsPage from "./pages/RouteOptionsPage";
+import "./App.css";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Router>
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/login" element={<Login />} />
           <Route path="/loads" element={<LoadsPage />} />
+          <Route path="/loads/new" element={<NewLoadPage />} />
           <Route path="/load/:loadId" element={<LoadDetail />} />
           <Route path="/invoices" element={<InvoicesPage />} />
           <Route path="/banking" element={<BankingPage />} />
@@ -35,9 +34,10 @@ const App = () => (
           <Route path="/route-options" element={<RouteOptionsPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+      </Router>
+      <Toaster />
+    </QueryClientProvider>
+  );
+}
 
 export default App;

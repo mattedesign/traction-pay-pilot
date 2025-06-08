@@ -1,7 +1,7 @@
-
 import { useState, useEffect } from "react";
-import { Search } from "lucide-react";
-import { useParams } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Search, Plus } from "lucide-react";
+import { useParams, useNavigate } from "react-router-dom";
 import { LoadService } from "@/services/loadService";
 import { EmailService, EmailThread } from "@/services/emailService";
 import LoadGroupHeader from "./LoadGroupHeader";
@@ -20,6 +20,7 @@ interface Load {
 
 const LoadsSidebar = () => {
   const { loadId } = useParams();
+  const navigate = useNavigate();
   const [loads, setLoads] = useState<Load[]>([]);
   const [emailThreads, setEmailThreads] = useState<Map<string, EmailThread[]>>(new Map());
   const [isLoading, setIsLoading] = useState(true);
@@ -72,6 +73,10 @@ const LoadsSidebar = () => {
     loadEmailData();
   }, []);
 
+  const handleNewLoad = () => {
+    navigate('/loads/new');
+  };
+
   const getAvatarColor = (loadId: string) => {
     const colors = [
       "#8B5CF6", // purple
@@ -112,6 +117,14 @@ const LoadsSidebar = () => {
           <h2 className="text-lg font-semibold text-slate-900">Loads</h2>
           <Search className="w-5 h-5 text-slate-400" />
         </div>
+        
+        <Button 
+          onClick={handleNewLoad}
+          className="w-full flex items-center justify-center space-x-2 bg-slate-100 text-slate-700 hover:bg-slate-200 border-0"
+        >
+          <Plus className="w-4 h-4" />
+          <span>New Load</span>
+        </Button>
       </div>
       
       {/* Loads List */}
