@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { DollarSign, CreditCard, TrendingUp, ExternalLink, Info } from "lucide-react";
@@ -85,16 +86,18 @@ const FinancialServices = ({ loadAmount }: FinancialServicesProps) => {
         </div>
       </CardHeader>
       <CardContent className="space-y-3 relative z-10">
-        <div className="grid grid-cols-2 gap-3">
-          <div className="bg-slate-50 border border-slate-100 rounded-lg p-4 text-center hover:bg-slate-100 transition-colors duration-200">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="bg-slate-50 border border-slate-100 rounded-lg p-4 hover:bg-slate-100 transition-colors duration-200">
             <div className="flex items-center justify-center mb-2">
               <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center border border-slate-200">
                 <DollarSign className="w-4 h-4 text-green-600" />
               </div>
             </div>
-            <p className="text-sm font-medium text-slate-700">Fuel Advance</p>
-            <p className="text-lg font-bold text-green-600">${fuelAdvanceAmount}</p>
-            <p className="text-xs text-slate-500">available now</p>
+            <div className="text-center">
+              <p className="text-sm font-medium text-slate-700">Fuel Advance</p>
+              <p className="text-lg font-bold text-green-600">${fuelAdvanceAmount}</p>
+              <p className="text-xs text-slate-500">available now</p>
+            </div>
             <div className="space-y-1 mt-2">
               <Button 
                 size="sm" 
@@ -116,15 +119,17 @@ const FinancialServices = ({ loadAmount }: FinancialServicesProps) => {
               </Button>
             </div>
           </div>
-          <div className="bg-slate-50 border border-slate-100 rounded-lg p-4 text-center hover:bg-slate-100 transition-colors duration-200">
+          <div className="bg-slate-50 border border-slate-100 rounded-lg p-4 hover:bg-slate-100 transition-colors duration-200">
             <div className="flex items-center justify-center mb-2">
               <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center border border-slate-200">
                 <CreditCard className="w-4 h-4 text-slate-600" />
               </div>
             </div>
-            <p className="text-sm font-medium text-slate-700">Fuel Cards</p>
-            <p className="text-lg font-bold text-slate-600">3¢/gal</p>
-            <p className="text-xs text-slate-500">best discount</p>
+            <div className="text-center">
+              <p className="text-sm font-medium text-slate-700">Fuel Cards</p>
+              <p className="text-lg font-bold text-slate-600">3¢/gal</p>
+              <p className="text-xs text-slate-500">best discount</p>
+            </div>
             <Button 
               size="sm" 
               variant="outline" 

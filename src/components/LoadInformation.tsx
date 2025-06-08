@@ -40,35 +40,35 @@ const LoadInformation = ({ loadData }: LoadInformationProps) => {
         <CardTitle>Load Information</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <div className="flex items-center space-x-2 mb-1">
               <DollarSign className="w-4 h-4 text-green-600" />
-              <span className="text-sm font-medium">Rate</span>
+              <span className="text-sm font-medium text-slate-700">Rate</span>
             </div>
             <p className="text-xl font-bold text-green-600">{loadData.amount}</p>
           </div>
           <div>
             <div className="flex items-center space-x-2 mb-1">
               <MapPin className="w-4 h-4 text-slate-600" />
-              <span className="text-sm font-medium">Distance</span>
+              <span className="text-sm font-medium text-slate-700">Distance</span>
             </div>
             <p className="text-sm text-slate-700">{loadData.distance}</p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <div className="flex items-center space-x-2 mb-1">
               <Building2 className="w-4 h-4 text-blue-600" />
-              <span className="text-sm font-medium">Freight Broker</span>
+              <span className="text-sm font-medium text-slate-700">Freight Broker</span>
             </div>
             <p className="text-sm text-slate-700">{loadData.broker}</p>
           </div>
           <div>
             <div className="flex items-center space-x-2 mb-1">
               <CreditCard className="w-4 h-4 text-purple-600" />
-              <span className="text-sm font-medium">Funding Method</span>
+              <span className="text-sm font-medium text-slate-700">Funding Method</span>
             </div>
             {loadData.fundingMethod ? (
               <Badge variant="outline" className={`text-xs ${getFundingMethodColor(loadData.fundingMethod)}`}>
@@ -84,7 +84,7 @@ const LoadInformation = ({ loadData }: LoadInformationProps) => {
           <div>
             <div className="flex items-center space-x-2 mb-1">
               <MapPin className="w-4 h-4 text-blue-600" />
-              <span className="text-sm font-medium">Pickup Location</span>
+              <span className="text-sm font-medium text-slate-700">Pickup Location</span>
             </div>
             <p className="text-sm text-slate-700">{loadData.origin}</p>
             <p className="text-xs text-slate-500">{loadData.pickupTime}</p>
@@ -93,7 +93,7 @@ const LoadInformation = ({ loadData }: LoadInformationProps) => {
           <div>
             <div className="flex items-center space-x-2 mb-1">
               <MapPin className="w-4 h-4 text-purple-600" />
-              <span className="text-sm font-medium">Delivery Location</span>
+              <span className="text-sm font-medium text-slate-700">Delivery Location</span>
             </div>
             <p className="text-sm text-slate-700">{loadData.destination}</p>
             <p className="text-xs text-slate-500">{loadData.deliveryTime}</p>

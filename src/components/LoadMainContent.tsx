@@ -1,3 +1,4 @@
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
@@ -100,7 +101,7 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
             <TabsContent value="details" className="flex-1 overflow-hidden">
               <ScrollArea className="h-full">
                 <div className="p-6 pb-32">
-                  <div className="max-w-4xl space-y-6 w-full">
+                  <div className="max-w-4xl mx-auto space-y-6">
                     {/* Show QuickPay at top for completed loads with standard funding */}
                     {shouldShowQuickPayAtTop && <QuickPayOffer />}
                     
@@ -129,7 +130,7 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
             <TabsContent value="documents" className="flex-1 overflow-hidden">
               <ScrollArea className="h-full">
                 <div className="p-6 pb-32">
-                  <div className="max-w-4xl w-full">
+                  <div className="max-w-4xl mx-auto">
                     <DocumentUploadSection />
                   </div>
                 </div>
@@ -139,7 +140,7 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
             <TabsContent value="intelligence" className="flex-1 overflow-hidden">
               <ScrollArea className="h-full">
                 <div className="p-6 pb-32">
-                  <div className="max-w-4xl space-y-6 w-full">
+                  <div className="max-w-4xl mx-auto space-y-6">
                     <RouteOptimization />
                     <EldSharing />
                     <div className="bg-white rounded-lg p-6 shadow-sm">
