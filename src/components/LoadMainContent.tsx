@@ -8,6 +8,7 @@ import EldSharing from "./EldSharing";
 import DocumentUploadSection from "./DocumentUploadSection";
 import FinancialServices from "./FinancialServices";
 import FunctionalChatInterface from "./FunctionalChatInterface";
+import QuickPayOffer from "./QuickPayOffer";
 import { FileText, Upload, Brain, X } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -31,6 +32,10 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
   const handleClose = () => {
     navigate("/loads");
   };
+
+  // Check if load is delivered and should show QuickPay option
+  const shouldShowQuickPay = loadData.status === "delivered" && 
+    (loadData.fundingMethod === "Standard Pay ACH" || loadData.fundingMethod === "Standard Pay Check");
 
   return (
     <div className="flex-1 flex flex-col h-screen bg-slate-50 relative overflow-hidden">
@@ -78,8 +83,7 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
                 <div className="p-6 pb-32">
                   <div className="max-w-4xl space-y-6 w-full">
                     <LoadInformation loadData={loadData} />
-                    <RouteOptimization />
-                    <EldSharing />
+                    {shouldShowQuickPay && <QuickPayOffer />}
                     <FinancialServices loadAmount={loadData.amount} />
                   </div>
                 </div>
@@ -99,7 +103,9 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
             <TabsContent value="intelligence" className="flex-1 overflow-hidden">
               <ScrollArea className="h-full">
                 <div className="p-6 pb-32">
-                  <div className="max-w-4xl w-full">
+                  <div className="max-w-4xl space-y-6 w-full">
+                    <RouteOptimization />
+                    <EldSharing />
                     <div className="bg-white rounded-lg p-6 shadow-sm">
                       <h3 className="text-lg font-semibold mb-4 text-slate-900">Load Intelligence</h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

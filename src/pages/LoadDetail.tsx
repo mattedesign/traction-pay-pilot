@@ -33,6 +33,7 @@ const LoadDetail = () => {
         distance: "45 miles",
         mode: "TL",
         broker: "Continental Logistics Partners",
+        fundingMethod: "Standard Pay ACH",
         documents: []
       },
       "5678": {
@@ -46,6 +47,7 @@ const LoadDetail = () => {
         distance: "332 miles",
         mode: "truck",
         broker: "Apex Freight Solutions",
+        fundingMethod: "QuickPay",
         documents: ["Rate Confirmation"]
       },
       "9012": {
@@ -59,6 +61,7 @@ const LoadDetail = () => {
         distance: "240 miles",
         mode: "truck",
         broker: "Crossroads Transport Brokers",
+        fundingMethod: "Standard Pay Check",
         documents: ["POD", "Invoice"]
       }
     };
