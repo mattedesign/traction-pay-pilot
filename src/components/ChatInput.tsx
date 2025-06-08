@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Send, Mic, Paperclip } from "lucide-react";
-import { validateFile, ALLOWED_FILE_TYPES, sanitizeInput } from "@/utils/security";
+import { validateFile, ALLOWED_FILE_TYPES } from "@/utils/security";
 import { useToast } from "@/hooks/use-toast";
 
 interface ChatInputProps {
@@ -38,8 +38,8 @@ const ChatInput = ({
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const sanitizedValue = sanitizeInput(e.target.value);
-    onMessageChange(sanitizedValue);
+    // Allow natural typing without sanitization - sanitization happens when message is sent
+    onMessageChange(e.target.value);
   };
 
   const handleAttachment = () => {

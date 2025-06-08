@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Key, Eye, EyeOff, AlertCircle, Shield } from 'lucide-react';
-import { validateAPIKey, sanitizeInput } from '@/utils/security';
+import { validateAPIKey } from '@/utils/security';
 import { useToast } from '@/hooks/use-toast';
 
 interface APIKeyInputProps {
@@ -19,8 +19,8 @@ const APIKeyInput = ({ onKeySubmit, isLoading = false }: APIKeyInputProps) => {
   const { toast } = useToast();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = sanitizeInput(e.target.value);
-    setKey(value);
+    // Allow natural typing without sanitization - validation happens on submit
+    setKey(e.target.value);
     setValidationError(null);
   };
 
