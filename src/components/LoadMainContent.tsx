@@ -1,13 +1,14 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Button } from "@/components/ui/button";
 import LoadInformation from "./LoadInformation";
 import RouteOptimization from "./RouteOptimization";
 import EldSharing from "./EldSharing";
 import DocumentUploadSection from "./DocumentUploadSection";
 import FinancialServices from "./FinancialServices";
 import FunctionalChatInterface from "./FunctionalChatInterface";
-import { FileText, Upload, Brain } from "lucide-react";
+import { FileText, Upload, Brain, X } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -27,6 +28,10 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
     setIsChatFocused(focused);
   };
 
+  const handleClose = () => {
+    navigate("/loads");
+  };
+
   return (
     <div className="flex-1 flex flex-col h-screen bg-slate-50 relative overflow-hidden">
       {/* Main content area */}
@@ -40,6 +45,15 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
                 </h1>
                 <p className="text-slate-600">{loadData.broker}</p>
               </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleClose}
+                className="hover:bg-slate-100"
+                title="Close load details"
+              >
+                <X className="w-5 h-5" />
+              </Button>
             </div>
             
             <TabsList className="grid w-full grid-cols-3 bg-slate-100">
