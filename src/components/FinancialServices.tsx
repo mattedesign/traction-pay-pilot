@@ -93,7 +93,7 @@ const FinancialServices = ({ loadAmount }: FinancialServicesProps) => {
                 <DollarSign className="w-4 h-4 text-green-600" />
               </div>
             </div>
-            <div className="text-center">
+            <div className="text-left">
               <p className="text-sm font-medium text-slate-700">Fuel Advance</p>
               <p className="text-lg font-bold text-green-600">${fuelAdvanceAmount}</p>
               <p className="text-xs text-slate-500">available now</p>
@@ -125,7 +125,7 @@ const FinancialServices = ({ loadAmount }: FinancialServicesProps) => {
                 <CreditCard className="w-4 h-4 text-slate-600" />
               </div>
             </div>
-            <div className="text-center">
+            <div className="text-left">
               <p className="text-sm font-medium text-slate-700">Fuel Cards</p>
               <p className="text-lg font-bold text-slate-600">3¢/gal</p>
               <p className="text-xs text-slate-500">best discount</p>

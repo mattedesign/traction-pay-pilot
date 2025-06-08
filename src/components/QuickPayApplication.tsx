@@ -77,10 +77,12 @@ const QuickPayApplication = ({ loadData, applicationStatus, onQuickPayApplicatio
   if (applicationStatus === "applying") {
     return (
       <Card className="border-blue-200 bg-blue-50">
-        <CardContent className="p-6 text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <h3 className="text-lg font-medium text-blue-900 mb-2">Processing Application...</h3>
-          <p className="text-blue-700">Verifying invoice and payment eligibility</p>
+        <CardContent className="p-6">
+          <div className="flex flex-col items-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
+            <h3 className="text-lg font-medium text-blue-900 mb-2">Processing Application...</h3>
+            <p className="text-blue-700">Verifying invoice and payment eligibility</p>
+          </div>
         </CardContent>
       </Card>
     );

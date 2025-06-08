@@ -39,23 +39,23 @@ const FactoringOffer = ({ factorData }: FactoringOfferProps) => {
       </CardHeader>
       <CardContent className="space-y-3">
         <div className="grid grid-cols-3 gap-4">
-          <div className="text-center">
-            <div className="flex items-center justify-center mb-1">
-              <TrendingUp className="w-4 h-4 text-purple-600" />
+          <div className="text-left">
+            <div className="flex items-center mb-1">
+              <TrendingUp className="w-4 h-4 text-purple-600 mr-2" />
             </div>
             <p className="text-sm font-medium text-purple-900">{factorData.rate} Rate</p>
             <p className="text-xs text-purple-700">Competitive</p>
           </div>
-          <div className="text-center">
-            <div className="flex items-center justify-center mb-1">
-              <DollarSign className="w-4 h-4 text-purple-600" />
+          <div className="text-left">
+            <div className="flex items-center mb-1">
+              <DollarSign className="w-4 h-4 text-purple-600 mr-2" />
             </div>
             <p className="text-sm font-medium text-purple-900">{factorData.advance} Advance</p>
             <p className="text-xs text-purple-700">On approval</p>
           </div>
-          <div className="text-center">
-            <div className="flex items-center justify-center mb-1">
-              <Clock className="w-4 h-4 text-purple-600" />
+          <div className="text-left">
+            <div className="flex items-center mb-1">
+              <Clock className="w-4 h-4 text-purple-600 mr-2" />
             </div>
             <p className="text-sm font-medium text-purple-900">24 Hours</p>
             <p className="text-xs text-purple-700">Funding time</p>
