@@ -2,7 +2,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Edit, ExternalLink, Building2, Truck, Package, ShoppingCart, Zap, Globe, Target, Briefcase, Wifi, Clock, Phone, Mail, FileText } from "lucide-react";
+import { ExternalLink, Building2, Truck, Package, ShoppingCart, Zap, Globe, Target, Briefcase, Wifi, Clock, Phone, FileText } from "lucide-react";
 import { useState } from "react";
 import LocationDetailsModal from "./LocationDetailsModal";
 import { Load } from "@/types/load";
@@ -13,13 +13,6 @@ interface LoadInformationProps {
 
 const LoadInformation = ({ loadData }: LoadInformationProps) => {
   const [showLocationModal, setShowLocationModal] = useState(false);
-  
-  const canEditFundingMethod = loadData.status !== "delivered";
-
-  const handleFundingMethodEdit = () => {
-    // TODO: Implement funding method edit functionality
-    console.log("Edit funding method clicked");
-  };
 
   const getBrokerLogo = (brokerName: string) => {
     const logos = [
@@ -74,10 +67,6 @@ const LoadInformation = ({ loadData }: LoadInformationProps) => {
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <span className="text-sm font-medium text-slate-700 mb-1 block">Rate</span>
-              <p className="text-xl font-bold text-green-600">{loadData.amount}</p>
-            </div>
-            <div>
               <span className="text-sm font-medium text-slate-700 mb-1 block">Freight Broker</span>
               <div className="flex items-center space-x-2">
                 {getBrokerLogo(loadData.broker)}
@@ -88,6 +77,22 @@ const LoadInformation = ({ loadData }: LoadInformationProps) => {
                   )}
                 </div>
               </div>
+            </div>
+            <div>
+              <span className="text-sm font-medium text-slate-700 mb-1 block">Delivery Location</span>
+              <p className="text-sm text-slate-700">{loadData.destination}</p>
+              <p className="text-xs text-slate-500 mb-2">
+                {loadDataWithDeliveryTime.deliveryTime}
+              </p>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-6 px-2 text-xs"
+                onClick={() => setShowLocationModal(true)}
+              >
+                <ExternalLink className="w-3 h-3 mr-1" />
+                View route details
+              </Button>
             </div>
           </div>
 
@@ -121,44 +126,6 @@ const LoadInformation = ({ loadData }: LoadInformationProps) => {
               )}
             </div>
           )}
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <span className="text-sm font-medium text-slate-700 mb-1 block">Funding Method</span>
-              <div className="flex items-center space-x-2">
-                <p className="text-sm text-slate-700">
-                  {loadData.rateConfirmation?.originalRate || "Not specified"}
-                </p>
-                {canEditFundingMethod && (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-6 w-6"
-                    onClick={handleFundingMethodEdit}
-                    title="Edit funding method"
-                  >
-                    <Edit className="w-3 h-3" />
-                  </Button>
-                )}
-              </div>
-            </div>
-            <div>
-              <span className="text-sm font-medium text-slate-700 mb-1 block">Delivery Location</span>
-              <p className="text-sm text-slate-700">{loadData.destination}</p>
-              <p className="text-xs text-slate-500 mb-2">
-                {loadDataWithDeliveryTime.deliveryTime}
-              </p>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-6 px-2 text-xs"
-                onClick={() => setShowLocationModal(true)}
-              >
-                <ExternalLink className="w-3 h-3 mr-1" />
-                View route details
-              </Button>
-            </div>
-          </div>
 
           {/* Special Instructions for TMS loads */}
           {loadData.tmsData?.specialInstructions && (
