@@ -4,11 +4,11 @@ import { Truck, FileText, MapPin, DollarSign, Route, CreditCard } from "lucide-r
 import { useNavigate } from "react-router-dom";
 import { useRef, useState } from "react";
 import NavigationSidebar from "@/components/NavigationSidebar";
-import MockChatInterface from "@/components/MockChatInterface";
+import MockChatInterface, { MockChatInterfaceRef } from "@/components/MockChatInterface";
 
 const Index = () => {
   const navigate = useNavigate();
-  const chatRef = useRef<{ simulateTrackLoad: () => void; simulatePlanRoute: () => void }>(null);
+  const chatRef = useRef<MockChatInterfaceRef>(null);
   const [isChatFocused, setIsChatFocused] = useState(false);
 
   const handleTrackLoad = () => {
