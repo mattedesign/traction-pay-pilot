@@ -21,7 +21,7 @@ const DocumentUploadSection = () => {
   const currentLoadId = window.location.pathname.split('/').pop();
   const loadStatus: Load["status"] = currentLoadId === "INV-2024" ? "ready_to_invoice" : "in_transit";
   const isPickedUp = loadStatus === "in_transit" || loadStatus === "delivered" || loadStatus === "ready_to_invoice";
-  const allDocsUploaded = loadStatus === "ready_to_invoice";
+  const allDocsUploaded = loadStatus === "ready_to_invoice" || loadStatus === "delivered";
 
   const documentTypes = [
     { name: "Rate Confirmation", required: true, mockUploaded: isPickedUp || allDocsUploaded },
