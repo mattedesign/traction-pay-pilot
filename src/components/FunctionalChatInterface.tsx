@@ -4,7 +4,6 @@ import ChatInput from "./ChatInput";
 import ChatHistory from "./ChatHistory";
 import ChatSetup from "./ChatSetup";
 import LoadResultsPresenter from "./LoadResultsPresenter";
-import ModeSelector from "./ModeSelector";
 import { useChatMessages } from "../hooks/useChatMessages";
 import { useSuggestedQuestions } from "../hooks/useSuggestedQuestions";
 import { useUnifiedChatHandler } from "../hooks/useUnifiedChatHandler";
@@ -22,9 +21,9 @@ const FunctionalChatInterface = ({
   onFocusChange,
   isFocused = false 
 }: FunctionalChatInterfaceProps) => {
+  const [mode, setMode] = useState<"search" | "chat">("search");
   const { chatHistory, addUserMessage, addAIMessage } = useChatMessages();
   const { currentSuggestions } = useSuggestedQuestions();
-  const [mode, setMode] = useState<"search" | "chat">("search");
 
   // Enhanced system prompt that supports both modes
   const systemPrompt = `You are an AI assistant specialized in trucking operations and load management. You can operate in two modes:
@@ -82,6 +81,11 @@ Always provide practical, actionable advice in a clear, professional tone. Focus
       onFocusChange(false);
     }
     setMessage("");
+  };
+
+  const handleModeChange = (newMode: "search" | "chat") => {
+    setMode(newMode);
+    console.log('Mode changed to:', newMode);
   };
 
   const handleMessageChange = (newMessage: string) => {
@@ -142,14 +146,6 @@ Always provide practical, actionable advice in a clear, professional tone. Focus
         </div>
       )}
 
-      {/* Mode Selector - Show when focused */}
-      {isFocused && (
-        <ModeSelector 
-          mode={mode} 
-          onModeChange={setMode} 
-        />
-      )}
-
       {/* Load Results - Show when available */}
       {showingResults && loadResults.length > 0 && (
         <div className="max-h-32 overflow-y-auto">
@@ -160,14 +156,14 @@ Always provide practical, actionable advice in a clear, professional tone. Focus
         </div>
       )}
       
-      {/* Chat Input - Always at bottom with mode selector */}
+      {/* Chat Input - Always at bottom with mode integrated */}
       <ChatInput
         message={message}
         onMessageChange={handleMessageChange}
         onSendMessage={handleSend}
         isLoading={isLoading}
         mode={mode}
-        onModeChange={setMode}
+        onModeChange={handleModeChange}
       />
     </div>
   );

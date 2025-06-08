@@ -1,6 +1,7 @@
 
 import { useState, forwardRef, useImperativeHandle } from "react";
 import ChatInput from "./ChatInput";
+import MockModeSelector from "./MockModeSelector";
 import SuggestedQuestions from "./SuggestedQuestions";
 import { useSuggestedQuestions } from "../hooks/useSuggestedQuestions";
 
@@ -18,6 +19,7 @@ export interface MockChatInterfaceRef {
 const MockChatInterface = forwardRef<MockChatInterfaceRef, MockChatInterfaceProps>(
   ({ loadContext, onNavigateToLoad, onFocusChange }, ref) => {
     const [message, setMessage] = useState("");
+    const [mode, setMode] = useState<"search" | "chat">("search");
     const { currentSuggestions } = useSuggestedQuestions();
 
     useImperativeHandle(ref, () => ({
@@ -31,8 +33,13 @@ const MockChatInterface = forwardRef<MockChatInterfaceRef, MockChatInterfaceProp
       }
     }));
 
+    const handleModeChange = (newMode: "search" | "chat") => {
+      setMode(newMode);
+      console.log('Mode changed to:', newMode);
+    };
+
     const handleSendMessage = () => {
-      console.log('Mock send message:', message);
+      console.log('Mock send message:', message, 'Mode:', mode);
       
       // Simulate navigation for load queries
       if (message.includes("load #") && onNavigateToLoad) {
@@ -61,6 +68,8 @@ const MockChatInterface = forwardRef<MockChatInterfaceRef, MockChatInterfaceProp
 
     return (
       <div className="space-y-4">
+        <MockModeSelector mode={mode} onModeChange={handleModeChange} />
+        
         <SuggestedQuestions 
           questions={currentSuggestions.slice(0, 3)} 
           onQuestionClick={handleQuestionClick}
@@ -73,6 +82,7 @@ const MockChatInterface = forwardRef<MockChatInterfaceRef, MockChatInterfaceProp
           onSendMessage={handleSendMessage}
           isLoading={false}
           isPreview={true}
+          mode={mode}
         />
         
         {loadContext && (

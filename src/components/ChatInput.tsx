@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Send, Paperclip } from "lucide-react";
 import { validateFile, ALLOWED_FILE_TYPES } from "@/utils/security";
 import { useToast } from "@/hooks/use-toast";
+import ModeDropdown from "./ModeDropdown";
 
 interface ChatInputProps {
   message: string;
@@ -21,13 +22,14 @@ const ChatInput = ({
   onSendMessage,
   isLoading,
   isPreview = false,
-  mode = "chat"
+  mode = "chat",
+  onModeChange
 }: ChatInputProps) => {
   const { toast } = useToast();
 
   const getPlaceholder = () => {
     if (mode === "search") {
-      return "Search loads by ID, broker, route, or status...";
+      return "Search for loads by ID, broker, route, or status...";
     }
     return "Ask about loads, routes, payments, compliance...";
   };
@@ -93,11 +95,28 @@ const ChatInput = ({
         value={message}
         onChange={handleInputChange}
         onKeyPress={handleKeyPress}
-        className="pl-4 pr-36 py-3 h-12 rounded-[18px]"
+        className="pl-32 pr-36 py-3 h-12 rounded-[18px]" // Increased left padding more for gap, increased right padding for multiple buttons
         disabled={isLoading || isPreview}
         maxLength={1000}
         autoComplete="off"
       />
+      
+      {/* Mode dropdown on the left */}
+      <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
+        {onModeChange ? (
+          <ModeDropdown 
+            mode={mode} 
+            onModeChange={onModeChange}
+            isPreview={isPreview}
+          />
+        ) : (
+          <div className="h-8 w-16 flex items-center justify-center">
+            <span className="text-xs text-muted-foreground">
+              {mode === "search" ? "Search" : "Chat"}
+            </span>
+          </div>
+        )}
+      </div>
 
       {/* Attachment button */}
       <div className="absolute right-24 top-1/2 transform -translate-y-1/2">
