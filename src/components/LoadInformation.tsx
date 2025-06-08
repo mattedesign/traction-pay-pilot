@@ -1,8 +1,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { DollarSign, MapPin, Building2, CreditCard, Edit, ExternalLink } from "lucide-react";
+import { DollarSign, MapPin, CreditCard, Edit, ExternalLink } from "lucide-react";
 import { useState } from "react";
 import LocationDetailsModal from "./LocationDetailsModal";
 
@@ -25,26 +24,27 @@ interface LoadInformationProps {
 const LoadInformation = ({ loadData }: LoadInformationProps) => {
   const [showLocationModal, setShowLocationModal] = useState(false);
   
-  const getFundingMethodColor = (method?: string) => {
-    switch (method) {
-      case "QuickPay":
-        return "bg-green-50 text-green-700 border-green-200";
-      case "Factored":
-        return "bg-blue-50 text-blue-700 border-blue-200";
-      case "Standard Pay ACH":
-        return "bg-orange-50 text-orange-700 border-orange-200";
-      case "Standard Pay Check":
-        return "bg-orange-50 text-orange-700 border-orange-200";
-      default:
-        return "bg-slate-50 text-slate-700 border-slate-200";
-    }
-  };
-
   const canEditFundingMethod = loadData.status !== "delivered";
 
   const handleFundingMethodEdit = () => {
     // TODO: Implement funding method edit functionality
     console.log("Edit funding method clicked");
+  };
+
+  const getBrokerLogo = (brokerName: string) => {
+    // Create a simple, clean logo based on broker name
+    const initials = brokerName.split(' ').map(word => word[0]).join('').slice(0, 2);
+    const colors = [
+      'bg-blue-600', 'bg-green-600', 'bg-purple-600', 'bg-orange-600', 
+      'bg-red-600', 'bg-indigo-600', 'bg-teal-600', 'bg-pink-600'
+    ];
+    const colorIndex = brokerName.length % colors.length;
+    
+    return (
+      <div className={`w-8 h-8 ${colors[colorIndex]} rounded flex items-center justify-center text-white text-sm font-semibold`}>
+        {initials}
+      </div>
+    );
   };
 
   return (
@@ -64,7 +64,7 @@ const LoadInformation = ({ loadData }: LoadInformationProps) => {
             </div>
             <div>
               <div className="flex items-center space-x-2 mb-1">
-                <Building2 className="w-4 h-4 text-blue-600" />
+                {getBrokerLogo(loadData.broker)}
                 <span className="text-sm font-medium text-slate-700">Freight Broker</span>
               </div>
               <p className="text-sm text-slate-700">{loadData.broker}</p>
@@ -78,13 +78,9 @@ const LoadInformation = ({ loadData }: LoadInformationProps) => {
                 <span className="text-sm font-medium text-slate-700">Funding Method</span>
               </div>
               <div className="flex items-center space-x-2">
-                {loadData.fundingMethod ? (
-                  <Badge variant="outline" className={`text-xs ${getFundingMethodColor(loadData.fundingMethod)}`}>
-                    {loadData.fundingMethod}
-                  </Badge>
-                ) : (
-                  <p className="text-sm text-slate-500">Not specified</p>
-                )}
+                <p className="text-sm text-slate-700">
+                  {loadData.fundingMethod || "Not specified"}
+                </p>
                 {canEditFundingMethod && (
                   <Button
                     variant="ghost"
