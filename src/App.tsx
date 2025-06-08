@@ -7,6 +7,7 @@ import LoadsPage from "./pages/LoadsPage";
 import NewLoadPage from "./pages/NewLoadPage";
 import LoadDetail from "./pages/LoadDetail";
 import InvoicesPage from "./pages/InvoicesPage";
+import InvoiceDetailPage from "./pages/InvoiceDetailPage";
 import BankingPage from "./pages/BankingPage";
 import SearchPage from "./pages/SearchPage";
 import SupportPage from "./pages/SupportPage";
@@ -28,6 +29,7 @@ function App() {
           <Route path="/loads/new" element={<NewLoadPage />} />
           <Route path="/load/:loadId" element={<LoadDetail />} />
           <Route path="/invoices" element={<InvoicesPage />} />
+          <Route path="/invoice/:invoiceId" element={<InvoiceDetailPage />} />
           <Route path="/banking" element={<BankingPage />} />
           <Route path="/search" element={<SearchPage />} />
           <Route path="/support" element={<SupportPage />} />

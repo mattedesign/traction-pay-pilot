@@ -19,12 +19,12 @@ interface InvoiceItemProps {
 
 const InvoiceItem = ({ invoice }: InvoiceItemProps) => {
   const navigate = useNavigate();
-  const { loadId } = useParams();
-  const isActive = loadId === invoice.loadId;
+  const { invoiceId } = useParams();
+  const isActive = invoiceId === invoice.id;
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handleInvoiceClick = () => {
-    navigate(`/load/${invoice.loadId}`);
+    navigate(`/invoice/${invoice.id}`);
   };
 
   const handleChevronClick = (e: React.MouseEvent) => {
