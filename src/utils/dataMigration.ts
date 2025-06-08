@@ -9,7 +9,7 @@ export class DataMigrationUtility {
       console.log('Starting email data migration to Supabase...');
       
       // Get all existing email threads from the mock service
-      const existingThreads = EmailService.getAllEmailThreads();
+      const existingThreads = await EmailService.getAllEmailThreads();
       
       if (existingThreads.length === 0) {
         console.log('No email data to migrate');

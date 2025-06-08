@@ -4,14 +4,20 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
+// Declare the supabase client variable
+let supabaseClient;
+
 // Check if we're in development and environment variables are missing
 if (!supabaseUrl || !supabaseAnonKey) {
   console.warn('Supabase environment variables not found. Please connect to Supabase.');
   // Create a mock client to prevent the app from crashing
-  export const supabase = createClient('https://placeholder.supabase.co', 'placeholder-key');
+  supabaseClient = createClient('https://placeholder.supabase.co', 'placeholder-key');
 } else {
-  export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+  supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
 }
+
+// Export the client
+export const supabase = supabaseClient;
 
 // Database types
 export interface Database {
