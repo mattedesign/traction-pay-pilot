@@ -1,15 +1,16 @@
 
 import NavigationSidebar from "@/components/NavigationSidebar";
+import InvoicesSidebar from "@/components/InvoicesSidebar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { FileText, Download, Eye, Plus } from "lucide-react";
+import { FileText, Download, Eye, Plus, TrendingUp, Clock, AlertCircle } from "lucide-react";
 
 const InvoicesPage = () => {
-  const invoices = [
-    { id: "INV-001", load: "1234", amount: "$500.00", status: "paid", date: "2024-06-05" },
-    { id: "INV-002", load: "5678", amount: "$750.00", status: "pending", date: "2024-06-04" },
-    { id: "INV-003", load: "9012", amount: "$650.00", status: "overdue", date: "2024-06-01" },
+  const recentInvoices = [
+    { id: "INV-2024-001", load: "TMS-001", amount: "$2,450.00", status: "pending", date: "2024-06-08" },
+    { id: "INV-2024-002", load: "1234", amount: "$1,850.00", status: "paid", date: "2024-06-05" },
+    { id: "INV-2024-003", load: "5678", amount: "$2,200.00", status: "overdue", date: "2024-05-28" },
   ];
 
   const getStatusColor = (status: string) => {
@@ -24,12 +25,13 @@ const InvoicesPage = () => {
   return (
     <div className="min-h-screen flex w-full" style={{ backgroundColor: '#F5F6FA' }}>
       <NavigationSidebar />
+      <InvoicesSidebar />
       
       <div className="flex-1 p-6">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-3xl font-bold text-slate-900 mb-2">Invoices</h1>
+              <h1 className="text-3xl font-bold text-slate-900 mb-2">Invoice Overview</h1>
               <p className="text-slate-600">Track and manage your invoice payments</p>
             </div>
             <Button className="flex items-center space-x-2">
@@ -38,30 +40,49 @@ const InvoicesPage = () => {
             </Button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-slate-600">Total Outstanding</CardTitle>
+                <CardTitle className="text-sm font-medium text-slate-600 flex items-center">
+                  <AlertCircle className="w-4 h-4 mr-2 text-red-500" />
+                  Overdue
+                </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-slate-900">$1,400</div>
-                <p className="text-xs text-red-600">2 overdue invoices</p>
+                <div className="text-2xl font-bold text-red-600">$2,200</div>
+                <p className="text-xs text-red-600">1 invoice overdue</p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-slate-600 flex items-center">
+                  <Clock className="w-4 h-4 mr-2 text-yellow-500" />
+                  Pending
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-yellow-600">$4,200</div>
+                <p className="text-xs text-yellow-600">2 invoices pending</p>
               </CardContent>
             </Card>
             
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-slate-600">This Month</CardTitle>
+                <CardTitle className="text-sm font-medium text-slate-600 flex items-center">
+                  <TrendingUp className="w-4 h-4 mr-2 text-green-500" />
+                  This Month
+                </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-slate-900">$1,900</div>
-                <p className="text-xs text-green-600">$500 paid</p>
+                <div className="text-2xl font-bold text-slate-900">$8,450</div>
+                <p className="text-xs text-green-600">$3,950 collected</p>
               </CardContent>
             </Card>
             
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-slate-600">Average Payment Time</CardTitle>
+                <CardTitle className="text-sm font-medium text-slate-600">Avg Payment Time</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold text-slate-900">12 days</div>
@@ -74,12 +95,12 @@ const InvoicesPage = () => {
             <CardHeader>
               <CardTitle className="flex items-center">
                 <FileText className="w-5 h-5 mr-2" />
-                Recent Invoices
+                Recent Invoice Activity
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {invoices.map((invoice) => (
+                {recentInvoices.map((invoice) => (
                   <div key={invoice.id} className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
                     <div className="flex items-center space-x-4">
                       <div>
