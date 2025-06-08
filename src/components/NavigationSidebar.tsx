@@ -1,51 +1,39 @@
-import {
-  Home,
-  Truck,
-  CreditCard,
-  FileText,
-  Search,
-  MessageSquare,
-  Upload
-} from "lucide-react";
-import { NavLink, useLocation } from "react-router-dom";
+
+import { Button } from "@/components/ui/button";
+import { Home, Truck, FileText, Banknote, Search, HelpCircle } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
+const navigationItems = [
+  { icon: Home, label: "Home", path: "/" },
+  { icon: Truck, label: "Loads", path: "/loads" },
+  { icon: FileText, label: "Invoices", path: "/invoices" },
+  { icon: Banknote, label: "Banking", path: "/banking" },
+  { icon: Search, label: "Search", path: "/search" },
+  { icon: HelpCircle, label: "Support", path: "/support" }
+];
 
 const NavigationSidebar = () => {
-  const location = useLocation();
-  
-  const menuItems = [
-    { name: "Home", path: "/", icon: Home },
-    { name: "Loads", path: "/loads", icon: Truck },
-    { name: "Upload", path: "/upload", icon: Upload },
-    { name: "Banking", path: "/banking", icon: CreditCard },
-    { name: "Invoices", path: "/invoices", icon: FileText },
-    { name: "Search", path: "/search", icon: Search },
-    { name: "Support", path: "/support", icon: MessageSquare },
-  ];
+  const navigate = useNavigate();
+
+  const handleNavClick = (path: string) => {
+    console.log(`Navigating to ${path}`);
+    navigate(path);
+  };
 
   return (
-    <div className="w-60 flex-shrink-0 border-r border-slate-200 bg-white flex flex-col h-screen">
-      <div className="h-16 flex items-center justify-center border-b border-slate-200">
-        <span className="text-lg font-semibold">Traction</span>
-      </div>
-      <nav className="flex-1 py-4">
-        <ul>
-          {menuItems.map((item) => (
-            <li key={item.name}>
-              <NavLink
-                to={item.path}
-                className={({ isActive }) =>
-                  `flex items-center px-4 py-2 text-slate-700 hover:bg-slate-100 hover:text-slate-900 ${
-                    isActive ? 'bg-slate-100 text-slate-900 font-medium' : ''
-                  }`
-                }
-              >
-                <item.icon className="w-4 h-4 mr-2" />
-                {item.name}
-              </NavLink>
-            </li>
-          ))}
-        </ul>
-      </nav>
+    <div className="w-16 bg-slate-800 text-white min-h-screen flex flex-col items-center py-4 space-y-4">
+      {navigationItems.map((item) => (
+        <Button
+          key={item.label}
+          variant="ghost"
+          size="icon"
+          onClick={() => handleNavClick(item.path)}
+          className="w-12 h-12 text-slate-300 hover:text-white hover:bg-slate-700"
+          title={item.label}
+        >
+          <item.icon className="w-6 h-6" />
+        </Button>
+      ))}
     </div>
   );
 };
