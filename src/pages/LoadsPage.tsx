@@ -30,7 +30,7 @@ const LoadsPage = () => {
   }, []);
 
   return (
-    <div className="h-screen flex w-full" style={{ backgroundColor: '#F5F6FA' }}>
+    <div className="min-h-screen bg-slate-50 flex w-full">
       <NavigationSidebar />
       <LoadsSidebar />
       
