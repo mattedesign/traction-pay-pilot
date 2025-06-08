@@ -1,11 +1,22 @@
 
+import { useState, useEffect } from "react";
 import NavigationSidebar from "@/components/NavigationSidebar";
 import LoadsSidebar from "@/components/LoadsSidebar";
+import EmailThreadDisplay from "@/components/EmailThreadDisplay";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Truck, Plus, Filter } from "lucide-react";
+import { Truck, Plus, Filter, Mail, MessageSquare } from "lucide-react";
+import { EmailService, EmailThread } from "@/services/emailService";
 
 const LoadsPage = () => {
+  const [recentEmailThreads, setRecentEmailThreads] = useState<EmailThread[]>([]);
+
+  useEffect(() => {
+    // Get recent email threads across all loads
+    const allThreads = EmailService.getAllEmailThreads();
+    setRecentEmailThreads(allThreads.slice(0, 5)); // Show 5 most recent
+  }, []);
+
   return (
     <div className="min-h-screen flex w-full" style={{ backgroundColor: '#F5F6FA' }}>
       <NavigationSidebar />
@@ -62,39 +73,60 @@ const LoadsPage = () => {
             </Card>
           </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Truck className="w-5 h-5 mr-2" />
-                Recent Activity
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
-                  <div>
-                    <p className="font-medium text-slate-900">Load #1234 picked up</p>
-                    <p className="text-sm text-slate-600">Shreve, OH → Grove City, OH</p>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Truck className="w-5 h-5 mr-2" />
+                  Recent Activity
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
+                    <div>
+                      <p className="font-medium text-slate-900">Load #1234 picked up</p>
+                      <p className="text-sm text-slate-600">Shreve, OH → Grove City, OH</p>
+                    </div>
+                    <span className="text-sm text-slate-500">2 hours ago</span>
                   </div>
-                  <span className="text-sm text-slate-500">2 hours ago</span>
-                </div>
-                <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
-                  <div>
-                    <p className="font-medium text-slate-900">Load #5678 delivered</p>
-                    <p className="text-sm text-slate-600">Phoenix, AZ → Perris, CA</p>
+                  <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
+                    <div>
+                      <p className="font-medium text-slate-900">Load #5678 delivered</p>
+                      <p className="text-sm text-slate-600">Phoenix, AZ → Perris, CA</p>
+                    </div>
+                    <span className="text-sm text-slate-500">1 day ago</span>
                   </div>
-                  <span className="text-sm text-slate-500">1 day ago</span>
-                </div>
-                <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
-                  <div>
-                    <p className="font-medium text-slate-900">New load assigned</p>
-                    <p className="text-sm text-slate-600">Houston, TX → Dallas, TX</p>
+                  <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
+                    <div>
+                      <p className="font-medium text-slate-900">New load assigned</p>
+                      <p className="text-sm text-slate-600">Houston, TX → Dallas, TX</p>
+                    </div>
+                    <span className="text-sm text-slate-500">3 days ago</span>
                   </div>
-                  <span className="text-sm text-slate-500">3 days ago</span>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <MessageSquare className="w-5 h-5 mr-2" />
+                  Recent Communications
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {recentEmailThreads.length > 0 ? (
+                  <EmailThreadDisplay threads={recentEmailThreads} compact={true} />
+                ) : (
+                  <div className="text-center py-8">
+                    <Mail className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+                    <p className="text-slate-500 text-sm">No recent email communications</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
     </div>
