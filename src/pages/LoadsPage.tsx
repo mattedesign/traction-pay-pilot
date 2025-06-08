@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import NavigationSidebar from "@/components/NavigationSidebar";
 import LoadsSidebar from "@/components/LoadsSidebar";
@@ -36,21 +35,9 @@ const LoadsPage = () => {
       
       <div className="flex-1 p-6">
         <div className="max-w-6xl mx-auto">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h1 className="text-3xl font-bold text-slate-900 mb-2">Load Management</h1>
-              <p className="text-slate-600">Manage and track all your loads in one place</p>
-            </div>
-            <div className="flex space-x-3">
-              <Button variant="outline" className="flex items-center space-x-2">
-                <Filter className="w-4 h-4" />
-                <span>Filter</span>
-              </Button>
-              <Button className="flex items-center space-x-2">
-                <Plus className="w-4 h-4" />
-                <span>New Load</span>
-              </Button>
-            </div>
+          <div className="mb-6">
+            <h1 className="text-3xl font-bold text-slate-900 mb-2">Load Management</h1>
+            <p className="text-slate-600">Manage and track all your loads in one place</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">

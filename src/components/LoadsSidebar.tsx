@@ -1,8 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Plus, Search } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
 import { useParams } from "react-router-dom";
 import { LoadService } from "@/services/loadService";
 import { EmailService, EmailThread } from "@/services/emailService";
@@ -26,18 +24,37 @@ const LoadsSidebar = () => {
   const [emailThreads, setEmailThreads] = useState<Map<string, EmailThread[]>>(new Map());
   const [isLoading, setIsLoading] = useState(true);
 
+  // Real broker names to use
+  const brokerNames = [
+    "Continental Logistics Partners",
+    "Apex Freight Solutions", 
+    "Crossroads Transport Brokers",
+    "Summit Cargo Connect",
+    "Meridian Shipping Services",
+    "Gateway Freight Advisors",
+    "Pinnacle Load Management",
+    "Horizon Transport Group"
+  ];
+
   useEffect(() => {
     const loadEmailData = async () => {
       setIsLoading(true);
       
       // Get loads from the service
       const allLoads = LoadService.getAllLoads();
-      setLoads(allLoads);
+      
+      // Replace broker names with real names
+      const loadsWithRealBrokers = allLoads.map((load, index) => ({
+        ...load,
+        broker: brokerNames[index % brokerNames.length]
+      }));
+      
+      setLoads(loadsWithRealBrokers);
 
       // Get email threads for each load asynchronously
       const threadsMap = new Map<string, EmailThread[]>();
       
-      for (const load of allLoads) {
+      for (const load of loadsWithRealBrokers) {
         try {
           const threads = await EmailService.getEmailThreadsForLoad(load.id);
           if (threads.length > 0) {
@@ -95,11 +112,6 @@ const LoadsSidebar = () => {
           <h2 className="text-lg font-semibold text-slate-900">Loads</h2>
           <Search className="w-5 h-5 text-slate-400" />
         </div>
-        
-        <Button className="w-full flex items-center justify-center space-x-2 bg-slate-100 text-slate-700 hover:bg-slate-200 border-0">
-          <Plus className="w-4 h-4" />
-          <span>New Load</span>
-        </Button>
       </div>
       
       {/* Loads List */}

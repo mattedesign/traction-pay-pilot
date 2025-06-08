@@ -7,6 +7,18 @@ import LoadMainContent from "@/components/LoadMainContent";
 const LoadDetail = () => {
   const { loadId } = useParams();
 
+  // Real broker names to use
+  const brokerNames = [
+    "Continental Logistics Partners",
+    "Apex Freight Solutions", 
+    "Crossroads Transport Brokers",
+    "Summit Cargo Connect",
+    "Meridian Shipping Services",
+    "Gateway Freight Advisors",
+    "Pinnacle Load Management",
+    "Horizon Transport Group"
+  ];
+
   // Mock load data based on loadId
   const getLoadData = (id: string) => {
     const loads: Record<string, any> = {
@@ -20,7 +32,7 @@ const LoadDetail = () => {
         deliveryTime: "Today 4:30 PM",
         distance: "45 miles",
         mode: "TL",
-        broker: "Swift Logistics",
+        broker: "Continental Logistics Partners",
         documents: []
       },
       "5678": {
@@ -33,7 +45,7 @@ const LoadDetail = () => {
         deliveryTime: "May 29, 6:00 PM",
         distance: "332 miles",
         mode: "truck",
-        broker: "Phoenix Freight Co",
+        broker: "Apex Freight Solutions",
         documents: ["Rate Confirmation"]
       },
       "9012": {
@@ -46,7 +58,7 @@ const LoadDetail = () => {
         deliveryTime: "May 28, 2:00 PM",
         distance: "240 miles",
         mode: "truck",
-        broker: "Delta Shipping",
+        broker: "Crossroads Transport Brokers",
         documents: ["POD", "Invoice"]
       }
     };
