@@ -60,7 +60,8 @@ export const validateEmail = (email: string): boolean => {
 };
 
 /**
- * Validates API key format (basic check)
+ * Legacy API key validation (no longer used for client-side storage)
+ * Kept for backward compatibility
  */
 export const validateAPIKey = (key: string): boolean => {
   if (!key || typeof key !== 'string') return false;
@@ -74,36 +75,23 @@ export const validateAPIKey = (key: string): boolean => {
 };
 
 /**
- * Securely stores API key in localStorage with basic encryption
+ * @deprecated API keys are now handled securely via Supabase Edge Functions
  */
 export const storeAPIKey = (key: string): void => {
-  if (!validateAPIKey(key)) {
-    throw new Error('Invalid API key format');
-  }
-  
-  // Simple encoding (not true encryption, but better than plain text)
-  const encoded = btoa(key);
-  localStorage.setItem('traction_api_key', encoded);
+  console.warn('API key storage is deprecated. Keys are now managed via Supabase Edge Functions.');
 };
 
 /**
- * Retrieves API key from localStorage
+ * @deprecated API keys are now handled securely via Supabase Edge Functions
  */
 export const getAPIKey = (): string | null => {
-  try {
-    const encoded = localStorage.getItem('traction_api_key');
-    if (!encoded) return null;
-    
-    const decoded = atob(encoded);
-    return validateAPIKey(decoded) ? decoded : null;
-  } catch {
-    return null;
-  }
+  console.warn('Client-side API key retrieval is deprecated. Keys are now managed via Supabase Edge Functions.');
+  return null;
 };
 
 /**
- * Removes API key from localStorage
+ * @deprecated API keys are now handled securely via Supabase Edge Functions
  */
 export const clearAPIKey = (): void => {
-  localStorage.removeItem('traction_api_key');
+  console.warn('Client-side API key clearing is deprecated. Keys are now managed via Supabase Edge Functions.');
 };

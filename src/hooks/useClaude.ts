@@ -1,7 +1,6 @@
 
-import { useState, useEffect } from "react";
-import { AIService } from "@/services/aiService";
-import { getAPIKey, clearAPIKey } from "@/utils/security";
+import { useState, useEffect, useCallback } from "react";
+import { SupabaseAIService } from "@/services/supabaseAIService";
 
 interface UseClaude {
   systemPrompt: string;
@@ -9,26 +8,21 @@ interface UseClaude {
 
 export const useClaude = ({ systemPrompt }: UseClaude) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [isInitialized, setIsInitialized] = useState(false);
-  const [aiService, setAIService] = useState<AIService | null>(null);
+  const [isInitialized, setIsInitialized] = useState(true); // Always initialized since we use Supabase
+  const [aiService] = useState<SupabaseAIService>(() => new SupabaseAIService());
 
-  const initializeService = (apiKey: string) => {
-    try {
-      const service = new AIService(apiKey);
-      setAIService(service);
-      setIsInitialized(true);
-      console.log('Claude AI service initialized successfully');
-    } catch (error) {
-      console.error('Failed to initialize Claude service:', error);
-      clearAPIKey();
-      setIsInitialized(false);
-    }
-  };
+  // Memoize the initialization function to prevent infinite loops
+  const initializeService = useCallback((apiKey?: string) => {
+    // No longer needed since we use Supabase Edge Functions
+    // API key is handled securely in the edge function
+    setIsInitialized(true);
+    console.log('Claude AI service ready via Supabase Edge Functions');
+  }, []);
 
   const sendMessage = async (
     messages: Array<{ role: 'user' | 'assistant'; content: string }>
   ): Promise<string> => {
-    if (!aiService || !isInitialized) {
+    if (!isInitialized) {
       throw new Error('AI service not initialized');
     }
 
@@ -46,13 +40,10 @@ export const useClaude = ({ systemPrompt }: UseClaude) => {
     }
   };
 
-  // Auto-initialize if API key exists
+  // Auto-initialize on mount
   useEffect(() => {
-    const storedKey = getAPIKey();
-    if (storedKey) {
-      initializeService(storedKey);
-    }
-  }, []);
+    initializeService();
+  }, [initializeService]);
 
   return {
     isLoading,
