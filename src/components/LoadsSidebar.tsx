@@ -229,11 +229,11 @@ const LoadsSidebar = () => {
                 {/* Embedded Email Threads */}
                 {hasThreads && isExpanded && (
                   <div className="mt-4 pt-4 border-t border-slate-200">
-                    <div className="mb-2 flex items-center space-x-1">
+                    <div className="mb-3 flex items-center space-x-1">
                       <MessageCircle className="w-4 h-4 text-blue-600" />
-                      <span className="text-xs font-medium text-slate-700">Communications</span>
+                      <span className="text-xs font-medium text-slate-700">Messages</span>
                     </div>
-                    <div className="space-y-2">
+                    <div className="space-y-2 max-h-60 overflow-y-auto">
                       {loadThreads.map((thread) => {
                         const latestEmail = thread.emails.sort((a, b) => 
                           b.timestamp.getTime() - a.timestamp.getTime()
@@ -242,36 +242,38 @@ const LoadsSidebar = () => {
                         return (
                           <div
                             key={thread.threadId}
-                            className="cursor-pointer group bg-slate-25 hover:bg-slate-100 border border-slate-150 rounded-lg p-3 transition-colors"
+                            className="cursor-pointer group bg-white hover:bg-blue-50 border border-blue-200 rounded-md p-2.5 transition-all duration-200 shadow-sm hover:shadow-md"
                             onClick={(e) => handleEmailThreadClick(thread.threadId, load.id, e)}
                           >
-                            <div className="space-y-2">
+                            <div className="space-y-1.5">
                               <div className="flex items-center justify-between">
-                                <div className="flex items-center space-x-2">
-                                  <span className="text-sm font-medium text-slate-900 truncate">
-                                    {thread.subject}
-                                  </span>
+                                <span className="text-xs font-medium text-slate-900 truncate pr-2">
+                                  {thread.subject}
+                                </span>
+                                <div className="flex items-center space-x-1 flex-shrink-0">
                                   {thread.unreadCount > 0 && (
-                                    <Badge variant="destructive" className="text-xs px-1.5 py-0.5">
+                                    <Badge variant="destructive" className="text-xs px-1 py-0">
                                       {thread.unreadCount}
                                     </Badge>
                                   )}
+                                  <Clock className="w-3 h-3 text-slate-400" />
                                 </div>
-                                <Clock className="w-3 h-3 text-slate-400" />
                               </div>
                               
                               <div className="flex items-center justify-between text-xs text-slate-600">
-                                <div className="flex items-center space-x-2">
+                                <div className="flex items-center space-x-1">
                                   <User className="w-3 h-3" />
                                   <span className="truncate">
                                     {getSenderName(latestEmail?.from || '')}
                                   </span>
                                 </div>
-                                <span>{formatTimeAgo(thread.lastActivity)}</span>
+                                <span className="text-slate-500 flex-shrink-0">
+                                  {formatTimeAgo(thread.lastActivity)}
+                                </span>
                               </div>
                               
-                              <p className="text-xs text-slate-600 line-clamp-2">
-                                {latestEmail?.body.substring(0, 80)}...
+                              <p className="text-xs text-slate-600 line-clamp-1">
+                                {latestEmail?.body.substring(0, 60)}...
                               </p>
                             </div>
                           </div>
