@@ -101,10 +101,8 @@ export const useUnifiedChatHandler = ({
           content: sanitizeInput(msg.content)
         }));
 
-        const enhancedSystemPrompt = systemPrompt + '\n\n' + smartContext.systemPromptAddition;
-
         console.log('Sending to Claude with enhanced context...');
-        const response = await sendMessage(messages, enhancedSystemPrompt);
+        const response = await sendMessage(messages);
         
         addAIMessage(response);
         

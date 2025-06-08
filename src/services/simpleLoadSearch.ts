@@ -61,6 +61,7 @@ export const simpleLoadSearch = (query: string): LoadSearchResult[] => {
     .map(load => ({
       load,
       relevanceScore: calculateRelevance(load, searchTerm),
+      matchedFields: getMatchedFields(load, searchTerm),
       matchReason: getMatchReason(load, searchTerm)
     }))
     .sort((a, b) => b.relevanceScore - a.relevanceScore);
@@ -78,6 +79,18 @@ const calculateRelevance = (load: any, searchTerm: string): number => {
   if (load.destination.toLowerCase().includes(searchTerm)) score += 40;
   
   return Math.min(score, 100);
+};
+
+const getMatchedFields = (load: any, searchTerm: string): string[] => {
+  const fields: string[] = [];
+  
+  if (load.id.toLowerCase().includes(searchTerm)) fields.push('loadId');
+  if (load.broker.toLowerCase().includes(searchTerm)) fields.push('broker');
+  if (load.status.toLowerCase().includes(searchTerm)) fields.push('status');
+  if (load.origin.toLowerCase().includes(searchTerm)) fields.push('origin');
+  if (load.destination.toLowerCase().includes(searchTerm)) fields.push('destination');
+  
+  return fields;
 };
 
 const getMatchReason = (load: any, searchTerm: string): string => {
