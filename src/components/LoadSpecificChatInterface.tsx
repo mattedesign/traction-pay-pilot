@@ -4,8 +4,9 @@ import ChatInput from "./ChatInput";
 import ChatHistory from "./ChatHistory";
 import ChatSetup from "./ChatSetup";
 import { useChatMessages } from "../hooks/useChatMessages";
-import { useSuggestedQuestions } from "../hooks/useSuggestedQuestions";
-import { useChatHandlers } from "../hooks/useChatHandlers";
+import { useChatMessageHandler } from "../hooks/useChatMessageHandler";
+import { useAPIKeyHandler } from "../hooks/useAPIKeyHandler";
+import { useClaude } from "../hooks/useClaude";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 
@@ -23,10 +24,10 @@ const LoadSpecificChatInterface = ({
   onClose
 }: LoadSpecificChatInterfaceProps) => {
   const { chatHistory, addUserMessage, addAIMessage } = useChatMessages();
-  const { currentSuggestions } = useSuggestedQuestions();
+  const [message, setMessage] = useState("");
 
   // Load-specific system prompt focused on chat mode only
-  const systemPrompt = `You are an AI assistant specialized in trucking operations and load management. You are currently helping with Load ${loadContext || 'details'}.
+  const systemPrompt = `You are an AI assistant specialized in trucking operations and load management. You are currently helping with ${loadContext || 'this specific load'}.
 
 Provide detailed analysis, advice, and insights about:
 - Load status and tracking information
@@ -35,21 +36,25 @@ Provide detailed analysis, advice, and insights about:
 - Communication with brokers and customers
 - Payment and invoicing status
 - Potential issues or discrepancies
+- DOT regulations and compliance
+- Equipment maintenance and safety
 
 Always provide practical, actionable advice in a clear, professional tone. Focus on safety, compliance, and profitability for this specific load.`;
 
-  const {
-    message,
-    setMessage,
-    isLoading,
-    isInitialized,
-    handleSendMessage,
-    handleAPIKeySubmit
-  } = useChatHandlers({
+  const { isLoading, isInitialized, initializeService } = useClaude({ 
+    systemPrompt 
+  });
+
+  const { handleSendMessage } = useChatMessageHandler({
     systemPrompt,
     chatHistory,
     addUserMessage,
-    addAIMessage
+    addAIMessage,
+    currentLoadId: loadContext?.replace('Load #', '')
+  });
+
+  const { handleAPIKeySubmit } = useAPIKeyHandler({
+    initializeService
   });
 
   // Handle escape key to close chat
@@ -74,8 +79,16 @@ Always provide practical, actionable advice in a clear, professional tone. Focus
   };
 
   const handleSend = async () => {
+    if (!message.trim() || isLoading) return;
+    
     if (onFocusChange) onFocusChange(true);
-    await handleSendMessage();
+    
+    try {
+      await handleSendMessage(message);
+      setMessage("");
+    } catch (error) {
+      console.error('Error sending message:', error);
+    }
   };
 
   // Show setup if not initialized
@@ -130,6 +143,7 @@ Always provide practical, actionable advice in a clear, professional tone. Focus
         onMessageChange={handleMessageChange}
         onSendMessage={handleSend}
         isLoading={isLoading}
+        mode="chat"
       />
     </div>
   );

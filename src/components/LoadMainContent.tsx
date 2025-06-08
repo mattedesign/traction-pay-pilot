@@ -1,4 +1,3 @@
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
@@ -7,7 +6,7 @@ import RouteOptimization from "./RouteOptimization";
 import EldSharing from "./EldSharing";
 import DocumentUploadSection from "./DocumentUploadSection";
 import FinancialServices from "./FinancialServices";
-import FunctionalChatInterface from "./FunctionalChatInterface";
+import LoadSpecificChatInterface from "./LoadSpecificChatInterface";
 import { FileText, Upload, Brain, X } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -19,10 +18,6 @@ interface LoadMainContentProps {
 const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
   const [isChatFocused, setIsChatFocused] = useState(false);
   const navigate = useNavigate();
-
-  const handleNavigateToLoad = (path: string) => {
-    navigate(path);
-  };
 
   const handleFocusChange = (focused: boolean) => {
     setIsChatFocused(focused);
@@ -137,8 +132,8 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
             {/* Fixed chat interface within the load details container */}
             <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-slate-200 shadow-lg z-20 p-4 shrink-0">
               <div className="max-w-4xl mx-auto">
-                <FunctionalChatInterface 
-                  onNavigateToLoad={handleNavigateToLoad}
+                <LoadSpecificChatInterface 
+                  loadContext={`Load #${loadData.loadId}`}
                   onFocusChange={handleFocusChange}
                   isFocused={isChatFocused}
                 />
