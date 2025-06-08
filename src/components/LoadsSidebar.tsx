@@ -1,12 +1,13 @@
 
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Truck, MapPin, ExternalLink, Mail, ChevronDown, ChevronRight, MessageCircle, User, Clock } from "lucide-react";
-import { useParams, useNavigate } from "react-router-dom";
+import { Plus, Search } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { useParams } from "react-router-dom";
 import { LoadService } from "@/services/loadService";
 import { EmailService, EmailThread } from "@/services/emailService";
+import LoadGroupHeader from "./LoadGroupHeader";
+import LoadItem from "./LoadItem";
 
 interface Load {
   id: string;
@@ -19,38 +20,10 @@ interface Load {
   distance: string;
 }
 
-const getStatusColor = (status: string) => {
-  switch (status) {
-    case "pending_pickup":
-      return "bg-yellow-100 text-yellow-800";
-    case "in_transit":
-      return "bg-blue-100 text-blue-800";
-    case "delivered":
-      return "bg-green-100 text-green-800";
-    default:
-      return "bg-gray-100 text-gray-800";
-  }
-};
-
-const getStatusLabel = (status: string) => {
-  switch (status) {
-    case "pending_pickup":
-      return "Pending Pickup";
-    case "in_transit":
-      return "In Transit";
-    case "delivered":
-      return "Delivered";
-    default:
-      return status;
-  }
-};
-
 const LoadsSidebar = () => {
   const { loadId } = useParams();
-  const navigate = useNavigate();
   const [loads, setLoads] = useState<Load[]>([]);
   const [emailThreads, setEmailThreads] = useState<Map<string, EmailThread[]>>(new Map());
-  const [expandedLoads, setExpandedLoads] = useState<Set<string>>(new Set());
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -82,248 +55,78 @@ const LoadsSidebar = () => {
     loadEmailData();
   }, []);
 
-  const handleViewDashboard = () => {
-    console.log("Navigating to loads dashboard");
-    navigate("/loads");
-  };
-
-  const toggleLoadExpansion = (loadId: string, event: React.MouseEvent) => {
-    event.stopPropagation();
-    const newExpanded = new Set(expandedLoads);
-    if (newExpanded.has(loadId)) {
-      newExpanded.delete(loadId);
-    } else {
-      newExpanded.add(loadId);
-    }
-    setExpandedLoads(newExpanded);
-  };
-
-  const handleEmailThreadClick = async (threadId: string, loadId: string, event: React.MouseEvent) => {
-    event.stopPropagation();
-    console.log(`Opening email thread ${threadId} for load ${loadId}`);
+  const getAvatarColor = (loadId: string) => {
+    const colors = [
+      "#8B5CF6", // purple
+      "#3B82F6", // blue  
+      "#EF4444", // red
+      "#10B981", // green
+      "#F59E0B", // amber
+      "#6366F1", // indigo
+      "#EC4899", // pink
+      "#14B8A6"  // teal
+    ];
     
-    // Mark thread as read when clicked
-    await EmailService.markThreadAsRead(threadId);
-    
-    // Navigate to the load detail page and scroll to communications section
-    navigate(`/load/${loadId}`, { 
-      state: { 
-        scrollTo: 'communications',
-        selectedThread: threadId 
-      } 
-    });
-    
-    // Refresh email threads to update unread counts
-    const threadsMap = new Map<string, EmailThread[]>();
-    for (const load of loads) {
-      try {
-        const threads = await EmailService.getEmailThreadsForLoad(load.id);
-        if (threads.length > 0) {
-          threadsMap.set(load.id, threads);
-        }
-      } catch (error) {
-        console.error(`Error refreshing threads for load ${load.id}:`, error);
-      }
-    }
-    setEmailThreads(threadsMap);
-  };
-
-  const getUnreadEmailCount = (loadId: string) => {
-    const threads = emailThreads.get(loadId) || [];
-    return threads.reduce((total, thread) => total + thread.unreadCount, 0);
-  };
-
-  const formatTimeAgo = (date: Date) => {
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-    const diffDays = Math.floor(diffHours / 24);
-
-    if (diffDays > 0) {
-      return `${diffDays}d ago`;
-    } else if (diffHours > 0) {
-      return `${diffHours}h ago`;
-    } else {
-      return 'Just now';
-    }
-  };
-
-  const getSenderName = (email: string) => {
-    return email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    const index = parseInt(loadId.charAt(0), 10) || 0;
+    return colors[index % colors.length];
   };
 
   if (isLoading) {
     return (
-      <div className="w-80 bg-white text-slate-900 min-h-screen overflow-y-auto flex flex-col shadow-sm" style={{ borderRight: 'rgba(0, 0, 0, 0.06) 1px solid' }}>
-        <div className="p-6 border-b border-slate-200">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold flex items-center">
-              <Truck className="w-6 h-6 mr-2" />
-              Loads
-            </h2>
+      <div className="w-80 bg-white text-slate-900 min-h-screen overflow-y-auto flex flex-col shadow-sm border-r border-slate-200">
+        <div className="p-4 border-b border-slate-200">
+          <div className="flex items-center justify-center">
+            <div className="text-slate-500">Loading...</div>
           </div>
-        </div>
-        <div className="flex-1 p-4 flex items-center justify-center">
-          <div className="text-slate-500">Loading...</div>
         </div>
       </div>
     );
   }
 
+  // Group loads by status
+  const activeLoads = loads.filter(load => load.status === "pending_pickup" || load.status === "in_transit");
+  const completedLoads = loads.filter(load => load.status === "delivered");
+
   return (
-    <div className="w-80 bg-white text-slate-900 min-h-screen overflow-y-auto flex flex-col shadow-sm" style={{ borderRight: 'rgba(0, 0, 0, 0.06) 1px solid' }}>
-      {/* Loads Header */}
-      <div className="p-6 border-b border-slate-200">
-        <div className="flex items-center justify-between">
-          <h2 className="text-xl font-semibold flex items-center">
-            <Truck className="w-6 h-6 mr-2" />
-            Loads
-          </h2>
-          <Button 
-            variant="ghost" 
-            size="sm"
-            onClick={handleViewDashboard}
-            className="flex items-center space-x-1 text-slate-600 hover:text-slate-900 hover:bg-slate-100"
-          >
-            <span className="text-sm">Dashboard</span>
-            <ExternalLink className="w-3 h-3" />
-          </Button>
+    <div className="w-80 bg-white text-slate-900 min-h-screen overflow-y-auto flex flex-col shadow-sm border-r border-slate-200">
+      {/* Header */}
+      <div className="p-4 border-b border-slate-200">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold text-slate-900">Loads</h2>
+          <Search className="w-5 h-5 text-slate-400" />
         </div>
+        
+        <Button className="w-full flex items-center justify-center space-x-2 bg-slate-100 text-slate-700 hover:bg-slate-200 border-0">
+          <Plus className="w-4 h-4" />
+          <span>New Load</span>
+        </Button>
       </div>
       
       {/* Loads List */}
-      <div className="flex-1 p-4 space-y-4">
-        {loads.map((load) => {
-          const loadThreads = emailThreads.get(load.id) || [];
-          const unreadCount = getUnreadEmailCount(load.id);
-          const isExpanded = expandedLoads.has(load.id);
-          const hasThreads = loadThreads.length > 0;
-          const isActive = loadId === load.id;
+      <div className="flex-1">
+        {/* Active Loads Section */}
+        <LoadGroupHeader title="Active" isActive={true} />
+        <div className="space-y-0">
+          {activeLoads.map((load) => (
+            <LoadItem 
+              key={load.id}
+              load={load}
+              avatarColor={getAvatarColor(load.id)}
+            />
+          ))}
+        </div>
 
-          return (
-            <Card 
-              key={load.id} 
-              className={`cursor-pointer transition-all duration-200 hover:shadow-md ${
-                isActive 
-                  ? "bg-blue-50 border-blue-300 shadow-md" 
-                  : "bg-slate-50 border-slate-200 hover:bg-slate-100"
-              }`}
-              onClick={() => navigate(`/load/${load.id}`)}
-            >
-              <CardHeader className="pb-2">
-                <div className="flex justify-between items-start">
-                  <CardTitle className="text-sm font-medium text-slate-900 flex items-center space-x-2">
-                    <span>Load #{load.id}</span>
-                    {hasThreads && (
-                      <button
-                        onClick={(e) => toggleLoadExpansion(load.id, e)}
-                        className="hover:bg-slate-200 rounded p-1 transition-colors"
-                      >
-                        {isExpanded ? (
-                          <ChevronDown className="w-4 h-4 text-slate-600" />
-                        ) : (
-                          <ChevronRight className="w-4 h-4 text-slate-600" />
-                        )}
-                      </button>
-                    )}
-                  </CardTitle>
-                  <div className="flex items-center space-x-1">
-                    <Badge className={getStatusColor(load.status)}>
-                      {getStatusLabel(load.status)}
-                    </Badge>
-                    {hasThreads && (
-                      <div className="flex items-center space-x-1">
-                        <Mail className="w-3 h-3 text-blue-500" />
-                        {unreadCount > 0 && (
-                          <Badge variant="destructive" className="text-xs px-1 py-0">
-                            {unreadCount}
-                          </Badge>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </div>
-                <p className="text-xs text-slate-600">{load.broker}</p>
-              </CardHeader>
-              
-              <CardContent className="pt-0">
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-slate-500">Rate</span>
-                    <span className="text-sm font-semibold text-green-600">{load.amount}</span>
-                  </div>
-                  
-                  <div className="flex items-center text-xs text-slate-600">
-                    <MapPin className="w-3 h-3 mr-1" />
-                    <span className="truncate">{load.origin} → {load.destination}</span>
-                  </div>
-                  
-                  <div className="flex items-center justify-between text-xs text-slate-500">
-                    <span>{load.pickupTime}</span>
-                    <span>{load.distance}</span>
-                  </div>
-                </div>
-
-                {/* Embedded Email Threads */}
-                {hasThreads && isExpanded && (
-                  <div className="mt-4 pt-4 border-t border-slate-200">
-                    <div className="mb-3 flex items-center space-x-1">
-                      <MessageCircle className="w-4 h-4 text-blue-600" />
-                      <span className="text-xs font-medium text-slate-700">Messages</span>
-                    </div>
-                    <div className="space-y-2 max-h-60 overflow-y-auto">
-                      {loadThreads.map((thread) => {
-                        const latestEmail = thread.emails.sort((a, b) => 
-                          b.timestamp.getTime() - a.timestamp.getTime()
-                        )[0];
-                        
-                        return (
-                          <div
-                            key={thread.threadId}
-                            className="cursor-pointer group bg-white hover:bg-blue-50 border border-blue-200 rounded-md p-2.5 transition-all duration-200 shadow-sm hover:shadow-md"
-                            onClick={(e) => handleEmailThreadClick(thread.threadId, load.id, e)}
-                          >
-                            <div className="space-y-1.5">
-                              <div className="flex items-center justify-between">
-                                <span className="text-xs font-medium text-slate-900 truncate pr-2">
-                                  {thread.subject}
-                                </span>
-                                <div className="flex items-center space-x-1 flex-shrink-0">
-                                  {thread.unreadCount > 0 && (
-                                    <Badge variant="destructive" className="text-xs px-1 py-0">
-                                      {thread.unreadCount}
-                                    </Badge>
-                                  )}
-                                  <Clock className="w-3 h-3 text-slate-400" />
-                                </div>
-                              </div>
-                              
-                              <div className="flex items-center justify-between text-xs text-slate-600">
-                                <div className="flex items-center space-x-1">
-                                  <User className="w-3 h-3" />
-                                  <span className="truncate">
-                                    {getSenderName(latestEmail?.from || '')}
-                                  </span>
-                                </div>
-                                <span className="text-slate-500 flex-shrink-0">
-                                  {formatTimeAgo(thread.lastActivity)}
-                                </span>
-                              </div>
-                              
-                              <p className="text-xs text-slate-600 line-clamp-1">
-                                {latestEmail?.body.substring(0, 60)}...
-                              </p>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          );
-        })}
+        {/* Completed Loads Section */}
+        <LoadGroupHeader title="Completed" />
+        <div className="space-y-0">
+          {completedLoads.map((load) => (
+            <LoadItem 
+              key={load.id}
+              load={load}
+              avatarColor={getAvatarColor(load.id)}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

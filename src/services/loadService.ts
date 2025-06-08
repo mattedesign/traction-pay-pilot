@@ -28,7 +28,7 @@ export class LoadService {
   static mockLoads: any[] = [
     {
       id: "1234",
-      broker: "Swift Logistics",
+      broker: "Freight Broker",
       status: "pending_pickup",
       amount: "$500.00",
       origin: "Shreve, OH",
@@ -43,7 +43,7 @@ export class LoadService {
     },
     {
       id: "5678", 
-      broker: "Phoenix Freight Co",
+      broker: "Freight Broker",
       status: "in_transit",
       amount: "$750.00",
       origin: "Phoenix, AZ",
@@ -57,8 +57,38 @@ export class LoadService {
       }
     },
     {
+      id: "000",
+      broker: "Freight Broker",
+      status: "in_transit",
+      amount: "$1,200.00",
+      origin: "Dallas, TX",
+      destination: "Miami, FL",
+      pickupTime: "Jun 5, 8:00 AM",
+      distance: "1,100 miles",
+      rateConfirmation: {
+        originalRate: "$1,200.00",
+        commodity: "Electronics",
+        weight: "40000 lbs"
+      }
+    },
+    {
+      id: "9876",
+      broker: "Freight Broker", 
+      status: "pending_pickup",
+      amount: "$850.00",
+      origin: "Seattle, WA",
+      destination: "Portland, OR",
+      pickupTime: "Jun 6, 10:00 AM",
+      distance: "173 miles",
+      rateConfirmation: {
+        originalRate: "$850.00",
+        commodity: "Machinery",
+        weight: "38000 lbs"
+      }
+    },
+    {
       id: "9012",
-      broker: "Delta Shipping", 
+      broker: "Freight Broker", 
       status: "delivered",
       amount: "$650.00",
       origin: "Houston, TX",
@@ -69,6 +99,51 @@ export class LoadService {
         originalRate: "$650.00",
         commodity: "Steel Coils",
         weight: "45000 lbs"
+      }
+    },
+    {
+      id: "898243",
+      broker: "Freight Broker",
+      status: "delivered",
+      amount: "$950.00",
+      origin: "Chicago, IL",
+      destination: "Detroit, MI",
+      pickupTime: "May 25, 2:00 PM",
+      distance: "280 miles",
+      rateConfirmation: {
+        originalRate: "$950.00",
+        commodity: "Auto Parts",
+        weight: "32000 lbs"
+      }
+    },
+    {
+      id: "348383",
+      broker: "Freight Broker",
+      status: "delivered",
+      amount: "$1,150.00",
+      origin: "Los Angeles, CA",
+      destination: "Las Vegas, NV",
+      pickupTime: "May 20, 6:00 AM",
+      distance: "270 miles",
+      rateConfirmation: {
+        originalRate: "$1,150.00",
+        commodity: "Consumer Goods",
+        weight: "36000 lbs"
+      }
+    },
+    {
+      id: "324982",
+      broker: "Freight Broker",
+      status: "delivered",
+      amount: "$720.00",
+      origin: "Atlanta, GA",
+      destination: "Nashville, TN",
+      pickupTime: "May 18, 11:00 AM",
+      distance: "250 miles",
+      rateConfirmation: {
+        originalRate: "$720.00",
+        commodity: "Food Products",
+        weight: "28000 lbs"
       }
     }
   ];
