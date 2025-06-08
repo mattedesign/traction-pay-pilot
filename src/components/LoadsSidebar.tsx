@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Search, Plus } from "lucide-react";
@@ -95,7 +96,7 @@ const LoadsSidebar = () => {
 
   if (isLoading) {
     return (
-      <div className="w-80 bg-white text-slate-900 min-h-screen overflow-y-auto flex flex-col shadow-sm border-r border-slate-200">
+      <div className="w-80 bg-white text-slate-900 h-screen flex flex-col shadow-sm border-r border-slate-200">
         <div className="p-4 border-b border-slate-200">
           <div className="flex items-center justify-center">
             <div className="text-slate-500">Loading...</div>
@@ -110,9 +111,9 @@ const LoadsSidebar = () => {
   const completedLoads = loads.filter(load => load.status === "delivered");
 
   return (
-    <div className="w-80 bg-white text-slate-900 min-h-screen overflow-y-auto flex flex-col shadow-sm border-r border-slate-200">
-      {/* Header */}
-      <div className="p-4 border-b border-slate-200">
+    <div className="w-80 bg-white text-slate-900 h-screen flex flex-col shadow-sm border-r border-slate-200">
+      {/* Fixed Header */}
+      <div className="p-4 border-b border-slate-200 flex-shrink-0">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-slate-900">Loads</h2>
           <Search className="w-5 h-5 text-slate-400" />
@@ -127,11 +128,11 @@ const LoadsSidebar = () => {
         </Button>
       </div>
       
-      {/* Loads List */}
-      <div className="flex-1">
+      {/* Scrollable Loads List */}
+      <div className="flex-1 overflow-y-auto">
         {/* Active Loads Section */}
         <LoadGroupHeader title="Active" isActive={true} />
-        <div className="space-y-0">
+        <div>
           {activeLoads.map((load) => (
             <LoadItem 
               key={load.id}
@@ -143,7 +144,7 @@ const LoadsSidebar = () => {
 
         {/* Completed Loads Section */}
         <LoadGroupHeader title="Completed" />
-        <div className="space-y-0">
+        <div>
           {completedLoads.map((load) => (
             <LoadItem 
               key={load.id}
