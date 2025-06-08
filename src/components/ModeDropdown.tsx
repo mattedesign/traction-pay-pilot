@@ -57,7 +57,7 @@ const ModeDropdown = ({ mode, onModeChange, isPreview = false }: ModeDropdownPro
       </Button>
 
       {isOpen && (
-        <div className="absolute top-full left-0 mt-1 bg-background border border-border rounded-md shadow-lg z-50 min-w-[140px]">
+        <div className="absolute bottom-full left-0 mb-2 bg-background border border-border rounded-md shadow-lg z-50 min-w-[160px] backdrop-blur-sm">
           <div className="py-1">
             <button
               className={`w-full px-3 py-2 text-left text-sm flex items-center space-x-2 hover:bg-accent ${
