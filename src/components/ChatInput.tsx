@@ -85,14 +85,14 @@ const ChatInput = ({
           value={message}
           onChange={handleInputChange}
           onKeyPress={handleKeyPress}
-          className="pr-20" // Add padding for the buttons
+          className="pl-12 pr-12" // Add padding for both left and right buttons
           disabled={isLoading || isPreview}
           maxLength={1000}
           autoComplete="off"
         />
         
-        {/* Buttons inside the input */}
-        <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex space-x-1">
+        {/* Attachment button on the left */}
+        <div className="absolute left-2 top-1/2 transform -translate-y-1/2">
           <Button
             variant="ghost"
             size="icon"
@@ -103,6 +103,10 @@ const ChatInput = ({
           >
             <Paperclip className="w-4 h-4" />
           </Button>
+        </div>
+
+        {/* Microphone button on the right */}
+        <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
           <Button
             variant="ghost"
             size="icon"
