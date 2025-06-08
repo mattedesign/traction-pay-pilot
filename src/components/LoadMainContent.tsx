@@ -42,7 +42,7 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
   }, [loadData.id]);
 
   return (
-    <div className="flex-1 flex flex-col h-screen overflow-hidden">
+    <div className="flex-1 flex flex-col h-screen">
       {/* Header without notification bell */}
       <div className="border-b border-slate-200 bg-white px-6 py-4">
         <LoadHeader loadData={load} />

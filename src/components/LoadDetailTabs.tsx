@@ -15,15 +15,15 @@ interface LoadDetailTabsProps {
 
 const LoadDetailTabs = ({ load, emailThreads, isLoadingEmails }: LoadDetailTabsProps) => {
   return (
-    <Tabs defaultValue="detail" className="flex flex-col h-full">
+    <Tabs defaultValue="detail" className="flex flex-col">
       <TabsList className="grid w-full grid-cols-3">
         <TabsTrigger value="detail">Detail</TabsTrigger>
         <TabsTrigger value="documents">Documents</TabsTrigger>
         <TabsTrigger value="intelligence">Intelligence</TabsTrigger>
       </TabsList>
       
-      <div className="flex-1 overflow-y-auto">
-        <TabsContent value="detail" className="h-full m-0">
+      <div className="overflow-y-auto" style={{ height: 'calc(100vh - 140px)' }}>
+        <TabsContent value="detail" className="m-0">
           <div className="max-w-6xl mx-auto p-6 space-y-6">
             {/* Load Acceptance Card for pending loads - now within scrollable content */}
             {load.status === "pending_acceptance" && (
@@ -38,7 +38,7 @@ const LoadDetailTabs = ({ load, emailThreads, isLoadingEmails }: LoadDetailTabsP
           </div>
         </TabsContent>
         
-        <TabsContent value="documents" className="h-full m-0">
+        <TabsContent value="documents" className="m-0">
           <div className="max-w-6xl mx-auto p-6 space-y-6">
             {/* Load Acceptance Card for pending loads - now within scrollable content */}
             {load.status === "pending_acceptance" && (
@@ -49,7 +49,7 @@ const LoadDetailTabs = ({ load, emailThreads, isLoadingEmails }: LoadDetailTabsP
           </div>
         </TabsContent>
         
-        <TabsContent value="intelligence" className="h-full m-0">
+        <TabsContent value="intelligence" className="m-0">
           <div className="max-w-6xl mx-auto p-6 space-y-6">
             {/* Load Acceptance Card for pending loads - now within scrollable content */}
             {load.status === "pending_acceptance" && (
