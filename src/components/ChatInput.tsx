@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Send, Mic, Paperclip } from "lucide-react";
 import { validateFile, ALLOWED_FILE_TYPES } from "@/utils/security";
 import { useToast } from "@/hooks/use-toast";
+
 interface ChatInputProps {
   message: string;
   onMessageChange: (message: string) => void;
@@ -11,6 +12,7 @@ interface ChatInputProps {
   isPreview?: boolean;
   mode?: "search" | "chat";
 }
+
 const ChatInput = ({
   message,
   onMessageChange,
@@ -83,9 +85,18 @@ const ChatInput = ({
       <Button variant="outline" size="icon" disabled={isLoading || isPreview} title="Voice input (coming soon)">
         <Mic className="w-4 h-4" />
       </Button>
-      <Button onClick={handleSend} disabled={isLoading || !message.trim() || isPreview} title="Send message" className="border-radius: 12px;\nbackground: var(--Gradient-primary, linear-gradient(97deg, #8D58FE 5.35%, #6F7BF5 22.4%, #5399ED 50.15%, #43ACE8 77.04%, #15DFDB 94.96%));">
+      <Button 
+        onClick={handleSend} 
+        disabled={isLoading || !message.trim() || isPreview} 
+        title="Send message" 
+        className="rounded-xl"
+        style={{
+          background: 'var(--Gradient-primary, linear-gradient(97deg, #8D58FE 5.35%, #6F7BF5 22.4%, #5399ED 50.15%, #43ACE8 77.04%, #15DFDB 94.96%))'
+        }}
+      >
         <Send className="w-4 h-4" />
       </Button>
     </div>;
 };
+
 export default ChatInput;
