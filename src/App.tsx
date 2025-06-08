@@ -1,43 +1,43 @@
 
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Toaster } from "@/components/ui/toaster";
 import Index from "./pages/Index";
 import LoadDetail from "./pages/LoadDetail";
-import Login from "./pages/Login";
-import NotFound from "./pages/NotFound";
 import LoadsPage from "./pages/LoadsPage";
-import InvoicesPage from "./pages/InvoicesPage";
-import BankingPage from "./pages/BankingPage";
+import UploadPage from "./pages/UploadPage";
+import RouteOptionsPage from "./pages/RouteOptionsPage";
+import Login from "./pages/Login";
 import SearchPage from "./pages/SearchPage";
 import SupportPage from "./pages/SupportPage";
-import RouteOptionsPage from "./pages/RouteOptionsPage";
+import BankingPage from "./pages/BankingPage";
+import InvoicesPage from "./pages/InvoicesPage";
+import NotFound from "./pages/NotFound";
+import "./App.css";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Router>
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/login" element={<Login />} />
           <Route path="/loads" element={<LoadsPage />} />
           <Route path="/load/:loadId" element={<LoadDetail />} />
-          <Route path="/invoices" element={<InvoicesPage />} />
-          <Route path="/banking" element={<BankingPage />} />
+          <Route path="/upload" element={<UploadPage />} />
+          <Route path="/route-options" element={<RouteOptionsPage />} />
           <Route path="/search" element={<SearchPage />} />
           <Route path="/support" element={<SupportPage />} />
-          <Route path="/route-options" element={<RouteOptionsPage />} />
+          <Route path="/banking" element={<BankingPage />} />
+          <Route path="/invoices" element={<InvoicesPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+      </Router>
+      <Toaster />
+    </QueryClientProvider>
+  );
+}
 
 export default App;

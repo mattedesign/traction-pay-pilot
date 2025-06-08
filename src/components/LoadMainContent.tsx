@@ -13,6 +13,15 @@ interface LoadMainContentProps {
 }
 
 const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
+  const documentLoadData = {
+    loadId: loadData.loadId,
+    rate: loadData.amount,
+    weight: loadData.weight || "42,500 lbs",
+    commodity: loadData.commodity || "Electronics", 
+    pickupDate: loadData.pickupDate || "2025-06-12",
+    deliveryDate: loadData.deliveryDate || "2025-06-14"
+  };
+
   return (
     <div className="flex-1 flex flex-col min-h-screen bg-slate-50">
       {/* Main content area */}
@@ -56,7 +65,7 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
 
             <TabsContent value="documents" className="h-full p-6 overflow-y-auto">
               <div className="max-w-4xl w-full">
-                <DocumentUploadSection />
+                <DocumentUploadSection loadData={documentLoadData} />
               </div>
             </TabsContent>
             
