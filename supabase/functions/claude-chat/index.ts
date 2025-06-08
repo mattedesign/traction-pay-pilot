@@ -30,7 +30,7 @@ serve(async (req) => {
       throw new Error('ANTHROPIC_API_KEY not configured')
     }
 
-    console.log('Sending request to Claude Sonnet 4...')
+    console.log('Sending request to Claude Sonnet 3.5...')
     
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -40,7 +40,7 @@ serve(async (req) => {
         'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514', // Updated to correct model name
+        model: 'claude-3-5-sonnet-20241022', // Updated to use the correct model name
         max_tokens: 2048,
         system: systemPrompt,
         messages: messages
@@ -53,6 +53,13 @@ serve(async (req) => {
       
       if (response.status === 401) {
         throw new Error('Invalid API key. Please check your Anthropic API key.')
+      } else if (response.status === 400) {
+        // Handle credit balance and other 400 errors more gracefully
+        const errorData = JSON.parse(errorText)
+        if (errorData.error?.message?.includes('credit balance')) {
+          throw new Error('Insufficient Anthropic API credits. Please add credits to your account.')
+        }
+        throw new Error(`API request error: ${errorData.error?.message || errorText}`)
       } else if (response.status === 429) {
         throw new Error('Rate limit exceeded. Please try again in a moment.')
       } else {
@@ -61,7 +68,7 @@ serve(async (req) => {
     }
 
     const data = await response.json()
-    console.log('Claude Sonnet 4 response received successfully')
+    console.log('Claude Sonnet 3.5 response received successfully')
     
     return new Response(JSON.stringify({
       content: data.content[0].text

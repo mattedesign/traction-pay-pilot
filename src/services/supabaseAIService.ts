@@ -47,6 +47,11 @@ export class SupabaseAIService {
             content: "❌ **API Key Error**\n\nThe Anthropic API key is invalid or not configured. Please check the Supabase secrets configuration.",
             error: 'Invalid API key'
           };
+        } else if (error.message.includes('credit balance') || error.message.includes('credits')) {
+          return {
+            content: "❌ **Insufficient Credits**\n\nYour Anthropic API account has insufficient credits. Please add credits to your Anthropic account to continue using the AI assistant.",
+            error: 'Insufficient credits'
+          };
         } else if (error.message.includes('Rate limit')) {
           return {
             content: "❌ **Rate Limit Exceeded**\n\nThe Anthropic API rate limit has been exceeded. Please wait a moment before trying again.",

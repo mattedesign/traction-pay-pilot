@@ -3,18 +3,18 @@ import { useCallback } from "react";
 import { useToast } from "@/hooks/use-toast";
 
 interface UseAPIKeyHandlerProps {
-  initializeService: (key?: string) => void;
+  initializeService: () => void;
 }
 
 export const useAPIKeyHandler = ({ initializeService }: UseAPIKeyHandlerProps) => {
   const { toast } = useToast();
 
-  const handleAPIKeySubmit = useCallback(async (key: string) => {
+  const handleAPIKeySubmit = useCallback(async () => {
     console.log('API key handling now managed by Supabase Edge Functions...');
     
     try {
       // Since API keys are now handled in Supabase Edge Functions,
-      // we just need to initialize the service
+      // we just need to ensure the service is initialized
       initializeService();
       
       toast({

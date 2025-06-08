@@ -12,12 +12,14 @@ export const useClaude = ({ systemPrompt }: UseClaude) => {
   const [aiService] = useState<SupabaseAIService>(() => new SupabaseAIService());
 
   // Memoize the initialization function to prevent infinite loops
-  const initializeService = useCallback((apiKey?: string) => {
+  const initializeService = useCallback(() => {
     // No longer needed since we use Supabase Edge Functions
     // API key is handled securely in the edge function
-    setIsInitialized(true);
-    console.log('Claude AI service ready via Supabase Edge Functions');
-  }, []);
+    if (!isInitialized) {
+      setIsInitialized(true);
+      console.log('Claude AI service ready via Supabase Edge Functions');
+    }
+  }, [isInitialized]);
 
   const sendMessage = async (
     messages: Array<{ role: 'user' | 'assistant'; content: string }>
@@ -40,10 +42,12 @@ export const useClaude = ({ systemPrompt }: UseClaude) => {
     }
   };
 
-  // Auto-initialize on mount
+  // Auto-initialize on mount only once
   useEffect(() => {
-    initializeService();
-  }, [initializeService]);
+    if (!isInitialized) {
+      initializeService();
+    }
+  }, []); // Empty dependency array to run only once
 
   return {
     isLoading,
