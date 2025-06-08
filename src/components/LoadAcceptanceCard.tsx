@@ -1,14 +1,13 @@
 
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Check, X, Clock, Truck } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { LoadRepository } from "@/services/loadRepository";
 import { NotificationService } from "@/services/notificationService";
 import { useToast } from "@/hooks/use-toast";
 import { Load } from "@/types/load";
+import LoadAcceptanceHeader from "./LoadAcceptanceHeader";
+import LoadAcceptanceActions from "./LoadAcceptanceActions";
 
 interface LoadAcceptanceCardProps {
   load: Load;
@@ -78,44 +77,14 @@ const LoadAcceptanceCard = ({ load }: LoadAcceptanceCardProps) => {
 
   return (
     <Card className="border-orange-200 bg-orange-50 mb-6">
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <Truck className="w-6 h-6 text-orange-600" />
-            <div>
-              <CardTitle className="text-orange-900">Load Awaiting Acceptance</CardTitle>
-              <CardDescription className="text-orange-700">
-                Review and accept this TMS load assignment
-              </CardDescription>
-            </div>
-          </div>
-          <Badge variant="outline" className="border-orange-300 text-orange-700">
-            <Clock className="w-3 h-3 mr-1" />
-            Pending
-          </Badge>
-        </div>
-      </CardHeader>
+      <LoadAcceptanceHeader />
       <CardContent>
-        {/* Action Buttons */}
-        <div className="flex space-x-3">
-          <Button
-            onClick={handleAcceptLoad}
-            disabled={isAccepting || isRejecting}
-            className="flex-1"
-          >
-            <Check className="w-4 h-4 mr-2" />
-            {isAccepting ? "Accepting..." : "Accept Load"}
-          </Button>
-          <Button
-            variant="outline"
-            onClick={handleRejectLoad}
-            disabled={isAccepting || isRejecting}
-            className="flex-1"
-          >
-            <X className="w-4 h-4 mr-2" />
-            {isRejecting ? "Rejecting..." : "Reject Load"}
-          </Button>
-        </div>
+        <LoadAcceptanceActions
+          onAccept={handleAcceptLoad}
+          onReject={handleRejectLoad}
+          isAccepting={isAccepting}
+          isRejecting={isRejecting}
+        />
       </CardContent>
     </Card>
   );
