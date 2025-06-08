@@ -4,6 +4,7 @@ import ChatHistory from "./ChatHistory";
 import SuggestedQuestions from "./SuggestedQuestions";
 import ChatInput from "./ChatInput";
 import LoadResultsPresenter from "./LoadResultsPresenter";
+import ModeSelector from "./ModeSelector";
 import { ChatMessage } from "../hooks/useChatMessages";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
@@ -17,6 +18,7 @@ interface ChatContainerProps {
   onAPIKeySubmit: (key: string) => void;
   onLoadSelect?: (loadId: string) => void;
   onClose?: () => void;
+  showSearch?: boolean;
 }
 
 const ChatContainer = ({
@@ -25,9 +27,11 @@ const ChatContainer = ({
   currentSuggestions,
   onChatMessage,
   onLoadSelect,
-  onClose
+  onClose,
+  showSearch = true
 }: ChatContainerProps) => {
   const [message, setMessage] = useState("");
+  const [mode, setMode] = useState<"search" | "chat">("search");
 
   // Handle escape key to close chat
   useEffect(() => {
@@ -74,6 +78,14 @@ const ChatContainer = ({
       <div className="flex-1 min-h-0">
         <ChatHistory messages={chatHistory} isLoading={isLoading} />
       </div>
+
+      {/* Show mode selector only if search is enabled */}
+      {showSearch && (
+        <ModeSelector 
+          mode={mode} 
+          onModeChange={setMode} 
+        />
+      )}
       
       <SuggestedQuestions 
         questions={currentSuggestions} 
@@ -85,6 +97,8 @@ const ChatContainer = ({
         onMessageChange={setMessage}
         onSendMessage={handleSendMessage}
         isLoading={isLoading}
+        mode={showSearch ? mode : "chat"}
+        onModeChange={setMode}
       />
     </div>
   );

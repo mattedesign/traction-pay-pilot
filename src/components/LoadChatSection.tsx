@@ -1,6 +1,6 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import ChatInterface from "./ChatInterface";
+import LoadSpecificChatInterface from "./LoadSpecificChatInterface";
 import { LoadContextProvider } from "./LoadContextProvider";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
@@ -65,7 +65,11 @@ const LoadChatSection = ({ loadId }: LoadChatSectionProps) => {
           </div>
         </CardHeader>
         <CardContent>
-          <ChatInterface loadContext={`Load #${loadId}`} />
+          <LoadSpecificChatInterface 
+            loadContext={`Load #${loadId}`} 
+            onClose={() => setIsVisible(false)}
+            isFocused={isVisible}
+          />
         </CardContent>
       </Card>
     </LoadContextProvider>

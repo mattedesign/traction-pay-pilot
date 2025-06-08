@@ -3,43 +3,40 @@ import { useState, useEffect } from "react";
 import ChatInput from "./ChatInput";
 import ChatHistory from "./ChatHistory";
 import ChatSetup from "./ChatSetup";
-import LoadResultsPresenter from "./LoadResultsPresenter";
-import ModeSelector from "./ModeSelector";
 import { useChatMessages } from "../hooks/useChatMessages";
 import { useSuggestedQuestions } from "../hooks/useSuggestedQuestions";
-import { useUnifiedChatHandler } from "../hooks/useUnifiedChatHandler";
+import { useChatHandlers } from "../hooks/useChatHandlers";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 
-interface FunctionalChatInterfaceProps {
-  onNavigateToLoad?: (path: string) => void;
+interface LoadSpecificChatInterfaceProps {
+  loadContext?: string;
   onFocusChange?: (focused: boolean) => void;
   isFocused?: boolean;
+  onClose?: () => void;
 }
 
-const FunctionalChatInterface = ({ 
-  onNavigateToLoad, 
+const LoadSpecificChatInterface = ({ 
+  loadContext,
   onFocusChange,
-  isFocused = false 
-}: FunctionalChatInterfaceProps) => {
+  isFocused = false,
+  onClose
+}: LoadSpecificChatInterfaceProps) => {
   const { chatHistory, addUserMessage, addAIMessage } = useChatMessages();
   const { currentSuggestions } = useSuggestedQuestions();
-  const [mode, setMode] = useState<"search" | "chat">("search");
 
-  // Enhanced system prompt that supports both modes
-  const systemPrompt = `You are an AI assistant specialized in trucking operations and load management. You can operate in two modes:
+  // Load-specific system prompt focused on chat mode only
+  const systemPrompt = `You are an AI assistant specialized in trucking operations and load management. You are currently helping with Load ${loadContext || 'details'}.
 
-**SEARCH MODE**: Help users find and analyze specific loads by ID, broker, route, or status. Provide detailed load information, status updates, and actionable insights.
+Provide detailed analysis, advice, and insights about:
+- Load status and tracking information
+- Route optimization and delivery planning
+- Documentation and compliance requirements
+- Communication with brokers and customers
+- Payment and invoicing status
+- Potential issues or discrepancies
 
-**CHAT MODE**: Provide general trucking advice, compliance guidance, route optimization, and industry knowledge including:
-- DOT regulations and compliance (HOS, ELD, safety requirements)
-- Route optimization and fuel efficiency
-- Equipment maintenance and safety
-- Freight operations and logistics
-- Payment processing and factoring
-- Professional communication
-
-Always provide practical, actionable advice in a clear, professional tone. Focus on safety, compliance, and profitability.`;
+Always provide practical, actionable advice in a clear, professional tone. Focus on safety, compliance, and profitability for this specific load.`;
 
   const {
     message,
@@ -47,27 +44,19 @@ Always provide practical, actionable advice in a clear, professional tone. Focus
     isLoading,
     isInitialized,
     handleSendMessage,
-    handleAPIKeySubmit,
-    loadResults,
-    showingResults,
-    handleLoadSelect
-  } = useUnifiedChatHandler({
+    handleAPIKeySubmit
+  } = useChatHandlers({
     systemPrompt,
     chatHistory,
     addUserMessage,
-    addAIMessage,
-    onLoadSelect: (loadId) => {
-      if (onNavigateToLoad) {
-        onNavigateToLoad(`/load/${loadId}`);
-      }
-    }
+    addAIMessage
   });
 
   // Handle escape key to close chat
   useEffect(() => {
     const handleEscapeKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && isFocused) {
-        handleClose();
+      if (event.key === 'Escape' && isFocused && onClose) {
+        onClose();
       }
     };
 
@@ -75,14 +64,7 @@ Always provide practical, actionable advice in a clear, professional tone. Focus
     return () => {
       document.removeEventListener('keydown', handleEscapeKey);
     };
-  }, [isFocused]);
-
-  const handleClose = () => {
-    if (onFocusChange) {
-      onFocusChange(false);
-    }
-    setMessage("");
-  };
+  }, [isFocused, onClose]);
 
   const handleMessageChange = (newMessage: string) => {
     setMessage(newMessage);
@@ -101,11 +83,11 @@ Always provide practical, actionable advice in a clear, professional tone. Focus
     return (
       <div className="space-y-4">
         <div className="flex items-center justify-end">
-          {isFocused && (
+          {isFocused && onClose && (
             <Button
               variant="ghost"
               size="icon"
-              onClick={handleClose}
+              onClick={onClose}
               className="h-8 w-8"
               title="Close chat (Esc)"
             >
@@ -122,11 +104,11 @@ Always provide practical, actionable advice in a clear, professional tone. Focus
     <div className="space-y-4">
       {/* Header with Close Button only */}
       <div className="flex items-center justify-end">
-        {isFocused && (
+        {isFocused && onClose && (
           <Button
             variant="ghost"
             size="icon"
-            onClick={handleClose}
+            onClick={onClose}
             className="h-8 w-8"
             title="Close chat (Esc)"
           >
@@ -141,36 +123,16 @@ Always provide practical, actionable advice in a clear, professional tone. Focus
           <ChatHistory messages={chatHistory} isLoading={isLoading} />
         </div>
       )}
-
-      {/* Mode Selector - Show when focused */}
-      {isFocused && (
-        <ModeSelector 
-          mode={mode} 
-          onModeChange={setMode} 
-        />
-      )}
-
-      {/* Load Results - Show when available */}
-      {showingResults && loadResults.length > 0 && (
-        <div className="max-h-32 overflow-y-auto">
-          <LoadResultsPresenter 
-            results={loadResults}
-            onLoadSelect={handleLoadSelect}
-          />
-        </div>
-      )}
       
-      {/* Chat Input - Always at bottom with mode selector */}
+      {/* Chat Input - Always at bottom, no search mode */}
       <ChatInput
         message={message}
         onMessageChange={handleMessageChange}
         onSendMessage={handleSend}
         isLoading={isLoading}
-        mode={mode}
-        onModeChange={setMode}
       />
     </div>
   );
 };
 
-export default FunctionalChatInterface;
+export default LoadSpecificChatInterface;

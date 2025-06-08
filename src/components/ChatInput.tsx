@@ -11,6 +11,8 @@ interface ChatInputProps {
   onSendMessage: () => void;
   isLoading: boolean;
   isPreview?: boolean;
+  mode?: "search" | "chat";
+  onModeChange?: (mode: "search" | "chat") => void;
 }
 
 const ChatInput = ({
@@ -18,11 +20,15 @@ const ChatInput = ({
   onMessageChange,
   onSendMessage,
   isLoading,
-  isPreview = false
+  isPreview = false,
+  mode = "chat"
 }: ChatInputProps) => {
   const { toast } = useToast();
 
   const getPlaceholder = () => {
+    if (mode === "search") {
+      return "Search loads by ID, broker, route, or status...";
+    }
     return "Ask about loads, routes, payments, compliance...";
   };
 
