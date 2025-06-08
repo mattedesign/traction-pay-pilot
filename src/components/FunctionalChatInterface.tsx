@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ChatInput from "./ChatInput";
 import ModeSelector from "./ModeSelector";
 import ChatHistory from "./ChatHistory";
@@ -8,6 +8,8 @@ import LoadResultsPresenter from "./LoadResultsPresenter";
 import { useChatMessages } from "../hooks/useChatMessages";
 import { useSuggestedQuestions } from "../hooks/useSuggestedQuestions";
 import { useUnifiedChatHandler } from "../hooks/useUnifiedChatHandler";
+import { Button } from "@/components/ui/button";
+import { X } from "lucide-react";
 
 interface FunctionalChatInterfaceProps {
   onNavigateToLoad?: (path: string) => void;
@@ -61,6 +63,27 @@ Always provide practical, actionable advice in a clear, professional tone. Focus
     }
   });
 
+  // Handle escape key to close chat
+  useEffect(() => {
+    const handleEscapeKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && isFocused) {
+        handleClose();
+      }
+    };
+
+    document.addEventListener('keydown', handleEscapeKey);
+    return () => {
+      document.removeEventListener('keydown', handleEscapeKey);
+    };
+  }, [isFocused]);
+
+  const handleClose = () => {
+    if (onFocusChange) {
+      onFocusChange(false);
+    }
+    setMessage("");
+  };
+
   const handleModeChange = (newMode: "search" | "chat") => {
     setMode(newMode);
     console.log('Mode changed to:', newMode);
@@ -82,7 +105,20 @@ Always provide practical, actionable advice in a clear, professional tone. Focus
   if (!isInitialized) {
     return (
       <div className="space-y-4">
-        <ModeSelector mode={mode} onModeChange={handleModeChange} />
+        <div className="flex items-center justify-between">
+          <ModeSelector mode={mode} onModeChange={handleModeChange} />
+          {isFocused && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleClose}
+              className="h-8 w-8"
+              title="Close chat (Esc)"
+            >
+              <X className="w-4 h-4" />
+            </Button>
+          )}
+        </div>
         <ChatSetup onAPIKeySubmit={handleAPIKeySubmit} isLoading={isLoading} />
       </div>
     );
@@ -90,8 +126,21 @@ Always provide practical, actionable advice in a clear, professional tone. Focus
 
   return (
     <div className="space-y-4">
-      {/* Mode Selector - Always visible */}
-      <ModeSelector mode={mode} onModeChange={handleModeChange} />
+      {/* Mode Selector with Close Button */}
+      <div className="flex items-center justify-between">
+        <ModeSelector mode={mode} onModeChange={handleModeChange} />
+        {isFocused && (
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleClose}
+            className="h-8 w-8"
+            title="Close chat (Esc)"
+          >
+            <X className="w-4 h-4" />
+          </Button>
+        )}
+      </div>
       
       {/* Chat History - Show when focused and has messages, with fixed height and scroll */}
       {isFocused && chatHistory.length > 0 && (
