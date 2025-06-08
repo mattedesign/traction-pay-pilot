@@ -5,6 +5,7 @@ import { useDocumentUpload } from "@/hooks/useDocumentUpload";
 import DocumentTypeCard from "./DocumentTypeCard";
 import DiscrepancyAlert from "./DiscrepancyAlert";
 import UploadHistory from "./UploadHistory";
+import { Load } from "@/types/load";
 
 const DocumentUploadSection = () => {
   const {
@@ -17,8 +18,8 @@ const DocumentUploadSection = () => {
   } = useDocumentUpload();
 
   // Mock check if load has been picked up (you can replace this with actual load status)
-  const loadStatus = "in_transit"; // This would come from load data
-  const isPickedUp = loadStatus !== "pending_pickup" && loadStatus !== "pending_acceptance";
+  const loadStatus: Load["status"] = "in_transit"; // This would come from load data
+  const isPickedUp = loadStatus === "in_transit" || loadStatus === "delivered";
 
   const documentTypes = [
     { name: "Rate Confirmation", required: true, mockUploaded: isPickedUp },
