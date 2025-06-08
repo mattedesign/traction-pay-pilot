@@ -55,13 +55,13 @@ const Index = () => {
   ];
 
   return (
-    <div className="min-h-screen flex w-full bg-slate-50">
+    <div className="h-screen flex w-full bg-slate-50 overflow-hidden">
       <NavigationSidebar />
       
-      <div className="flex-1 flex flex-col h-screen">
-        {/* Main Content Area - Takes remaining space */}
-        <div className={`flex-1 flex items-center justify-center p-4 transition-all duration-300 ${isChatFocused ? 'flex-shrink-1 min-h-0' : ''}`}>
-          <div className="flex flex-col items-center w-full max-w-4xl">
+      <div className="flex-1 flex flex-col h-full">
+        {/* Main Content Area - Scrollable when needed */}
+        <div className="flex-1 overflow-y-auto p-4">
+          <div className="flex flex-col items-center w-full max-w-4xl mx-auto">
             {/* Welcome Header */}
             <div className="text-center mb-8">
               <div className="w-16 h-16 bg-slate-900 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -111,14 +111,16 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Chat Interface - Fixed at bottom, expands when focused */}
-        <div className={`border-t border-slate-200 bg-white transition-all duration-300 ${isChatFocused ? 'flex-1 min-h-96' : 'h-20'}`}>
-          <div className="w-full max-w-4xl mx-auto h-full p-4">
-            <FunctionalChatInterface 
-              onNavigateToLoad={navigate} 
-              onFocusChange={handleChatFocus}
-              isFocused={isChatFocused}
-            />
+        {/* Chat Interface - Fixed at bottom */}
+        <div className="flex-shrink-0 border-t border-slate-200 bg-white">
+          <div className="w-full max-w-4xl mx-auto p-4">
+            <div className={`transition-all duration-300 ${isChatFocused ? 'h-96' : 'h-auto'}`}>
+              <FunctionalChatInterface 
+                onNavigateToLoad={navigate} 
+                onFocusChange={handleChatFocus}
+                isFocused={isChatFocused}
+              />
+            </div>
           </div>
         </div>
       </div>
