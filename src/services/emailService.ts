@@ -1,4 +1,3 @@
-
 export interface EmailCommunication {
   id: string;
   loadId: string;
@@ -30,6 +29,8 @@ export interface EmailThread {
   unreadCount: number;
   emails: EmailCommunication[];
 }
+
+import { SupabaseEmailService } from './supabaseEmailService';
 
 export class EmailService {
   static mockEmails: EmailCommunication[] = [
@@ -101,91 +102,124 @@ export class EmailService {
     }
   ];
 
-  static getEmailThreadsForLoad(loadId: string): EmailThread[] {
-    const loadEmails = this.mockEmails.filter(email => email.loadId === loadId);
-    const threadsMap = new Map<string, EmailThread>();
-
-    loadEmails.forEach(email => {
-      if (!threadsMap.has(email.threadId)) {
-        threadsMap.set(email.threadId, {
-          threadId: email.threadId,
-          loadId: email.loadId,
-          subject: email.subject.replace(/^(RE:|FW:)\s*/i, ''),
-          participants: [],
-          lastActivity: email.timestamp,
-          unreadCount: 0,
-          emails: []
-        });
+  static async getEmailThreadsForLoad(loadId: string): Promise<EmailThread[]> {
+    try {
+      // Try to get from Supabase first
+      const supabaseThreads = await SupabaseEmailService.getEmailThreadsForLoad(loadId);
+      if (supabaseThreads.length > 0) {
+        return supabaseThreads;
       }
 
-      const thread = threadsMap.get(email.threadId)!;
-      thread.emails.push(email);
-      
-      if (email.timestamp > thread.lastActivity) {
-        thread.lastActivity = email.timestamp;
-      }
-      
-      if (!email.isRead) {
-        thread.unreadCount++;
-      }
+      // Fallback to mock data if Supabase is not available
+      console.log('Falling back to mock email data');
+      const loadEmails = this.mockEmails.filter(email => email.loadId === loadId);
+      const threadsMap = new Map<string, EmailThread>();
 
-      // Add unique participants
-      if (!thread.participants.includes(email.from)) {
-        thread.participants.push(email.from);
-      }
-      if (!thread.participants.includes(email.to)) {
-        thread.participants.push(email.to);
-      }
-    });
+      loadEmails.forEach(email => {
+        if (!threadsMap.has(email.threadId)) {
+          threadsMap.set(email.threadId, {
+            threadId: email.threadId,
+            loadId: email.loadId,
+            subject: email.subject.replace(/^(RE:|FW:)\s*/i, ''),
+            participants: [],
+            lastActivity: email.timestamp,
+            unreadCount: 0,
+            emails: []
+          });
+        }
 
-    return Array.from(threadsMap.values()).sort((a, b) => 
-      b.lastActivity.getTime() - a.lastActivity.getTime()
-    );
+        const thread = threadsMap.get(email.threadId)!;
+        thread.emails.push(email);
+        
+        if (email.timestamp > thread.lastActivity) {
+          thread.lastActivity = email.timestamp;
+        }
+        
+        if (!email.isRead) {
+          thread.unreadCount++;
+        }
+
+        // Add unique participants
+        if (!thread.participants.includes(email.from)) {
+          thread.participants.push(email.from);
+        }
+        if (!thread.participants.includes(email.to)) {
+          thread.participants.push(email.to);
+        }
+      });
+
+      return Array.from(threadsMap.values()).sort((a, b) => 
+        b.lastActivity.getTime() - a.lastActivity.getTime()
+      );
+    } catch (error) {
+      console.error('Error fetching email threads for load:', error);
+      return [];
+    }
   }
 
-  static getAllEmailThreads(): EmailThread[] {
-    const threadsMap = new Map<string, EmailThread>();
-
-    this.mockEmails.forEach(email => {
-      if (!threadsMap.has(email.threadId)) {
-        threadsMap.set(email.threadId, {
-          threadId: email.threadId,
-          loadId: email.loadId,
-          subject: email.subject.replace(/^(RE:|FW:)\s*/i, ''),
-          participants: [],
-          lastActivity: email.timestamp,
-          unreadCount: 0,
-          emails: []
-        });
+  static async getAllEmailThreads(): Promise<EmailThread[]> {
+    try {
+      // Try to get from Supabase first
+      const supabaseThreads = await SupabaseEmailService.getAllEmailThreads();
+      if (supabaseThreads.length > 0) {
+        return supabaseThreads;
       }
 
-      const thread = threadsMap.get(email.threadId)!;
-      thread.emails.push(email);
-      
-      if (email.timestamp > thread.lastActivity) {
-        thread.lastActivity = email.timestamp;
-      }
-      
-      if (!email.isRead) {
-        thread.unreadCount++;
-      }
+      // Fallback to mock data
+      console.log('Falling back to mock email data');
+      const threadsMap = new Map<string, EmailThread>();
 
-      if (!thread.participants.includes(email.from)) {
-        thread.participants.push(email.from);
-      }
-      if (!thread.participants.includes(email.to)) {
-        thread.participants.push(email.to);
-      }
-    });
+      this.mockEmails.forEach(email => {
+        if (!threadsMap.has(email.threadId)) {
+          threadsMap.set(email.threadId, {
+            threadId: email.threadId,
+            loadId: email.loadId,
+            subject: email.subject.replace(/^(RE:|FW:)\s*/i, ''),
+            participants: [],
+            lastActivity: email.timestamp,
+            unreadCount: 0,
+            emails: []
+          });
+        }
 
-    return Array.from(threadsMap.values()).sort((a, b) => 
-      b.lastActivity.getTime() - a.lastActivity.getTime()
-    );
+        const thread = threadsMap.get(email.threadId)!;
+        thread.emails.push(email);
+        
+        if (email.timestamp > thread.lastActivity) {
+          thread.lastActivity = email.timestamp;
+        }
+        
+        if (!email.isRead) {
+          thread.unreadCount++;
+        }
+
+        if (!thread.participants.includes(email.from)) {
+          thread.participants.push(email.from);
+        }
+        if (!thread.participants.includes(email.to)) {
+          thread.participants.push(email.to);
+        }
+      });
+
+      return Array.from(threadsMap.values()).sort((a, b) => 
+        b.lastActivity.getTime() - a.lastActivity.getTime()
+      );
+    } catch (error) {
+      console.error('Error fetching all email threads:', error);
+      return [];
+    }
   }
 
-  static markThreadAsRead(threadId: string) {
-    this.mockEmails
-      .filter(email => email.threadId === threadId)
-      .forEach(email => email.isRead = true);
+  static async markThreadAsRead(threadId: string): Promise<void> {
+    try {
+      // Try Supabase first
+      await SupabaseEmailService.markThreadAsRead(threadId);
+    } catch (error) {
+      console.error('Error marking thread as read in Supabase, falling back to mock:', error);
+      // Fallback to mock data
+      this.mockEmails
+        .filter(email => email.threadId === threadId)
+        .forEach(email => email.isRead = true);
+    }
   }
 }
