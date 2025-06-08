@@ -1,5 +1,6 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import LoadInformation from "./LoadInformation";
 import RouteOptimization from "./RouteOptimization";
 import EldSharing from "./EldSharing";
@@ -27,9 +28,9 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
   };
 
   return (
-    <div className="flex-1 flex flex-col min-h-screen bg-slate-50 relative">
+    <div className="flex-1 flex flex-col h-screen bg-slate-50 relative overflow-hidden">
       {/* Main content area */}
-      <div className="flex-1 pb-24">
+      <div className="flex-1 flex flex-col overflow-hidden">
         <Tabs defaultValue="details" className="h-full flex flex-col">
           <div className="border-b border-slate-200 bg-white px-6 py-4 shrink-0">
             <div className="flex items-center justify-between mb-4">
@@ -57,58 +58,70 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
             </TabsList>
           </div>
           
-          <div className="flex-1 overflow-hidden bg-slate-50 relative">
-            <TabsContent value="details" className="h-full p-6 overflow-y-auto pb-32">
-              <div className="max-w-4xl space-y-6 w-full">
-                <LoadInformation loadData={loadData} />
-                <RouteOptimization />
-                <EldSharing />
-                <FinancialServices loadAmount={loadData.amount} />
-              </div>
+          <div className="flex-1 flex flex-col overflow-hidden bg-slate-50 relative">
+            <TabsContent value="details" className="flex-1 overflow-hidden">
+              <ScrollArea className="h-full">
+                <div className="p-6 pb-32">
+                  <div className="max-w-4xl space-y-6 w-full">
+                    <LoadInformation loadData={loadData} />
+                    <RouteOptimization />
+                    <EldSharing />
+                    <FinancialServices loadAmount={loadData.amount} />
+                  </div>
+                </div>
+              </ScrollArea>
             </TabsContent>
 
-            <TabsContent value="documents" className="h-full p-6 overflow-y-auto pb-32">
-              <div className="max-w-4xl w-full">
-                <DocumentUploadSection />
-              </div>
+            <TabsContent value="documents" className="flex-1 overflow-hidden">
+              <ScrollArea className="h-full">
+                <div className="p-6 pb-32">
+                  <div className="max-w-4xl w-full">
+                    <DocumentUploadSection />
+                  </div>
+                </div>
+              </ScrollArea>
             </TabsContent>
             
-            <TabsContent value="intelligence" className="h-full p-6 overflow-y-auto pb-32">
-              <div className="max-w-4xl w-full">
-                <div className="bg-white rounded-lg p-6 shadow-sm">
-                  <h3 className="text-lg font-semibold mb-4 text-slate-900">Load Intelligence</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="bg-slate-50 p-4 rounded-lg shadow-sm">
-                      <h4 className="font-medium mb-2 text-slate-900">Route Analysis</h4>
-                      <p className="text-sm text-slate-600">
-                        Optimal route identified with 3% fuel savings potential.
-                      </p>
-                    </div>
-                    <div className="bg-slate-50 p-4 rounded-lg shadow-sm">
-                      <h4 className="font-medium mb-2 text-slate-900">Weather Impact</h4>
-                      <p className="text-sm text-slate-600">
-                        Clear conditions expected for the entire route.
-                      </p>
-                    </div>
-                    <div className="bg-slate-50 p-4 rounded-lg shadow-sm">
-                      <h4 className="font-medium mb-2 text-slate-900">Traffic Patterns</h4>
-                      <p className="text-sm text-slate-600">
-                        Light traffic expected during pickup window.
-                      </p>
-                    </div>
-                    <div className="bg-slate-50 p-4 rounded-lg shadow-sm">
-                      <h4 className="font-medium mb-2 text-slate-900">Historical Performance</h4>
-                      <p className="text-sm text-slate-600">
-                        Similar loads completed 15% faster than average.
-                      </p>
+            <TabsContent value="intelligence" className="flex-1 overflow-hidden">
+              <ScrollArea className="h-full">
+                <div className="p-6 pb-32">
+                  <div className="max-w-4xl w-full">
+                    <div className="bg-white rounded-lg p-6 shadow-sm">
+                      <h3 className="text-lg font-semibold mb-4 text-slate-900">Load Intelligence</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="bg-slate-50 p-4 rounded-lg shadow-sm">
+                          <h4 className="font-medium mb-2 text-slate-900">Route Analysis</h4>
+                          <p className="text-sm text-slate-600">
+                            Optimal route identified with 3% fuel savings potential.
+                          </p>
+                        </div>
+                        <div className="bg-slate-50 p-4 rounded-lg shadow-sm">
+                          <h4 className="font-medium mb-2 text-slate-900">Weather Impact</h4>
+                          <p className="text-sm text-slate-600">
+                            Clear conditions expected for the entire route.
+                          </p>
+                        </div>
+                        <div className="bg-slate-50 p-4 rounded-lg shadow-sm">
+                          <h4 className="font-medium mb-2 text-slate-900">Traffic Patterns</h4>
+                          <p className="text-sm text-slate-600">
+                            Light traffic expected during pickup window.
+                          </p>
+                        </div>
+                        <div className="bg-slate-50 p-4 rounded-lg shadow-sm">
+                          <h4 className="font-medium mb-2 text-slate-900">Historical Performance</h4>
+                          <p className="text-sm text-slate-600">
+                            Similar loads completed 15% faster than average.
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              </ScrollArea>
             </TabsContent>
 
             {/* Fixed chat interface within the load details container */}
-            <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-slate-200 shadow-lg z-20 p-4">
+            <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-slate-200 shadow-lg z-20 p-4 shrink-0">
               <div className="max-w-4xl mx-auto">
                 <FunctionalChatInterface 
                   onNavigateToLoad={handleNavigateToLoad}

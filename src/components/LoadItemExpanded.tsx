@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { MapPin, Clock, DollarSign, MessageSquare } from "lucide-react";
 import { EmailService, EmailThread } from "@/services/emailService";
 import EmailThreadDisplay from "./EmailThreadDisplay";
@@ -118,8 +119,10 @@ const LoadItemExpanded = ({ loadId, onClose }: LoadItemExpandedProps) => {
               <MessageSquare className="w-4 h-4 text-slate-600" />
               <h4 className="font-medium text-slate-900">Communications</h4>
             </div>
-            <div className="max-h-48 overflow-y-auto">
-              <EmailThreadDisplay threads={emailThreads} compact={true} />
+            <div className="h-48 overflow-hidden">
+              <ScrollArea className="h-full">
+                <EmailThreadDisplay threads={emailThreads} compact={true} />
+              </ScrollArea>
             </div>
           </div>
         )}
