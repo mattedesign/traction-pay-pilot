@@ -28,7 +28,6 @@ const ChatContainer = ({
   onClose
 }: ChatContainerProps) => {
   const [message, setMessage] = useState("");
-  const [mode, setMode] = useState<"search" | "chat">("search");
 
   // Handle escape key to close chat
   useEffect(() => {
@@ -86,8 +85,6 @@ const ChatContainer = ({
         onMessageChange={setMessage}
         onSendMessage={handleSendMessage}
         isLoading={isLoading}
-        mode={mode}
-        onModeChange={setMode}
       />
     </div>
   );
