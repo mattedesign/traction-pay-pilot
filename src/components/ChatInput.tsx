@@ -1,4 +1,5 @@
 
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Send, Mic, Paperclip } from "lucide-react";
@@ -84,7 +85,7 @@ const ChatInput = ({
         value={message}
         onChange={handleInputChange}
         onKeyPress={handleKeyPress}
-        className="pl-12 pr-24 h-14 rounded-[18px]" // Increased height and custom border radius
+        className="pl-12 pr-20 py-2 h-12 rounded-[18px]" // Reduced right padding and top/bottom padding
         disabled={isLoading || isPreview}
         maxLength={1000}
         autoComplete="off"
@@ -105,17 +106,17 @@ const ChatInput = ({
       </div>
 
       {/* Send button inside input on the right */}
-      <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+      <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
         <Button 
           onClick={handleSend} 
           disabled={isLoading || !message.trim() || isPreview} 
           title="Send message" 
-          className="rounded-xl h-8 px-3 text-sm font-medium disabled:opacity-100" // Remove opacity on disabled state
+          className="rounded-lg h-9 px-3 text-sm font-medium disabled:opacity-100" // Changed to rounded-lg (8px) and increased height
           style={{
             background: 'var(--Gradient-primary, linear-gradient(97deg, #8D58FE 5.35%, #6F7BF5 22.4%, #5399ED 50.15%, #43ACE8 77.04%, #15DFDB 94.96%))'
           }}
         >
-          <span className="mr-1">send</span>
+          <span className="mr-1">Send</span>
           <Send className="w-4 h-4" />
         </Button>
       </div>
@@ -124,3 +125,4 @@ const ChatInput = ({
 };
 
 export default ChatInput;
+
