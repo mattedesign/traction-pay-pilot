@@ -19,7 +19,8 @@ const DocumentUploadSection = () => {
 
   // Mock check if load has been picked up or delivered
   const currentLoadId = window.location.pathname.split('/').pop();
-  const loadStatus: Load["status"] = currentLoadId === "INV-2024" ? "ready_to_invoice" : "in_transit";
+  const loadStatus: Load["status"] = currentLoadId === "INV-2024" ? "ready_to_invoice" : 
+                                     currentLoadId === "DEL-2024" ? "delivered" : "in_transit";
   const isPickedUp = loadStatus === "in_transit" || loadStatus === "delivered" || loadStatus === "ready_to_invoice";
   const allDocsUploaded = loadStatus === "ready_to_invoice" || loadStatus === "delivered";
 
