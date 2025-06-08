@@ -1,21 +1,19 @@
 
 import ChatHistory from "./ChatHistory";
 import SuggestedQuestions from "./SuggestedQuestions";
-import ChatInput from "./ChatInput";
-import LoadResultsPresenter from "./LoadResultsPresenter";
+import MultiFunctionInput from "./MultiFunctionInput";
+import SearchResultsDisplay from "./SearchResultsDisplay";
 import { ChatMessage } from "../hooks/useChatMessages";
+import { LoadSearchResult } from "@/services/loadSearchService";
+import { useState } from "react";
 
 interface ChatContainerProps {
   isInitialized: boolean;
   isLoading: boolean;
   chatHistory: ChatMessage[];
   currentSuggestions: string[];
-  message: string;
-  onMessageChange: (message: string) => void;
-  onSendMessage: () => void;
+  onChatMessage: (message: string) => void;
   onAPIKeySubmit: (key: string) => void;
-  loadResults?: any[];
-  showingResults?: boolean;
   onLoadSelect?: (loadId: string) => void;
 }
 
@@ -23,33 +21,47 @@ const ChatContainer = ({
   isLoading,
   chatHistory,
   currentSuggestions,
-  message,
-  onMessageChange,
-  onSendMessage,
-  loadResults = [],
-  showingResults = false,
+  onChatMessage,
   onLoadSelect
 }: ChatContainerProps) => {
+  const [searchResults, setSearchResults] = useState<LoadSearchResult[]>([]);
+  const [showingSearch, setShowingSearch] = useState(false);
+
+  const handleSearchResults = (results: LoadSearchResult[]) => {
+    setSearchResults(results);
+    setShowingSearch(true);
+  };
+
+  const handleChatMessage = (message: string) => {
+    setShowingSearch(false);
+    onChatMessage(message);
+  };
+
+  const handleLoadSelect = (loadId: string) => {
+    if (onLoadSelect) {
+      onLoadSelect(loadId);
+    }
+  };
+
   return (
     <div className="space-y-4">
       <ChatHistory messages={chatHistory} isLoading={isLoading} />
       
-      {showingResults && loadResults.length > 0 && onLoadSelect && (
-        <LoadResultsPresenter 
-          results={loadResults}
-          onLoadSelect={onLoadSelect}
-          showingSearch={true}
+      {showingSearch && searchResults.length > 0 && (
+        <SearchResultsDisplay 
+          results={searchResults}
+          onLoadSelect={handleLoadSelect}
         />
       )}
       
       <SuggestedQuestions 
         questions={currentSuggestions} 
-        onQuestionClick={onMessageChange}
+        onQuestionClick={handleChatMessage}
       />
-      <ChatInput
-        message={message}
-        onMessageChange={onMessageChange}
-        onSendMessage={onSendMessage}
+      
+      <MultiFunctionInput
+        onSearchResults={handleSearchResults}
+        onChatMessage={handleChatMessage}
         isLoading={isLoading}
       />
     </div>

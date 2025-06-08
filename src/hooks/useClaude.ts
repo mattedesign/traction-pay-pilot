@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AIService } from "@/services/aiService";
 import { getAPIKey, clearAPIKey } from "@/utils/security";
 
@@ -26,8 +26,7 @@ export const useClaude = ({ systemPrompt }: UseClaude) => {
   };
 
   const sendMessage = async (
-    messages: Array<{ role: 'user' | 'assistant'; content: string }>,
-    enhancedSystemPrompt?: string
+    messages: Array<{ role: 'user' | 'assistant'; content: string }>
   ): Promise<string> => {
     if (!aiService || !isInitialized) {
       throw new Error('AI service not initialized');
@@ -35,8 +34,7 @@ export const useClaude = ({ systemPrompt }: UseClaude) => {
 
     setIsLoading(true);
     try {
-      const promptToUse = enhancedSystemPrompt || systemPrompt;
-      const response = await aiService.sendMessage(messages, promptToUse);
+      const response = await aiService.sendMessage(messages, systemPrompt);
       
       if (response.error) {
         throw new Error(response.error);
@@ -49,12 +47,12 @@ export const useClaude = ({ systemPrompt }: UseClaude) => {
   };
 
   // Auto-initialize if API key exists
-  useState(() => {
+  useEffect(() => {
     const storedKey = getAPIKey();
     if (storedKey) {
       initializeService(storedKey);
     }
-  });
+  }, []);
 
   return {
     isLoading,

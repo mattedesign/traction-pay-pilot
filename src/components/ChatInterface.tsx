@@ -3,7 +3,7 @@ import ChatContainer from "./ChatContainer";
 import ChatPreview from "./ChatPreview";
 import ChatSetup from "./ChatSetup";
 import { useChatMessages } from "../hooks/useChatMessages";
-import { useUnifiedChatHandler } from "../hooks/useUnifiedChatHandler";
+import { useClaude } from "../hooks/useClaude";
 import { useSuggestedQuestions } from "../hooks/useSuggestedQuestions";
 import { useNavigate } from "react-router-dom";
 
@@ -17,69 +17,51 @@ const ChatInterface = ({ isPreview = false, loadContext }: ChatInterfaceProps) =
   const { currentSuggestions } = useSuggestedQuestions();
   const navigate = useNavigate();
   
-  // Extract load ID from context if provided
-  const currentLoadId = loadContext?.match(/Load #(\d+)/)?.[1];
-  
-  const systemPrompt = `You are Claude, an advanced AI assistant powered by Anthropic's Claude 4 Sonnet, specialized in trucking operations, logistics, and transportation industry. You have comprehensive knowledge of:
+  // Simple Claude system prompt for general trucking knowledge
+  const systemPrompt = `You are Claude, an AI assistant specialized in trucking operations, logistics, and transportation industry. You have comprehensive knowledge of:
 
-**CORE EXPERTISE:**
-- Load management and freight operations
-- DOT regulations and compliance (HOS, ELD, safety requirements)  
-- Route optimization and fuel efficiency strategies
-- Payment processing, factoring, and cash flow management
-- Equipment maintenance, inspections, and safety protocols
-- Border crossings and international freight handling
-- Detention time, accessorial charges, and rate negotiations
-- Truck stops, parking, weigh stations, and driver amenities
-- Professional communication and email analysis
-- Load discrepancy identification and resolution strategies
+- DOT regulations and compliance (HOS, ELD, safety requirements)
+- Route optimization and fuel efficiency
+- Equipment maintenance and safety
+- Freight operations and logistics
+- Payment processing and factoring
+- Professional communication
 
-**ENHANCED CAPABILITIES:**
-- Intelligent load search and discovery across all loads
-- Context-aware responses using real-time load data
-- Multi-load comparison and relationship analysis
-- Predictive insights based on load patterns
-- Urgent item identification and prioritization
-- Personalized recommendations based on load history
+Provide practical, actionable advice in a clear, professional tone. Focus on safety, compliance, and profitability.`;
 
-**RESPONSE GUIDELINES:**
-- Provide specific, actionable advice tailored to the exact situation
-- Reference actual load details, status, and financials when available
-- Prioritize safety, legal compliance, and profitability
-- Use clear, professional language appropriate for trucking professionals
-- Offer multiple solution options when applicable
-- Include relevant industry best practices and regulations
+  const { isLoading, isInitialized, initializeService, sendMessage } = useClaude({
+    systemPrompt
+  });
 
-**CONTEXT AWARENESS:**
-When provided with specific load context data, use that information to give detailed, accurate responses about that specific load. Always reference the actual load ID, broker, status, route, and financial details when answering questions.
-
-${loadContext ? `\n**CURRENT CONTEXT**: ${loadContext} - Use this context to provide targeted, specific advice about this load.` : ''}
-
-Maintain a professional but conversational tone, and always prioritize practical solutions that help trucking operations run smoothly and profitably.`;
-
-  const handleLoadSelect = (loadId: string) => {
-    // Navigate to the selected load's detail page
-    navigate(`/load/${loadId}`);
+  const handleAPIKeySubmit = (apiKey: string) => {
+    initializeService(apiKey);
   };
 
-  const {
-    message,
-    setMessage,
-    isLoading,
-    isInitialized,
-    handleSendMessage,
-    handleAPIKeySubmit,
-    loadResults,
-    showingResults,
-    handleLoadSelect: unifiedLoadSelect
-  } = useUnifiedChatHandler({
-    systemPrompt,
-    chatHistory,
-    addUserMessage,
-    addAIMessage,
-    currentLoadId,
-    onLoadSelect: handleLoadSelect
-  });
+  const handleChatMessage = async (message: string) => {
+    if (!message.trim()) return;
+
+    addUserMessage(message);
+
+    try {
+      const messages = [
+        ...chatHistory.map(msg => ({
+          role: msg.role as 'user' | 'assistant',
+          content: msg.content
+        })),
+        { role: 'user' as const, content: message }
+      ];
+
+      const response = await sendMessage(messages);
+      addAIMessage(response);
+    } catch (error) {
+      console.error('Error sending message to Claude:', error);
+      addAIMessage('Sorry, I encountered an error. Please try again.');
+    }
+  };
+
+  const handleLoadSelect = (loadId: string) => {
+    navigate(`/load/${loadId}`);
+  };
 
   if (isPreview) {
     return <ChatPreview currentSuggestions={currentSuggestions} />;
@@ -95,13 +77,9 @@ Maintain a professional but conversational tone, and always prioritize practical
       isLoading={isLoading}
       chatHistory={chatHistory}
       currentSuggestions={currentSuggestions}
-      message={message}
-      onMessageChange={setMessage}
-      onSendMessage={handleSendMessage}
+      onChatMessage={handleChatMessage}
       onAPIKeySubmit={handleAPIKeySubmit}
-      loadResults={loadResults}
-      showingResults={showingResults}
-      onLoadSelect={unifiedLoadSelect}
+      onLoadSelect={handleLoadSelect}
     />
   );
 };
