@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Search, Plus, Building2, Truck, Package, ShoppingCart, Zap, Globe, Target, Briefcase } from "lucide-react";
@@ -7,17 +8,6 @@ import { EmailService, EmailThread } from "@/services/emailService";
 import LoadGroupHeader from "./LoadGroupHeader";
 import LoadItem from "./LoadItem";
 import { Load } from "@/types/load";
-
-interface Load {
-  id: string;
-  broker: string;
-  status: "pending_pickup" | "in_transit" | "delivered";
-  amount: string;
-  origin: string;
-  destination: string;
-  pickupTime: string;
-  distance: string;
-}
 
 const LoadsSidebar = () => {
   const { loadId } = useParams();

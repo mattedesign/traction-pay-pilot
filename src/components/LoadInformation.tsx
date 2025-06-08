@@ -5,37 +5,10 @@ import { Badge } from "@/components/ui/badge";
 import { DollarSign, MapPin, CreditCard, Edit, ExternalLink, Building2, Truck, Package, ShoppingCart, Zap, Globe, Target, Briefcase, Wifi, Clock, Phone, Mail } from "lucide-react";
 import { useState } from "react";
 import LocationDetailsModal from "./LocationDetailsModal";
-
-interface LoadData {
-  amount: string;
-  distance: string;
-  origin: string;
-  destination: string;
-  pickupTime: string;
-  deliveryTime?: string;
-  broker: string;
-  fundingMethod?: string;
-  status?: string;
-  source?: "manual" | "tms";
-  tmsData?: {
-    loadNumber: string;
-    brokerLoadNumber?: string;
-    equipment: string;
-    commodity: string;
-    weight: string;
-    pieces?: string;
-    deliveryTime?: string;
-    specialInstructions?: string;
-    contactInfo?: {
-      name: string;
-      phone: string;
-      email: string;
-    };
-  };
-}
+import { Load } from "@/types/load";
 
 interface LoadInformationProps {
-  loadData: LoadData;
+  loadData: Load;
 }
 
 const LoadInformation = ({ loadData }: LoadInformationProps) => {
@@ -149,7 +122,7 @@ const LoadInformation = ({ loadData }: LoadInformationProps) => {
               </div>
               <div className="flex items-center space-x-2">
                 <p className="text-sm text-slate-700">
-                  {loadData.fundingMethod || "Not specified"}
+                  {loadData.rateConfirmation?.originalRate || "Not specified"}
                 </p>
                 {canEditFundingMethod && (
                   <Button
@@ -171,7 +144,7 @@ const LoadInformation = ({ loadData }: LoadInformationProps) => {
               </div>
               <p className="text-sm text-slate-700">{loadData.destination}</p>
               <p className="text-xs text-slate-500 mb-2">
-                {loadData.tmsData?.deliveryTime || loadData.deliveryTime || "Delivery time TBD"}
+                {loadData.tmsData?.deliveryTime || "Delivery time TBD"}
               </p>
               <Button
                 variant="ghost"

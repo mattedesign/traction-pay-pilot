@@ -11,9 +11,10 @@ import NotificationBell from "./NotificationBell";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { EmailService, EmailThread } from "@/services/emailService";
 import { LoadRepository } from "@/services/loadRepository";
+import { Load } from "@/types/load";
 
 interface LoadMainContentProps {
-  loadData: any;
+  loadData: Load;
 }
 
 const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
@@ -23,17 +24,17 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
 
   useEffect(() => {
     // Refresh load data from repository
-    const refreshedLoad = LoadRepository.getLoadById(loadData.loadId);
+    const refreshedLoad = LoadRepository.getLoadById(loadData.id);
     if (refreshedLoad) {
       setLoad(refreshedLoad);
     }
-  }, [loadData.loadId]);
+  }, [loadData.id]);
 
   useEffect(() => {
     const loadEmails = async () => {
       setIsLoadingEmails(true);
       try {
-        const threads = await EmailService.getEmailThreadsForLoad(loadData.loadId);
+        const threads = await EmailService.getEmailThreadsForLoad(loadData.id);
         setEmailThreads(threads);
       } catch (error) {
         console.error('Error loading email threads:', error);
@@ -43,7 +44,7 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
     };
 
     loadEmails();
-  }, [loadData.loadId]);
+  }, [loadData.id]);
 
   return (
     <div className="flex-1 flex flex-col h-screen overflow-hidden">
@@ -65,7 +66,7 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
           <LoadInformation loadData={load} />
           
           {/* Document Upload Section */}
-          <DocumentUploadSection loadId={load.loadId || load.id} />
+          <DocumentUploadSection loadId={load.id} />
           
           {/* Email Communications */}
           <Card>
@@ -87,10 +88,10 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
           </Card>
           
           {/* Load-specific Chat */}
-          <LoadChatSection loadId={load.loadId || load.id} />
+          <LoadChatSection loadId={load.id} />
           
           {/* Payment Chat */}
-          <PaymentChatSection loadId={load.loadId || load.id} />
+          <PaymentChatSection loadId={load.id} />
         </div>
       </div>
     </div>
