@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { Upload, CheckCircle, AlertTriangle, Shield, FileText } from "lucide-react";
+import { Upload, CheckCircle, AlertTriangle, Shield, FileText, Eye, X } from "lucide-react";
 
 interface DocumentTypeCardProps {
   docType: {
@@ -36,6 +36,16 @@ const DocumentTypeCard = ({
 
   const description = getDescription();
 
+  const handleViewDocument = () => {
+    console.log(`Viewing document: ${uploadedDoc?.fileName}`);
+    // TODO: Implement document viewing functionality
+  };
+
+  const handleRemoveDocument = () => {
+    console.log(`Removing document: ${uploadedDoc?.fileName}`);
+    // TODO: Implement document removal functionality
+  };
+
   return (
     <div 
       className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors ${
@@ -60,9 +70,11 @@ const DocumentTypeCard = ({
         ) : (
           <Upload className="w-6 h-6 text-slate-400" />
         )}
-        {docType.required && (
+        {isUploaded ? (
+          <span className="text-xs text-green-600 font-medium">Uploaded</span>
+        ) : docType.required ? (
           <span className="text-xs text-orange-600 font-medium">Required</span>
-        )}
+        ) : null}
       </div>
       
       <p className="text-sm font-medium text-slate-700 mb-1">{docType.name}</p>
@@ -83,10 +95,16 @@ const DocumentTypeCard = ({
           Issues Found
         </Button>
       ) : isUploaded ? (
-        <Button size="sm" variant="outline" className="border-green-300 text-green-700" disabled>
-          <Shield className="w-3 h-3 mr-1" />
-          Secured
-        </Button>
+        <div className="flex space-x-1 justify-center">
+          <Button size="sm" variant="outline" className="border-green-300 text-green-700" onClick={handleViewDocument}>
+            <Eye className="w-3 h-3 mr-1" />
+            View
+          </Button>
+          <Button size="sm" variant="outline" className="border-slate-300 text-slate-700" onClick={handleRemoveDocument}>
+            <X className="w-3 h-3 mr-1" />
+            Remove
+          </Button>
+        </div>
       ) : (
         <Button 
           size="sm" 

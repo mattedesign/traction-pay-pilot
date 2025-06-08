@@ -1,6 +1,6 @@
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Shield, FileText } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Shield } from "lucide-react";
 import { useDocumentUpload } from "@/hooks/useDocumentUpload";
 import DocumentTypeCard from "./DocumentTypeCard";
 import DiscrepancyAlert from "./DiscrepancyAlert";
@@ -36,9 +36,6 @@ const DocumentUploadSection = () => {
             <Shield className="w-5 h-5 text-green-600" />
             <span>Secure Document Upload</span>
           </CardTitle>
-          <CardDescription>
-            Upload required documents to complete this load. Our AI will automatically detect discrepancies and suggest resolutions.
-          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
@@ -58,20 +55,6 @@ const DocumentUploadSection = () => {
           {discrepancyAlerts.map((alert, index) => (
             <DiscrepancyAlert key={index} alert={alert} />
           ))}
-
-          <div className="bg-blue-50 border border-blue-200 rounded p-3">
-            <div className="flex items-center space-x-2 mb-1">
-              <FileText className="w-4 h-4 text-blue-600" />
-              <span className="text-sm font-medium text-blue-900">Smart Document Processing</span>
-            </div>
-            <p className="text-xs text-blue-700 mb-2">
-              Upload any document - our AI will automatically categorize, extract information, and detect discrepancies
-            </p>
-            <div className="flex items-center space-x-1 text-xs text-green-600">
-              <Shield className="w-3 h-3" />
-              <span>All uploads are validated for security and automatically checked against your rate confirmation</span>
-            </div>
-          </div>
 
           <UploadHistory uploadedDocs={uploadedDocs} />
         </CardContent>

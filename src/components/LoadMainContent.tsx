@@ -48,22 +48,20 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
         <LoadHeader loadData={load} />
       </div>
       
-      <div className="flex-1 overflow-y-auto">
-        <div className="max-w-6xl mx-auto p-6">
-          {/* Load Acceptance Card for pending loads */}
-          {load.status === "pending_acceptance" && (
-            <div className="mb-6">
-              <LoadAcceptanceCard load={load} />
-            </div>
-          )}
-          
-          {/* Tabbed Interface */}
-          <LoadDetailTabs 
-            load={load}
-            emailThreads={emailThreads}
-            isLoadingEmails={isLoadingEmails}
-          />
+      {/* Load Acceptance Card for pending loads - fixed position */}
+      {load.status === "pending_acceptance" && (
+        <div className="bg-white border-b border-slate-200 px-6 py-4">
+          <LoadAcceptanceCard load={load} />
         </div>
+      )}
+      
+      {/* Fixed Tabs Container */}
+      <div className="bg-white border-b border-slate-200 px-6 sticky top-0 z-10">
+        <LoadDetailTabs 
+          load={load}
+          emailThreads={emailThreads}
+          isLoadingEmails={isLoadingEmails}
+        />
       </div>
       
       {/* Floating Chat Widget */}

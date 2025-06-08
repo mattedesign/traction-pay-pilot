@@ -14,28 +14,36 @@ interface LoadDetailTabsProps {
 
 const LoadDetailTabs = ({ load, emailThreads, isLoadingEmails }: LoadDetailTabsProps) => {
   return (
-    <Tabs defaultValue="detail" className="space-y-6">
+    <Tabs defaultValue="detail" className="flex flex-col h-full">
       <TabsList className="grid w-full grid-cols-3">
         <TabsTrigger value="detail">Detail</TabsTrigger>
         <TabsTrigger value="documents">Documents</TabsTrigger>
         <TabsTrigger value="intelligence">Intelligence</TabsTrigger>
       </TabsList>
       
-      <TabsContent value="detail" className="space-y-6">
-        <LoadDetailContent 
-          load={load}
-          emailThreads={emailThreads}
-          isLoadingEmails={isLoadingEmails}
-        />
-      </TabsContent>
-      
-      <TabsContent value="documents" className="space-y-6">
-        <LoadDocumentsContent />
-      </TabsContent>
-      
-      <TabsContent value="intelligence" className="space-y-6">
-        <LoadIntelligenceContent load={load} />
-      </TabsContent>
+      <div className="flex-1 overflow-y-auto">
+        <TabsContent value="detail" className="h-full m-0">
+          <div className="max-w-6xl mx-auto p-6 space-y-6">
+            <LoadDetailContent 
+              load={load}
+              emailThreads={emailThreads}
+              isLoadingEmails={isLoadingEmails}
+            />
+          </div>
+        </TabsContent>
+        
+        <TabsContent value="documents" className="h-full m-0">
+          <div className="max-w-6xl mx-auto p-6 space-y-6">
+            <LoadDocumentsContent />
+          </div>
+        </TabsContent>
+        
+        <TabsContent value="intelligence" className="h-full m-0">
+          <div className="max-w-6xl mx-auto p-6 space-y-6">
+            <LoadIntelligenceContent load={load} />
+          </div>
+        </TabsContent>
+      </div>
     </Tabs>
   );
 };
