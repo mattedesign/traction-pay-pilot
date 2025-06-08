@@ -1,6 +1,7 @@
 
 import { useState, useCallback } from 'react';
 import { EnhancedAIService } from '../services/enhancedAIService';
+import { EmailContent } from '../types/emailAnalysis';
 
 interface UseClaudeOptions {
   systemPrompt?: string;
@@ -32,13 +33,7 @@ export const useClaude = (options: UseClaudeOptions = {}) => {
     }
   }, [claudeService, options.systemPrompt]);
 
-  const analyzeEmail = useCallback(async (emailContent: {
-    subject: string;
-    body: string;
-    from: string;
-    to: string;
-    loadId?: string;
-  }) => {
+  const analyzeEmail = useCallback(async (emailContent: EmailContent) => {
     if (!claudeService) {
       throw new Error('Claude service not initialized. Please provide API key.');
     }
