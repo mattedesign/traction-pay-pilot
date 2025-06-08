@@ -31,7 +31,7 @@ const LoadDetailTabs = ({ load, emailThreads, isLoadingEmails }: LoadDetailTabsP
         
         <div className="overflow-y-auto" style={{ height: 'calc(100vh - 140px)', backgroundColor: '#F5F6FA' }}>
           <TabsContent value="detail" className="m-0">
-            <div className="max-w-6xl mx-auto p-6 space-y-6">
+            <div className="w-full px-6 py-6 space-y-6">
               {/* Load Acceptance Card for pending loads - now within scrollable content */}
               {load.status === "pending_acceptance" && (
                 <LoadAcceptanceCard load={load} />
@@ -46,7 +46,7 @@ const LoadDetailTabs = ({ load, emailThreads, isLoadingEmails }: LoadDetailTabsP
           </TabsContent>
           
           <TabsContent value="documents" className="m-0">
-            <div className="max-w-6xl mx-auto p-6 space-y-6">
+            <div className="w-full px-6 py-6 space-y-6">
               {/* Load Acceptance Card for pending loads - now within scrollable content */}
               {load.status === "pending_acceptance" && (
                 <LoadAcceptanceCard load={load} />
@@ -57,7 +57,7 @@ const LoadDetailTabs = ({ load, emailThreads, isLoadingEmails }: LoadDetailTabsP
           </TabsContent>
           
           <TabsContent value="intelligence" className="m-0">
-            <div className="max-w-6xl mx-auto p-6 space-y-6">
+            <div className="w-full px-6 py-6 space-y-6">
               {/* Load Acceptance Card for pending loads - now within scrollable content */}
               {load.status === "pending_acceptance" && (
                 <LoadAcceptanceCard load={load} />
