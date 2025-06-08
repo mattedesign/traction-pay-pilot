@@ -45,7 +45,7 @@ Provide practical, actionable advice in a clear, professional tone. Focus on saf
     try {
       const messages = [
         ...chatHistory.map(msg => ({
-          role: msg.role as 'user' | 'assistant',
+          role: msg.type === 'user' ? 'user' as const : 'assistant' as const,
           content: msg.content
         })),
         { role: 'user' as const, content: message }

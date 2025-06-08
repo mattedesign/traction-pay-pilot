@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Send, Search, MessageCircle } from "lucide-react";
-import { LoadSearchService, LoadSearchResult } from "@/services/loadSearchService";
+import { LoadSearchResult } from "@/services/loadSearchService";
+import { simpleLoadSearch } from "@/services/simpleLoadSearch";
 
 interface MultiFunctionInputProps {
   onSearchResults: (results: LoadSearchResult[]) => void;
@@ -26,8 +27,8 @@ const MultiFunctionInput = ({
     if (!input.trim() || isLoading) return;
 
     if (mode === 'search') {
-      // Perform load search using mock data
-      const searchResults = LoadSearchService.searchLoads(input);
+      // Perform simple load search
+      const searchResults = simpleLoadSearch(input);
       onSearchResults(searchResults);
     } else {
       // Send to Claude chat
