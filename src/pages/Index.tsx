@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Truck, FileText, MapPin, DollarSign, Route, CreditCard } from "lucide-react";
@@ -22,7 +23,6 @@ const Index = () => {
       color: "text-blue-600",
       onClick: () => {
         setIsChatFocused(true);
-        // The ChatInterface will handle this through suggested questions
       }
     },
     {
@@ -58,25 +58,25 @@ const Index = () => {
     <div className="min-h-screen flex w-full bg-slate-50">
       <NavigationSidebar />
       
-      <div className="flex-1 flex flex-col relative">
-        {/* Main Content Area - Hide when chat is focused */}
-        {!isChatFocused && (
-          <div className="flex-1 flex items-center justify-center">
-            <div className="flex flex-col items-center">
-              {/* Welcome Header */}
-              <div className="text-center mb-12">
-                <div className="w-16 h-16 bg-slate-900 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Truck className="w-8 h-8 text-white" />
-                </div>
-                <h1 className="text-4xl font-bold text-slate-900 mb-4">
-                  Traction
-                </h1>
-                <p className="text-xl text-slate-600 max-w-lg mx-auto">
-                  Less Friction, More Traction For Carriers
-                </p>
+      <div className="flex-1 flex flex-col h-screen">
+        {/* Main Content Area - Takes remaining space */}
+        <div className={`flex-1 flex items-center justify-center p-4 transition-all duration-300 ${isChatFocused ? 'flex-shrink-1 min-h-0' : ''}`}>
+          <div className="flex flex-col items-center w-full max-w-4xl">
+            {/* Welcome Header */}
+            <div className="text-center mb-8">
+              <div className="w-16 h-16 bg-slate-900 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Truck className="w-8 h-8 text-white" />
               </div>
+              <h1 className="text-4xl font-bold text-slate-900 mb-4">
+                Traction
+              </h1>
+              <p className="text-xl text-slate-600 max-w-lg mx-auto">
+                Less Friction, More Traction For Carriers
+              </p>
+            </div>
 
-              {/* Suggested Actions */}
+            {/* Suggested Actions - Only show when chat is not focused */}
+            {!isChatFocused && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
                 {suggestedActions.map((action, index) => (
                   <Card 
@@ -98,20 +98,22 @@ const Index = () => {
                   </Card>
                 ))}
               </div>
+            )}
 
-              {/* Additional Help */}
+            {/* Additional Help - Only show when chat is not focused */}
+            {!isChatFocused && (
               <div className="text-center">
                 <p className="text-sm text-slate-500 mb-4">
                   Traction might provide inaccurate information. Always verify critical details.
                 </p>
               </div>
-            </div>
+            )}
           </div>
-        )}
+        </div>
 
-        {/* Chat Interface - Expand when focused */}
-        <div className={`${isChatFocused ? 'flex-1' : 'absolute bottom-0 left-0 right-0'} p-4`}>
-          <div className={`w-full max-w-4xl mx-auto ${isChatFocused ? 'h-full' : 'h-16'}`}>
+        {/* Chat Interface - Fixed at bottom, expands when focused */}
+        <div className={`border-t border-slate-200 bg-white transition-all duration-300 ${isChatFocused ? 'flex-1 min-h-96' : 'h-20'}`}>
+          <div className="w-full max-w-4xl mx-auto h-full p-4">
             <FunctionalChatInterface 
               onNavigateToLoad={navigate} 
               onFocusChange={handleChatFocus}

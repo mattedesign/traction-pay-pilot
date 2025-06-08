@@ -87,7 +87,7 @@ Always provide practical, actionable advice in a clear, professional tone. Focus
   // Show setup if not initialized
   if (!isInitialized) {
     return (
-      <div className="space-y-4">
+      <div className="space-y-4 h-full">
         <ModeSelector mode={mode} onModeChange={handleModeChange} />
         <ChatSetup onAPIKeySubmit={handleAPIKeySubmit} isLoading={isLoading} />
       </div>
@@ -95,39 +95,49 @@ Always provide practical, actionable advice in a clear, professional tone. Focus
   }
 
   return (
-    <div className="space-y-4 h-full flex flex-col">
-      <ModeSelector mode={mode} onModeChange={handleModeChange} />
+    <div className="h-full flex flex-col space-y-4">
+      {/* Mode Selector - Always visible */}
+      <div className="flex-shrink-0">
+        <ModeSelector mode={mode} onModeChange={handleModeChange} />
+      </div>
       
-      {/* Chat History - Only show when focused */}
+      {/* Chat History - Only show when focused and has messages */}
       {isFocused && chatHistory.length > 0 && (
-        <div className="flex-1 min-h-0">
+        <div className="flex-1 min-h-0 overflow-hidden">
           <ChatHistory messages={chatHistory} isLoading={isLoading} />
         </div>
       )}
 
-      {/* Load Results */}
+      {/* Load Results - Show when available */}
       {showingResults && loadResults.length > 0 && (
-        <LoadResultsPresenter 
-          results={loadResults}
-          onLoadSelect={handleLoadSelect}
-        />
+        <div className="flex-shrink-0">
+          <LoadResultsPresenter 
+            results={loadResults}
+            onLoadSelect={handleLoadSelect}
+          />
+        </div>
       )}
       
       {/* Suggested Questions - Show when not focused or no chat history */}
       {(!isFocused || chatHistory.length === 0) && (
-        <SuggestedQuestions 
-          questions={currentSuggestions.slice(0, 3)} 
-          onQuestionClick={handleQuestionClick}
-        />
+        <div className="flex-shrink-0">
+          <SuggestedQuestions 
+            questions={currentSuggestions.slice(0, 3)} 
+            onQuestionClick={handleQuestionClick}
+          />
+        </div>
       )}
       
-      <ChatInput
-        message={message}
-        onMessageChange={handleMessageChange}
-        onSendMessage={handleSend}
-        isLoading={isLoading}
-        mode={mode}
-      />
+      {/* Chat Input - Always at bottom */}
+      <div className="flex-shrink-0">
+        <ChatInput
+          message={message}
+          onMessageChange={handleMessageChange}
+          onSendMessage={handleSend}
+          isLoading={isLoading}
+          mode={mode}
+        />
+      </div>
     </div>
   );
 };
