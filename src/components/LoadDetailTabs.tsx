@@ -29,7 +29,7 @@ const LoadDetailTabs = ({ load, emailThreads, isLoadingEmails }: LoadDetailTabsP
           <InvoiceRequestToast brokerName={load.broker} />
         )}
         
-        <div className="overflow-y-auto px-6 space-y-6" style={{ height: 'calc(100vh - 140px)', backgroundColor: '#F5F6FA' }}>
+        <div className="overflow-y-auto space-y-6" style={{ height: 'calc(100vh - 140px)', backgroundColor: '#F5F6FA' }}>
           <TabsContent value="detail" className="m-0 pt-6">
             {/* Load Acceptance Card for pending loads */}
             {load.status === "pending_acceptance" && (
