@@ -11,6 +11,7 @@ export class LoadRepository {
       origin: "Dallas, TX",
       destination: "Houston, TX",
       pickupTime: "Jun 8, 9:00 AM",
+      deliveryTime: "Jun 8, 3:00 PM", // Add deliveryTime from tmsData
       distance: "240 miles",
       source: "tms",
       tmsData: {
@@ -38,6 +39,7 @@ export class LoadRepository {
       origin: "Shreve, OH",
       destination: "Grove City, OH",
       pickupTime: "Today 1:00 PM",
+      deliveryTime: "Today 4:30 PM", // Add estimated delivery time
       distance: "45 miles",
       source: "manual",
       rateConfirmation: {
@@ -54,6 +56,7 @@ export class LoadRepository {
       origin: "Phoenix, AZ",
       destination: "Perris, CA", 
       pickupTime: "May 29, 7:00 AM",
+      deliveryTime: "May 29, 6:00 PM", // Add estimated delivery time
       distance: "332 miles",
       source: "manual",
       rateConfirmation: {
@@ -70,6 +73,7 @@ export class LoadRepository {
       origin: "Dallas, TX",
       destination: "Miami, FL",
       pickupTime: "Jun 5, 8:00 AM",
+      deliveryTime: "Jun 7, 6:00 PM", // Add estimated delivery time
       distance: "1,100 miles",
       source: "manual",
       rateConfirmation: {
@@ -86,6 +90,7 @@ export class LoadRepository {
       origin: "Seattle, WA",
       destination: "Portland, OR",
       pickupTime: "Jun 6, 10:00 AM",
+      deliveryTime: "Jun 6, 4:00 PM", // Add estimated delivery time
       distance: "173 miles",
       source: "manual",
       rateConfirmation: {
@@ -101,7 +106,8 @@ export class LoadRepository {
       amount: "$650.00",
       origin: "Houston, TX",
       destination: "Dallas, TX",
-      pickupTime: "May 28, 9:00 AM", 
+      pickupTime: "May 28, 9:00 AM",
+      deliveryTime: "May 28, 2:00 PM", // Add delivery time
       distance: "240 miles",
       source: "manual",
       rateConfirmation: {
@@ -118,6 +124,7 @@ export class LoadRepository {
       origin: "Chicago, IL",
       destination: "Detroit, MI",
       pickupTime: "May 25, 2:00 PM",
+      deliveryTime: "May 26, 10:00 AM", // Add delivery time
       distance: "280 miles",
       source: "manual",
       rateConfirmation: {
@@ -134,6 +141,7 @@ export class LoadRepository {
       origin: "Los Angeles, CA",
       destination: "Las Vegas, NV",
       pickupTime: "May 20, 6:00 AM",
+      deliveryTime: "May 20, 4:00 PM", // Add delivery time
       distance: "270 miles",
       source: "manual",
       rateConfirmation: {
@@ -150,6 +158,7 @@ export class LoadRepository {
       origin: "Atlanta, GA",
       destination: "Nashville, TN",
       pickupTime: "May 18, 11:00 AM",
+      deliveryTime: "May 18, 6:00 PM", // Add delivery time
       distance: "250 miles",
       source: "manual",
       rateConfirmation: {

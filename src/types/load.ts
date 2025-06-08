@@ -7,6 +7,7 @@ export interface Load {
   origin: string;
   destination: string;
   pickupTime: string;
+  deliveryTime?: string; // Add optional deliveryTime property
   distance: string;
   rateConfirmation?: {
     originalRate: string;
