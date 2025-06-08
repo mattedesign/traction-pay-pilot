@@ -1,9 +1,11 @@
 
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Truck, MapPin, ExternalLink } from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
+import { LoadService } from "@/services/loadService";
 
 interface Load {
   id: string;
@@ -15,39 +17,6 @@ interface Load {
   pickupTime: string;
   distance: string;
 }
-
-const mockLoads: Load[] = [
-  {
-    id: "1234",
-    broker: "Swift Logistics",
-    status: "pending_pickup",
-    amount: "$500.00",
-    origin: "Shreve, OH",
-    destination: "Grove City, OH",
-    pickupTime: "Today 1:00 PM",
-    distance: "45 miles"
-  },
-  {
-    id: "5678",
-    broker: "Phoenix Freight Co",
-    status: "in_transit",
-    amount: "$750.00",
-    origin: "Phoenix, AZ",
-    destination: "Perris, CA",
-    pickupTime: "May 29, 7:00 AM",
-    distance: "332 miles"
-  },
-  {
-    id: "9012",
-    broker: "Delta Shipping",
-    status: "delivered",
-    amount: "$650.00",
-    origin: "Houston, TX",
-    destination: "Dallas, TX",
-    pickupTime: "May 28, 9:00 AM",
-    distance: "240 miles"
-  }
-];
 
 const getStatusColor = (status: string) => {
   switch (status) {
@@ -78,6 +47,13 @@ const getStatusLabel = (status: string) => {
 const LoadsSidebar = () => {
   const { loadId } = useParams();
   const navigate = useNavigate();
+  const [loads, setLoads] = useState<Load[]>([]);
+
+  useEffect(() => {
+    // Get loads from the service
+    const allLoads = LoadService.getAllLoads();
+    setLoads(allLoads);
+  }, []);
 
   const handleViewDashboard = () => {
     console.log("Navigating to loads dashboard");
@@ -107,7 +83,7 @@ const LoadsSidebar = () => {
       
       {/* Loads List */}
       <div className="flex-1 p-4 space-y-3">
-        {mockLoads.map((load) => (
+        {loads.map((load) => (
           <Card 
             key={load.id}
             className={`cursor-pointer transition-all duration-200 hover:shadow-md ${
