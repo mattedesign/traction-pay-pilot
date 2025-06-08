@@ -119,13 +119,13 @@ const LoadsSidebar = () => {
           <Search className="w-5 h-5 text-slate-400" />
         </div>
         
-        <Button 
+        <button 
           onClick={handleNewLoad}
-          className="w-full flex items-center justify-center space-x-2 bg-slate-100 text-slate-700 hover:bg-slate-200 border-0"
+          className="w-full flex items-center justify-center space-x-2 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-lg px-4 py-3 shadow-sm transition-colors"
         >
           <Plus className="w-4 h-4" />
           <span>New Load</span>
-        </Button>
+        </button>
       </div>
       
       {/* Scrollable Loads List */}
