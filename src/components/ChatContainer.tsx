@@ -1,11 +1,8 @@
 
 import ChatHistory from "./ChatHistory";
 import SuggestedQuestions from "./SuggestedQuestions";
-import MultiFunctionInput from "./MultiFunctionInput";
-import SearchResultsDisplay from "./SearchResultsDisplay";
+import ChatInput from "./ChatInput";
 import { ChatMessage } from "../hooks/useChatMessages";
-import { LoadSearchResult } from "@/services/loadSearchService";
-import { useState } from "react";
 
 interface ChatContainerProps {
   isInitialized: boolean;
@@ -21,47 +18,19 @@ const ChatContainer = ({
   isLoading,
   chatHistory,
   currentSuggestions,
-  onChatMessage,
-  onLoadSelect
+  onChatMessage
 }: ChatContainerProps) => {
-  const [searchResults, setSearchResults] = useState<LoadSearchResult[]>([]);
-  const [showingSearch, setShowingSearch] = useState(false);
-
-  const handleSearchResults = (results: LoadSearchResult[]) => {
-    setSearchResults(results);
-    setShowingSearch(true);
-  };
-
-  const handleChatMessage = (message: string) => {
-    setShowingSearch(false);
-    onChatMessage(message);
-  };
-
-  const handleLoadSelect = (loadId: string) => {
-    if (onLoadSelect) {
-      onLoadSelect(loadId);
-    }
-  };
-
   return (
     <div className="space-y-4">
       <ChatHistory messages={chatHistory} isLoading={isLoading} />
       
-      {showingSearch && searchResults.length > 0 && (
-        <SearchResultsDisplay 
-          results={searchResults}
-          onLoadSelect={handleLoadSelect}
-        />
-      )}
-      
       <SuggestedQuestions 
         questions={currentSuggestions} 
-        onQuestionClick={handleChatMessage}
+        onQuestionClick={onChatMessage}
       />
       
-      <MultiFunctionInput
-        onSearchResults={handleSearchResults}
-        onChatMessage={handleChatMessage}
+      <ChatInput
+        onSendMessage={onChatMessage}
         isLoading={isLoading}
       />
     </div>
