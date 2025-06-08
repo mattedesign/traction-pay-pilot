@@ -77,60 +77,47 @@ const ChatInput = ({
     onSendMessage();
   };
   return (
-    <div className="flex space-x-2">
-      {/* Input with embedded buttons */}
-      <div className="relative flex-1">
-        <Input
-          placeholder={getPlaceholder()}
-          value={message}
-          onChange={handleInputChange}
-          onKeyPress={handleKeyPress}
-          className="pl-12 pr-12" // Add padding for both left and right buttons
+    <div className="relative">
+      <Input
+        placeholder={getPlaceholder()}
+        value={message}
+        onChange={handleInputChange}
+        onKeyPress={handleKeyPress}
+        className="pl-12 pr-24 h-12" // More padding on right for send button with text
+        disabled={isLoading || isPreview}
+        maxLength={1000}
+        autoComplete="off"
+      />
+      
+      {/* Attachment button on the left */}
+      <div className="absolute left-2 top-1/2 transform -translate-y-1/2">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8"
           disabled={isLoading || isPreview}
-          maxLength={1000}
-          autoComplete="off"
-        />
-        
-        {/* Attachment button on the left */}
-        <div className="absolute left-2 top-1/2 transform -translate-y-1/2">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8"
-            disabled={isLoading || isPreview}
-            onClick={handleAttachment}
-            title="Upload secure document"
-          >
-            <Paperclip className="w-4 h-4" />
-          </Button>
-        </div>
-
-        {/* Microphone button on the right */}
-        <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8"
-            disabled={isLoading || isPreview}
-            title="Voice input (coming soon)"
-          >
-            <Mic className="w-4 h-4" />
-          </Button>
-        </div>
+          onClick={handleAttachment}
+          title="Upload secure document"
+        >
+          <Paperclip className="w-4 h-4" />
+        </Button>
       </div>
 
-      {/* Send button - same height as input */}
-      <Button 
-        onClick={handleSend} 
-        disabled={isLoading || !message.trim() || isPreview} 
-        title="Send message" 
-        className="rounded-xl h-12 w-12 p-0" // Match input height (h-12) and make square
-        style={{
-          background: 'var(--Gradient-primary, linear-gradient(97deg, #8D58FE 5.35%, #6F7BF5 22.4%, #5399ED 50.15%, #43ACE8 77.04%, #15DFDB 94.96%))'
-        }}
-      >
-        <Send className="w-4 h-4" />
-      </Button>
+      {/* Send button inside input on the right */}
+      <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
+        <Button 
+          onClick={handleSend} 
+          disabled={isLoading || !message.trim() || isPreview} 
+          title="Send message" 
+          className="rounded-xl h-8 px-3 text-sm font-medium"
+          style={{
+            background: 'var(--Gradient-primary, linear-gradient(97deg, #8D58FE 5.35%, #6F7BF5 22.4%, #5399ED 50.15%, #43ACE8 77.04%, #15DFDB 94.96%))'
+          }}
+        >
+          <span className="mr-1">send</span>
+          <Send className="w-4 h-4" />
+        </Button>
+      </div>
     </div>
   );
 };
