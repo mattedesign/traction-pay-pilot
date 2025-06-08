@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronRight, LucideIcon } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import LoadItemExpanded from "./LoadItemExpanded";
 
@@ -10,10 +10,13 @@ interface LoadItemProps {
     broker: string;
     status: string;
   };
-  avatarColor: string;
+  avatarIcon: {
+    icon: LucideIcon;
+    color: string;
+  };
 }
 
-const LoadItem = ({ load, avatarColor }: LoadItemProps) => {
+const LoadItem = ({ load, avatarIcon }: LoadItemProps) => {
   const navigate = useNavigate();
   const { loadId } = useParams();
   const isActive = loadId === load.id;
@@ -28,6 +31,8 @@ const LoadItem = ({ load, avatarColor }: LoadItemProps) => {
     setIsExpanded(!isExpanded);
   };
 
+  const IconComponent = avatarIcon.icon;
+
   return (
     <div>
       <div 
@@ -38,10 +43,10 @@ const LoadItem = ({ load, avatarColor }: LoadItemProps) => {
       >
         <div className="flex items-center space-x-3">
           <div 
-            className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-semibold`}
-            style={{ backgroundColor: avatarColor }}
+            className="w-8 h-8 rounded-full flex items-center justify-center"
+            style={{ backgroundColor: avatarIcon.color }}
           >
-            {load.broker.charAt(0)}
+            <IconComponent className="w-4 h-4 text-white" />
           </div>
           <div>
             <div className="text-sm font-medium text-slate-900">Load #{load.id}</div>

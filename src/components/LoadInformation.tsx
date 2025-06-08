@@ -1,7 +1,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { DollarSign, MapPin, CreditCard, Edit, ExternalLink } from "lucide-react";
+import { DollarSign, MapPin, CreditCard, Edit, ExternalLink, Building2, Truck, Package, ShoppingCart, Zap, Globe, Target, Briefcase } from "lucide-react";
 import { useState } from "react";
 import LocationDetailsModal from "./LocationDetailsModal";
 
@@ -32,17 +32,23 @@ const LoadInformation = ({ loadData }: LoadInformationProps) => {
   };
 
   const getBrokerLogo = (brokerName: string) => {
-    // Create a simple, clean logo based on broker name
-    const initials = brokerName.split(' ').map(word => word[0]).join('').slice(0, 2);
-    const colors = [
-      'bg-blue-600', 'bg-green-600', 'bg-purple-600', 'bg-orange-600', 
-      'bg-red-600', 'bg-indigo-600', 'bg-teal-600', 'bg-pink-600'
+    const logos = [
+      { icon: Building2, color: 'bg-blue-600' },
+      { icon: Truck, color: 'bg-green-600' },
+      { icon: Package, color: 'bg-purple-600' },
+      { icon: ShoppingCart, color: 'bg-orange-600' },
+      { icon: Zap, color: 'bg-red-600' },
+      { icon: Globe, color: 'bg-indigo-600' },
+      { icon: Target, color: 'bg-teal-600' },
+      { icon: Briefcase, color: 'bg-pink-600' }
     ];
-    const colorIndex = brokerName.length % colors.length;
+    
+    const logoIndex = brokerName.length % logos.length;
+    const { icon: IconComponent, color } = logos[logoIndex];
     
     return (
-      <div className={`w-8 h-8 ${colors[colorIndex]} rounded flex items-center justify-center text-white text-sm font-semibold`}>
-        {initials}
+      <div className={`w-8 h-8 ${color} rounded flex items-center justify-center`}>
+        <IconComponent className="w-4 h-4 text-white" />
       </div>
     );
   };

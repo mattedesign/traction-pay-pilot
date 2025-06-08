@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Search, Plus } from "lucide-react";
+import { Search, Plus, Building2, Truck, Package, ShoppingCart, Zap, Globe, Target, Briefcase } from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
 import { LoadService } from "@/services/loadService";
 import { EmailService, EmailThread } from "@/services/emailService";
@@ -78,20 +78,20 @@ const LoadsSidebar = () => {
     navigate('/loads/new');
   };
 
-  const getAvatarColor = (loadId: string) => {
-    const colors = [
-      "#8B5CF6", // purple
-      "#3B82F6", // blue  
-      "#EF4444", // red
-      "#10B981", // green
-      "#F59E0B", // amber
-      "#6366F1", // indigo
-      "#EC4899", // pink
-      "#14B8A6"  // teal
+  const getAvatarIcon = (brokerName: string) => {
+    const icons = [
+      { icon: Building2, color: '#8B5CF6' },
+      { icon: Truck, color: '#3B82F6' },
+      { icon: Package, color: '#EF4444' },
+      { icon: ShoppingCart, color: '#10B981' },
+      { icon: Zap, color: '#F59E0B' },
+      { icon: Globe, color: '#6366F1' },
+      { icon: Target, color: '#EC4899' },
+      { icon: Briefcase, color: '#14B8A6' }
     ];
     
-    const index = parseInt(loadId.charAt(0), 10) || 0;
-    return colors[index % colors.length];
+    const iconIndex = brokerName.length % icons.length;
+    return icons[iconIndex];
   };
 
   if (isLoading) {
@@ -137,7 +137,7 @@ const LoadsSidebar = () => {
             <LoadItem 
               key={load.id}
               load={load}
-              avatarColor={getAvatarColor(load.id)}
+              avatarIcon={getAvatarIcon(load.broker)}
             />
           ))}
         </div>
@@ -149,7 +149,7 @@ const LoadsSidebar = () => {
             <LoadItem 
               key={load.id}
               load={load}
-              avatarColor={getAvatarColor(load.id)}
+              avatarIcon={getAvatarIcon(load.broker)}
             />
           ))}
         </div>
