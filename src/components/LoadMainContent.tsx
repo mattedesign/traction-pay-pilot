@@ -51,8 +51,8 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
       {/* Vertical gap between header and tabs */}
       <div className="h-4"></div>
       
-      {/* Fixed Tabs Container */}
-      <div className="bg-white border-b border-slate-200 px-6 sticky top-0 z-10">
+      {/* Fixed Tabs Container - removed bg-white class */}
+      <div className="border-b border-slate-200 px-6 sticky top-0 z-10">
         <LoadDetailTabs 
           load={load}
           emailThreads={emailThreads}
