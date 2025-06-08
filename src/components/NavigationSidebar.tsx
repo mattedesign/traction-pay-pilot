@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Home, Truck, FileText, Banknote, Search, HelpCircle, X } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import NotificationBell from "./NotificationBell";
 
 const navigationItems = [
@@ -15,10 +15,19 @@ const navigationItems = [
 
 const NavigationSidebar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleNavClick = (path: string) => {
     console.log(`Navigating to ${path}`);
     navigate(path);
+  };
+
+  const isActive = (path: string) => {
+    // Check for exact match or if current path starts with the nav path (for load details)
+    if (path === "/") {
+      return location.pathname === "/" || location.pathname.startsWith("/load/");
+    }
+    return location.pathname === path || location.pathname.startsWith(path);
   };
 
   return (
@@ -31,7 +40,9 @@ const NavigationSidebar = () => {
             variant="ghost"
             size="icon"
             onClick={() => handleNavClick(item.path)}
-            className="w-12 h-12 text-slate-300 hover:text-white hover:bg-slate-700 flex items-center justify-center"
+            className={`w-12 h-12 text-slate-300 hover:text-white hover:bg-slate-700 flex items-center justify-center ${
+              isActive(item.path) ? 'bg-slate-700 text-white' : ''
+            }`}
             title={item.label}
           >
             <item.icon className="w-6 h-6" />

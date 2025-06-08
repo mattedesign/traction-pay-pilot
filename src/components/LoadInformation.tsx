@@ -2,7 +2,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ExternalLink, Building2, Truck, Package, ShoppingCart, Zap, Globe, Target, Briefcase, Wifi, Clock, Phone, FileText } from "lucide-react";
+import { ExternalLink, Package, Wifi, Clock, Phone, FileText } from "lucide-react";
 import { useState } from "react";
 import LocationDetailsModal from "./LocationDetailsModal";
 import { Load } from "@/types/load";
@@ -13,33 +13,6 @@ interface LoadInformationProps {
 
 const LoadInformation = ({ loadData }: LoadInformationProps) => {
   const [showLocationModal, setShowLocationModal] = useState(false);
-
-  const getBrokerLogo = (brokerName: string) => {
-    const logos = [
-      { icon: Building2, color: '#8B5CF6' },
-      { icon: Truck, color: '#3B82F6' },
-      { icon: Package, color: '#EF4444' },
-      { icon: ShoppingCart, color: '#10B981' },
-      { icon: Zap, color: '#F59E0B' },
-      { icon: Globe, color: '#6366F1' },
-      { icon: Target, color: '#EC4899' },
-      { icon: Briefcase, color: '#14B8A6' }
-    ];
-    
-    const logoIndex = brokerName.length % logos.length;
-    const { icon: IconComponent, color } = logos[logoIndex];
-    
-    return (
-      <div className="w-8 h-8 bg-slate-100 border border-slate-200 rounded flex items-center justify-center relative">
-        <IconComponent className="w-4 h-4" style={{ color }} />
-        {loadData.source === "tms" && (
-          <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-500 rounded-full flex items-center justify-center">
-            <Wifi className="w-2 h-2 text-white" />
-          </div>
-        )}
-      </div>
-    );
-  };
 
   // Ensure deliveryTime is always defined for the modal
   const loadDataWithDeliveryTime = {
@@ -68,14 +41,11 @@ const LoadInformation = ({ loadData }: LoadInformationProps) => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <span className="text-sm font-medium text-slate-700 mb-1 block">Freight Broker</span>
-              <div className="flex items-center space-x-2">
-                {getBrokerLogo(loadData.broker)}
-                <div>
-                  <p className="text-sm text-slate-700">{loadData.broker}</p>
-                  {loadData.tmsData?.brokerLoadNumber && (
-                    <p className="text-xs text-slate-500">Ref: {loadData.tmsData.brokerLoadNumber}</p>
-                  )}
-                </div>
+              <div>
+                <p className="text-sm text-slate-700">{loadData.broker}</p>
+                {loadData.tmsData?.brokerLoadNumber && (
+                  <p className="text-xs text-slate-500">Ref: {loadData.tmsData.brokerLoadNumber}</p>
+                )}
               </div>
             </div>
             <div>

@@ -14,6 +14,7 @@ import { NotificationService } from "@/services/notificationService";
 const NotificationBell = () => {
   const [isOpen, setIsOpen] = useState(false);
   const unreadCount = NotificationService.getUnreadCount();
+  const hasNotifications = unreadCount > 0;
 
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
@@ -31,10 +32,12 @@ const NotificationBell = () => {
         <Button
           variant="ghost"
           size="icon"
-          className="relative w-10 h-10 text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+          className={`relative w-10 h-10 text-slate-600 hover:text-white hover:bg-slate-700 flex items-center justify-center ${
+            hasNotifications ? 'bg-slate-700 text-white' : ''
+          }`}
         >
           <Bell className="w-5 h-5" />
-          {unreadCount > 0 && (
+          {hasNotifications && (
             <Badge 
               variant="destructive" 
               className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-xs"

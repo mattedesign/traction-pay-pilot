@@ -2,7 +2,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { DollarSign, TrendingUp, Clock, CreditCard, Calculator, Edit } from "lucide-react";
+import { DollarSign, TrendingUp, Clock, CreditCard, Calculator, Edit, Banknote } from "lucide-react";
 import { Load } from "@/types/load";
 
 interface FinancialSummaryCardProps {
@@ -40,6 +40,12 @@ const FinancialSummaryCard = ({ loadData }: FinancialSummaryCardProps) => {
     }
   };
 
+  // Get funding method based on rate confirmation or default
+  const getFundingMethod = () => {
+    // Default to Standard Pay ACH if no specific method is set
+    return "Standard Pay ACH";
+  };
+
   const paymentStatus = getPaymentStatus();
 
   return (
@@ -57,7 +63,7 @@ const FinancialSummaryCard = ({ loadData }: FinancialSummaryCardProps) => {
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Main Rate */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-3 gap-4">
           <div>
             <div className="flex items-center space-x-2 mb-1">
               <TrendingUp className="w-4 h-4 text-green-600" />
@@ -74,27 +80,26 @@ const FinancialSummaryCard = ({ loadData }: FinancialSummaryCardProps) => {
               ${(rate / parseFloat(loadData.distance.replace(' miles', ''))).toFixed(2)}
             </p>
           </div>
-        </div>
-
-        {/* Funding Method */}
-        <div className="border-t pt-4">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-medium text-slate-700">Funding Method</span>
-            {canEditFundingMethod && (
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-6 w-6"
-                onClick={handleFundingMethodEdit}
-                title="Edit funding method"
-              >
-                <Edit className="w-3 h-3" />
-              </Button>
-            )}
+          <div>
+            <div className="flex items-center space-x-2 mb-1">
+              <Banknote className="w-4 h-4 text-purple-600" />
+              <span className="text-sm font-medium text-slate-700">Funding Method</span>
+              {canEditFundingMethod && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-4 w-4 ml-1"
+                  onClick={handleFundingMethodEdit}
+                  title="Edit funding method"
+                >
+                  <Edit className="w-3 h-3" />
+                </Button>
+              )}
+            </div>
+            <p className="text-lg font-semibold text-purple-600">
+              {getFundingMethod()}
+            </p>
           </div>
-          <p className="text-sm text-slate-700 mb-4">
-            {loadData.rateConfirmation?.originalRate || "Not specified"}
-          </p>
         </div>
 
         {/* Payment Breakdown */}
