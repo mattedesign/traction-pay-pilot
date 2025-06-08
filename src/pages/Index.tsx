@@ -1,27 +1,15 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Truck, FileText, MapPin, DollarSign, Route, CreditCard } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useRef, useState } from "react";
 import NavigationSidebar from "@/components/NavigationSidebar";
-import MockChatInterface, { MockChatInterfaceRef } from "@/components/MockChatInterface";
+import ChatInterface from "@/components/ChatInterface";
 
 const Index = () => {
   const navigate = useNavigate();
-  const chatRef = useRef<MockChatInterfaceRef>(null);
   const [isChatFocused, setIsChatFocused] = useState(false);
-
-  const handleTrackLoad = () => {
-    if (chatRef.current) {
-      chatRef.current.simulateTrackLoad();
-    }
-  };
-
-  const handlePlanRoute = () => {
-    if (chatRef.current) {
-      chatRef.current.simulatePlanRoute();
-    }
-  };
 
   const handleChatFocus = (focused: boolean) => {
     setIsChatFocused(focused);
@@ -33,26 +21,37 @@ const Index = () => {
       title: "Track a load",
       description: "Monitor load status and location",
       color: "text-blue-600",
-      onClick: handleTrackLoad
+      onClick: () => {
+        setIsChatFocused(true);
+        // The ChatInterface will handle this through suggested questions
+      }
     },
     {
       icon: FileText,
       title: "Check payment status",
       description: "View invoice and payment details",
-      color: "text-green-600"
+      color: "text-green-600",
+      onClick: () => {
+        setIsChatFocused(true);
+      }
     },
     {
       icon: Route,
       title: "Plan optimal route",
       description: "Get best routes for fuel efficiency",
       color: "text-purple-600",
-      onClick: handlePlanRoute
+      onClick: () => {
+        setIsChatFocused(true);
+      }
     },
     {
       icon: CreditCard,
       title: "QuickPay Available",
       description: "You have $1,250 available for QuickPay",
-      color: "text-orange-600"
+      color: "text-orange-600",
+      onClick: () => {
+        setIsChatFocused(true);
+      }
     }
   ];
 
@@ -114,10 +113,10 @@ const Index = () => {
         {/* Chat Interface - Expand when focused */}
         <div className={`${isChatFocused ? 'flex-1' : 'absolute bottom-0 left-0 right-0'} p-4`}>
           <div className={`w-full max-w-4xl mx-auto ${isChatFocused ? 'h-full' : 'h-16'}`}>
-            <MockChatInterface 
-              ref={chatRef} 
+            <FunctionalChatInterface 
               onNavigateToLoad={navigate} 
               onFocusChange={handleChatFocus}
+              isFocused={isChatFocused}
             />
           </div>
         </div>

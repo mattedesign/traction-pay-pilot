@@ -3,7 +3,7 @@ import ChatContainer from "./ChatContainer";
 import ChatPreview from "./ChatPreview";
 import ChatSetup from "./ChatSetup";
 import { useChatMessages } from "../hooks/useChatMessages";
-import { useClaude } from "../hooks/useClaude";
+import { useUnifiedChatHandler } from "../hooks/useUnifiedChatHandler";
 import { useSuggestedQuestions } from "../hooks/useSuggestedQuestions";
 import { useNavigate } from "react-router-dom";
 
@@ -17,9 +17,12 @@ const ChatInterface = ({ isPreview = false, loadContext }: ChatInterfaceProps) =
   const { currentSuggestions } = useSuggestedQuestions();
   const navigate = useNavigate();
   
-  // Simple Claude system prompt for general trucking knowledge
-  const systemPrompt = `You are Claude, an AI assistant specialized in trucking operations, logistics, and transportation industry. You have comprehensive knowledge of:
+  // Enhanced system prompt that supports both search and chat modes
+  const systemPrompt = `You are an AI assistant specialized in trucking operations and load management. You can operate in two modes:
 
+**SEARCH MODE**: Help users find and analyze specific loads by ID, broker, route, or status. Provide detailed load information, status updates, and actionable insights.
+
+**CHAT MODE**: Provide general trucking advice, compliance guidance, route optimization, and industry knowledge including:
 - DOT regulations and compliance (HOS, ELD, safety requirements)
 - Route optimization and fuel efficiency
 - Equipment maintenance and safety
@@ -27,40 +30,30 @@ const ChatInterface = ({ isPreview = false, loadContext }: ChatInterfaceProps) =
 - Payment processing and factoring
 - Professional communication
 
-Provide practical, actionable advice in a clear, professional tone. Focus on safety, compliance, and profitability.`;
+Always provide practical, actionable advice in a clear, professional tone. Focus on safety, compliance, and profitability.`;
 
-  const { isLoading, isInitialized, initializeService, sendMessage } = useClaude({
-    systemPrompt
+  const {
+    message,
+    setMessage,
+    isLoading,
+    isInitialized,
+    handleSendMessage,
+    handleAPIKeySubmit,
+    loadResults,
+    showingResults,
+    handleLoadSelect
+  } = useUnifiedChatHandler({
+    systemPrompt,
+    chatHistory,
+    addUserMessage,
+    addAIMessage,
+    currentLoadId: loadContext,
+    onLoadSelect: (loadId) => navigate(`/load/${loadId}`)
   });
 
-  const handleAPIKeySubmit = (apiKey: string) => {
-    initializeService(apiKey);
-  };
-
-  const handleChatMessage = async (message: string) => {
-    if (!message.trim()) return;
-
-    addUserMessage(message);
-
-    try {
-      const messages = [
-        ...chatHistory.map(msg => ({
-          role: msg.type === 'user' ? 'user' as const : 'assistant' as const,
-          content: msg.content
-        })),
-        { role: 'user' as const, content: message }
-      ];
-
-      const response = await sendMessage(messages);
-      addAIMessage(response);
-    } catch (error) {
-      console.error('Error sending message to Claude:', error);
-      addAIMessage('Sorry, I encountered an error. Please try again.');
-    }
-  };
-
-  const handleLoadSelect = (loadId: string) => {
-    navigate(`/load/${loadId}`);
+  const handleChatMessage = async (userMessage: string) => {
+    setMessage(userMessage);
+    await handleSendMessage();
   };
 
   if (isPreview) {

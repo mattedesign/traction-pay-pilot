@@ -4,7 +4,9 @@ import ChatHistory from "./ChatHistory";
 import SuggestedQuestions from "./SuggestedQuestions";
 import ChatInput from "./ChatInput";
 import ModeSelector from "./ModeSelector";
+import LoadResultsPresenter from "./LoadResultsPresenter";
 import { ChatMessage } from "../hooks/useChatMessages";
+import { useUnifiedChatHandler } from "../hooks/useUnifiedChatHandler";
 
 interface ChatContainerProps {
   isInitialized: boolean;
@@ -20,7 +22,8 @@ const ChatContainer = ({
   isLoading,
   chatHistory,
   currentSuggestions,
-  onChatMessage
+  onChatMessage,
+  onLoadSelect
 }: ChatContainerProps) => {
   const [message, setMessage] = useState("");
   const [mode, setMode] = useState<"search" | "chat">("search");
@@ -32,18 +35,24 @@ const ChatContainer = ({
     }
   };
 
+  const handleQuestionClick = (question: string) => {
+    setMessage(question);
+  };
+
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 h-full flex flex-col">
       <ModeSelector 
         mode={mode} 
         onModeChange={setMode}
       />
       
-      <ChatHistory messages={chatHistory} isLoading={isLoading} />
+      <div className="flex-1 min-h-0">
+        <ChatHistory messages={chatHistory} isLoading={isLoading} />
+      </div>
       
       <SuggestedQuestions 
         questions={currentSuggestions} 
-        onQuestionClick={onChatMessage}
+        onQuestionClick={handleQuestionClick}
       />
       
       <ChatInput
