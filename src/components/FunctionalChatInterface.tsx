@@ -2,7 +2,6 @@
 import { useState } from "react";
 import ChatInput from "./ChatInput";
 import ModeSelector from "./ModeSelector";
-import SuggestedQuestions from "./SuggestedQuestions";
 import ChatHistory from "./ChatHistory";
 import ChatSetup from "./ChatSetup";
 import LoadResultsPresenter from "./LoadResultsPresenter";
@@ -67,11 +66,6 @@ Always provide practical, actionable advice in a clear, professional tone. Focus
     console.log('Mode changed to:', newMode);
   };
 
-  const handleQuestionClick = (question: string) => {
-    setMessage(question);
-    if (onFocusChange) onFocusChange(true);
-  };
-
   const handleMessageChange = (newMessage: string) => {
     setMessage(newMessage);
     if (onFocusChange) {
@@ -114,14 +108,6 @@ Always provide practical, actionable advice in a clear, professional tone. Focus
             onLoadSelect={handleLoadSelect}
           />
         </div>
-      )}
-      
-      {/* Suggested Questions - Show when not focused or no chat history */}
-      {(!isFocused || chatHistory.length === 0) && (
-        <SuggestedQuestions 
-          questions={currentSuggestions.slice(0, 3)} 
-          onQuestionClick={handleQuestionClick}
-        />
       )}
       
       {/* Chat Input - Always at bottom */}
