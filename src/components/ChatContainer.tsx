@@ -3,6 +3,7 @@ import { useState } from "react";
 import ChatHistory from "./ChatHistory";
 import SuggestedQuestions from "./SuggestedQuestions";
 import ChatInput from "./ChatInput";
+import ModeSelector from "./ModeSelector";
 import { ChatMessage } from "../hooks/useChatMessages";
 
 interface ChatContainerProps {
@@ -22,6 +23,7 @@ const ChatContainer = ({
   onChatMessage
 }: ChatContainerProps) => {
   const [message, setMessage] = useState("");
+  const [mode, setMode] = useState<"search" | "chat">("search");
 
   const handleSendMessage = () => {
     if (message.trim()) {
@@ -32,6 +34,11 @@ const ChatContainer = ({
 
   return (
     <div className="space-y-4">
+      <ModeSelector 
+        mode={mode} 
+        onModeChange={setMode}
+      />
+      
       <ChatHistory messages={chatHistory} isLoading={isLoading} />
       
       <SuggestedQuestions 
@@ -44,6 +51,7 @@ const ChatContainer = ({
         onMessageChange={setMessage}
         onSendMessage={handleSendMessage}
         isLoading={isLoading}
+        mode={mode}
       />
     </div>
   );
