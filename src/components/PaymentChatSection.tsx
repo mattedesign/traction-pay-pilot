@@ -10,7 +10,7 @@ const PaymentChatSection = ({ loadId }: PaymentChatSectionProps) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Questions About Payment Options?</CardTitle>
+        <CardTitle>Your Offers</CardTitle>
         <CardDescription>
           Ask about QuickPay, factoring, cash flow management, or payment optimization
         </CardDescription>

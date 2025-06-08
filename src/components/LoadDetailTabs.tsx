@@ -3,6 +3,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import LoadDetailContent from "./LoadDetailContent";
 import LoadDocumentsContent from "./LoadDocumentsContent";
 import LoadIntelligenceContent from "./LoadIntelligenceContent";
+import LoadAcceptanceCard from "./LoadAcceptanceCard";
 import { Load } from "@/types/load";
 import { EmailThread } from "@/services/emailService";
 
@@ -24,6 +25,11 @@ const LoadDetailTabs = ({ load, emailThreads, isLoadingEmails }: LoadDetailTabsP
       <div className="flex-1 overflow-y-auto">
         <TabsContent value="detail" className="h-full m-0">
           <div className="max-w-6xl mx-auto p-6 space-y-6">
+            {/* Load Acceptance Card for pending loads - now within scrollable content */}
+            {load.status === "pending_acceptance" && (
+              <LoadAcceptanceCard load={load} />
+            )}
+            
             <LoadDetailContent 
               load={load}
               emailThreads={emailThreads}
@@ -34,12 +40,22 @@ const LoadDetailTabs = ({ load, emailThreads, isLoadingEmails }: LoadDetailTabsP
         
         <TabsContent value="documents" className="h-full m-0">
           <div className="max-w-6xl mx-auto p-6 space-y-6">
+            {/* Load Acceptance Card for pending loads - now within scrollable content */}
+            {load.status === "pending_acceptance" && (
+              <LoadAcceptanceCard load={load} />
+            )}
+            
             <LoadDocumentsContent />
           </div>
         </TabsContent>
         
         <TabsContent value="intelligence" className="h-full m-0">
           <div className="max-w-6xl mx-auto p-6 space-y-6">
+            {/* Load Acceptance Card for pending loads - now within scrollable content */}
+            {load.status === "pending_acceptance" && (
+              <LoadAcceptanceCard load={load} />
+            )}
+            
             <LoadIntelligenceContent load={load} />
           </div>
         </TabsContent>

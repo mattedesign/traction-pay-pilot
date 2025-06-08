@@ -48,13 +48,6 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
         <LoadHeader loadData={load} />
       </div>
       
-      {/* Load Acceptance Card for pending loads - fixed position */}
-      {load.status === "pending_acceptance" && (
-        <div className="bg-white border-b border-slate-200 px-6 py-4">
-          <LoadAcceptanceCard load={load} />
-        </div>
-      )}
-      
       {/* Fixed Tabs Container */}
       <div className="bg-white border-b border-slate-200 px-6 sticky top-0 z-10">
         <LoadDetailTabs 
