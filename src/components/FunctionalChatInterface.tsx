@@ -103,8 +103,8 @@ Always provide practical, actionable advice in a clear, professional tone. Focus
   // Show setup if not initialized
   if (!isInitialized) {
     return (
-      <div className="space-y-4">
-        <div className="flex items-center justify-end">
+      <div className="h-full flex flex-col">
+        <div className="flex items-center justify-end mb-4">
           {isFocused && (
             <Button
               variant="ghost"
@@ -117,15 +117,17 @@ Always provide practical, actionable advice in a clear, professional tone. Focus
             </Button>
           )}
         </div>
-        <ChatSetup onAPIKeySubmit={handleAPIKeySubmit} isLoading={isLoading} />
+        <div className="flex-1">
+          <ChatSetup onAPIKeySubmit={handleAPIKeySubmit} isLoading={isLoading} />
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-4">
+    <div className="h-full flex flex-col">
       {/* Header with Close Button only */}
-      <div className="flex items-center justify-end">
+      <div className="flex items-center justify-end mb-4">
         {isFocused && (
           <Button
             variant="ghost"
@@ -139,16 +141,16 @@ Always provide practical, actionable advice in a clear, professional tone. Focus
         )}
       </div>
       
-      {/* Chat History - Show when focused and has messages, with fixed height and scroll */}
+      {/* Chat History - Expand to fill available space when focused */}
       {isFocused && chatHistory.length > 0 && (
-        <div className="h-48 overflow-y-auto border rounded-lg bg-slate-50">
+        <div className="flex-1 mb-4 overflow-y-auto border rounded-lg bg-slate-50 min-h-0">
           <ChatHistory messages={chatHistory} isLoading={isLoading} />
         </div>
       )}
 
       {/* Load Results - Show when available */}
       {showingResults && loadResults.length > 0 && (
-        <div className="max-h-32 overflow-y-auto">
+        <div className="mb-4 max-h-48 overflow-y-auto">
           <LoadResultsPresenter 
             results={loadResults}
             onLoadSelect={handleLoadSelect}
@@ -157,14 +159,16 @@ Always provide practical, actionable advice in a clear, professional tone. Focus
       )}
       
       {/* Chat Input - Always at bottom with mode integrated */}
-      <ChatInput
-        message={message}
-        onMessageChange={handleMessageChange}
-        onSendMessage={handleSend}
-        isLoading={isLoading}
-        mode={mode}
-        onModeChange={handleModeChange}
-      />
+      <div className="shrink-0">
+        <ChatInput
+          message={message}
+          onMessageChange={handleMessageChange}
+          onSendMessage={handleSend}
+          isLoading={isLoading}
+          mode={mode}
+          onModeChange={handleModeChange}
+        />
+      </div>
     </div>
   );
 };

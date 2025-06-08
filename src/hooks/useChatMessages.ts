@@ -8,13 +8,7 @@ export interface ChatMessage {
 }
 
 export const useChatMessages = () => {
-  const [chatHistory, setChatHistory] = useState<ChatMessage[]>([
-    {
-      type: "ai",
-      content: "Hi there! I'm Claude, your AI assistant specialized in trucking operations and logistics. I'm powered by Anthropic's advanced AI and can help you with load management, payment questions, route planning, regulatory compliance, email analysis, and much more. What can I help you with today?",
-      timestamp: new Date()
-    }
-  ]);
+  const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
 
   const addMessage = (message: ChatMessage) => {
     setChatHistory(prev => [...prev, message]);

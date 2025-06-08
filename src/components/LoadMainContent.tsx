@@ -2,6 +2,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import LoadInformation from "./LoadInformation";
 import RouteOptimization from "./RouteOptimization";
 import EldSharing from "./EldSharing";
@@ -53,6 +54,16 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
     navigate("/loads");
   };
 
+  const getStatusBadgeClass = (status: string) => {
+    if (status === "pending_pickup") return "border-orange-200 bg-orange-50 text-orange-700";
+    if (status === "in_transit") return "border-blue-200 bg-blue-50 text-blue-700";
+    return "border-green-200 bg-green-50 text-green-700";
+  };
+
+  const getStatusText = (status: string) => {
+    return status.replace("_", " ").toUpperCase();
+  };
+
   // Check if load is completed and should show QuickPay option at the top
   const shouldShowQuickPayAtTop = loadData.status === "delivered" && 
     loadData.fundingMethod === "Standard Pay ACH";
@@ -64,11 +75,18 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
         <Tabs defaultValue="details" className="h-full flex flex-col">
           <div className="border-b border-slate-200 bg-white px-6 py-4 shrink-0">
             <div className="flex items-center justify-between mb-4">
-              <div>
-                <h1 className="text-2xl font-semibold text-slate-900">
-                  Load #{loadData.loadId}
-                </h1>
-                <p className="text-slate-600">{loadData.broker}</p>
+              <div className="flex items-center space-x-4">
+                <div>
+                  <h1 className="text-2xl font-semibold text-slate-900">
+                    Load #{loadData.loadId}
+                  </h1>
+                </div>
+                <Badge 
+                  variant="outline" 
+                  className={getStatusBadgeClass(loadData.status)}
+                >
+                  {getStatusText(loadData.status)}
+                </Badge>
               </div>
               <Button
                 variant="ghost"
@@ -84,7 +102,7 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
             <TabsList className="grid w-full grid-cols-3 bg-slate-100">
               <TabsTrigger value="details" className="flex items-center space-x-2 text-slate-700">
                 <FileText className="w-4 h-4" />
-                <span>Load Details</span>
+                <span>Details</span>
               </TabsTrigger>
               <TabsTrigger value="documents" className="flex items-center space-x-2 text-slate-700">
                 <Upload className="w-4 h-4" />
@@ -100,7 +118,7 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
           <div className="flex-1 flex flex-col overflow-hidden bg-slate-50 relative">
             <TabsContent value="details" className="flex-1 overflow-hidden">
               <ScrollArea className="h-full">
-                <div className="p-6 pb-32">
+                <div className={`p-6 ${isChatFocused ? 'pb-4' : 'pb-32'}`}>
                   <div className="max-w-4xl mx-auto space-y-6">
                     {/* Show QuickPay at top for completed loads with standard funding */}
                     {shouldShowQuickPayAtTop && <QuickPayOffer />}
@@ -129,7 +147,7 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
 
             <TabsContent value="documents" className="flex-1 overflow-hidden">
               <ScrollArea className="h-full">
-                <div className="p-6 pb-32">
+                <div className={`p-6 ${isChatFocused ? 'pb-4' : 'pb-32'}`}>
                   <div className="max-w-4xl mx-auto">
                     <DocumentUploadSection />
                   </div>
@@ -139,7 +157,7 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
             
             <TabsContent value="intelligence" className="flex-1 overflow-hidden">
               <ScrollArea className="h-full">
-                <div className="p-6 pb-32">
+                <div className={`p-6 ${isChatFocused ? 'pb-4' : 'pb-32'}`}>
                   <div className="max-w-4xl mx-auto space-y-6">
                     <RouteOptimization />
                     <EldSharing />
@@ -178,8 +196,8 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
             </TabsContent>
 
             {/* Fixed chat interface within the load details container */}
-            <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-slate-200 shadow-lg z-20 p-4 shrink-0">
-              <div className="max-w-4xl mx-auto">
+            <div className={`${isChatFocused ? 'flex-1 flex flex-col' : 'absolute bottom-0 left-0 right-0'} bg-white border-t border-slate-200 shadow-lg z-20 p-4 shrink-0`}>
+              <div className={`max-w-4xl mx-auto ${isChatFocused ? 'h-full flex flex-col' : ''}`}>
                 <FunctionalChatInterface 
                   onNavigateToLoad={handleNavigateToLoad}
                   onFocusChange={handleFocusChange}
