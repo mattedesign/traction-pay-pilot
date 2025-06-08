@@ -92,7 +92,7 @@ const LoadsSidebar = () => {
 
   // Group loads by status
   const pendingAcceptanceLoads = loads.filter(load => load.status === "pending_acceptance");
-  const activeLoads = loads.filter(load => load.status === "pending_pickup" || load.status === "in_transit");
+  const activeLoads = loads.filter(load => load.status === "pending_pickup" || load.status === "in_transit" || load.status === "ready_to_invoice");
   const completedLoads = loads.filter(load => load.status === "delivered");
 
   return (
