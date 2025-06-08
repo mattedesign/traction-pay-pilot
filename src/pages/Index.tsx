@@ -1,11 +1,10 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Truck, FileText, MapPin, DollarSign, Route, CreditCard } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useRef, useState } from "react";
 import NavigationSidebar from "@/components/NavigationSidebar";
-import ChatInterface from "@/components/ChatInterface";
+import FunctionalChatInterface from "@/components/FunctionalChatInterface";
 
 const Index = () => {
   const navigate = useNavigate();
