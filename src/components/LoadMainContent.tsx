@@ -8,6 +8,7 @@ import LoadChatSection from "./LoadChatSection";
 import PaymentChatSection from "./PaymentChatSection";
 import LoadAcceptanceCard from "./LoadAcceptanceCard";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { EmailService, EmailThread } from "@/services/emailService";
 import { LoadRepository } from "@/services/loadRepository";
 import { Load } from "@/types/load";
@@ -52,44 +53,60 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
         <LoadHeader loadData={load} />
       </div>
       
-      <div className="flex-1 overflow-y-auto p-6">
-        <div className="max-w-6xl mx-auto space-y-6">
-          
+      <div className="flex-1 overflow-y-auto">
+        <div className="max-w-6xl mx-auto p-6">
           {/* Load Acceptance Card for pending loads */}
           {load.status === "pending_acceptance" && (
-            <LoadAcceptanceCard load={load} />
+            <div className="mb-6">
+              <LoadAcceptanceCard load={load} />
+            </div>
           )}
           
-          {/* Load Information */}
-          <LoadInformation loadData={load} />
-          
-          {/* Document Upload Section */}
-          <DocumentUploadSection />
-          
-          {/* Email Communications */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Email Communications</CardTitle>
-              <CardDescription>
-                Email threads and communications for this load
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {isLoadingEmails ? (
-                <div className="text-center py-8">
-                  <div className="text-slate-500 text-sm">Loading communications...</div>
-                </div>
-              ) : (
-                <EmailThreadDisplay threads={emailThreads} />
-              )}
-            </CardContent>
-          </Card>
-          
-          {/* Load-specific Chat */}
-          <LoadChatSection loadId={load.id} />
-          
-          {/* Payment Chat */}
-          <PaymentChatSection loadId={load.id} />
+          {/* Tabbed Interface */}
+          <Tabs defaultValue="detail" className="space-y-6">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="detail">Detail</TabsTrigger>
+              <TabsTrigger value="documents">Documents</TabsTrigger>
+              <TabsTrigger value="intelligence">Intelligence</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="detail" className="space-y-6">
+              {/* Load Information */}
+              <LoadInformation loadData={load} />
+              
+              {/* Email Communications */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Email Communications</CardTitle>
+                  <CardDescription>
+                    Email threads and communications for this load
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {isLoadingEmails ? (
+                    <div className="text-center py-8">
+                      <div className="text-slate-500 text-sm">Loading communications...</div>
+                    </div>
+                  ) : (
+                    <EmailThreadDisplay threads={emailThreads} />
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+            
+            <TabsContent value="documents" className="space-y-6">
+              {/* Document Upload Section */}
+              <DocumentUploadSection />
+            </TabsContent>
+            
+            <TabsContent value="intelligence" className="space-y-6">
+              {/* Load-specific Chat */}
+              <LoadChatSection loadId={load.id} />
+              
+              {/* Payment Chat */}
+              <PaymentChatSection loadId={load.id} />
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
     </div>
