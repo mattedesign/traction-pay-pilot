@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -17,7 +18,7 @@ const FinancialSummaryCard = ({ loadData }: FinancialSummaryCardProps) => {
   const quickPayFee = Math.round(rate * 0.02); // 2% quick pay fee
   const quickPayAmount = rate - quickPayFee;
 
-  const canEditFundingMethod = loadData.status !== "delivered";
+  const canEditFundingMethod = loadData.status !== "delivered" && loadData.status !== "ready_to_invoice";
 
   const handleFundingMethodEdit = () => {
     // TODO: Implement funding method edit functionality
@@ -34,6 +35,8 @@ const FinancialSummaryCard = ({ loadData }: FinancialSummaryCardProps) => {
         return { label: "In Progress", color: "bg-green-50 border-green-200 text-green-700" };
       case "delivered":
         return { label: "Payment Due", color: "bg-purple-50 border-purple-200 text-purple-700" };
+      case "ready_to_invoice":
+        return { label: "Ready To Invoice", color: "bg-blue-50 border-blue-200 text-blue-700" };
       default:
         return { label: "Unknown", color: "bg-slate-50 border-slate-200 text-slate-700" };
     }
@@ -46,6 +49,8 @@ const FinancialSummaryCard = ({ loadData }: FinancialSummaryCardProps) => {
   };
 
   const paymentStatus = getPaymentStatus();
+  const showBadge = loadData.status !== "ready_to_invoice";
+  const showAdvancePayment = loadData.status !== "ready_to_invoice";
 
   return (
     <Card>
@@ -55,9 +60,11 @@ const FinancialSummaryCard = ({ loadData }: FinancialSummaryCardProps) => {
             <DollarSign className="w-5 h-5 text-green-600" />
             <span>Financial Summary</span>
           </CardTitle>
-          <Badge variant="outline" className={paymentStatus.color}>
-            {paymentStatus.label}
-          </Badge>
+          {showBadge && (
+            <Badge variant="outline" className={paymentStatus.color}>
+              {paymentStatus.label}
+            </Badge>
+          )}
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -98,20 +105,22 @@ const FinancialSummaryCard = ({ loadData }: FinancialSummaryCardProps) => {
         <div className="border-t pt-4">
           <h4 className="text-sm font-medium text-slate-700 mb-3">Payment Options</h4>
           <div className="space-y-3">
-            {/* Advance Payment */}
-            <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
-              <div className="flex items-center space-x-2">
-                <CreditCard className="w-4 h-4 text-blue-600" />
-                <div>
-                  <p className="text-sm font-medium text-blue-900">Advance Payment</p>
-                  <p className="text-xs text-blue-700">{advancePercentage * 100}% of total rate</p>
+            {/* Advance Payment - only show if not ready_to_invoice */}
+            {showAdvancePayment && (
+              <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                <div className="flex items-center space-x-2">
+                  <CreditCard className="w-4 h-4 text-blue-600" />
+                  <div>
+                    <p className="text-sm font-medium text-blue-900">Advance Payment</p>
+                    <p className="text-xs text-blue-700">{advancePercentage * 100}% of total rate</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm font-bold text-blue-900">${advanceAmount.toLocaleString()}</p>
+                  <p className="text-xs text-blue-700">Available now</p>
                 </div>
               </div>
-              <div className="text-right">
-                <p className="text-sm font-bold text-blue-900">${advanceAmount.toLocaleString()}</p>
-                <p className="text-xs text-blue-700">Available now</p>
-              </div>
-            </div>
+            )}
 
             {/* Quick Pay Option */}
             <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">

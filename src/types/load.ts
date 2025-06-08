@@ -1,8 +1,7 @@
-
 export interface Load {
   id: string;
   broker: string;
-  status: "pending_pickup" | "in_transit" | "delivered" | "pending_acceptance";
+  status: "pending_pickup" | "in_transit" | "delivered" | "pending_acceptance" | "ready_to_invoice";
   amount: string;
   origin: string;
   destination: string;
@@ -33,6 +32,8 @@ export interface Load {
   };
   notificationSent?: boolean;
   acceptedAt?: string;
+  deliveredAt?: string;
+  fuelCost?: string;
 }
 
 export interface RateConfirmationData {

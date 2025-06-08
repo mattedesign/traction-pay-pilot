@@ -31,6 +31,25 @@ export const mockLoadsData: Load[] = [
     notificationSent: true
   },
   {
+    id: "INV-2024",
+    broker: "Summit Cargo Connect",
+    status: "ready_to_invoice",
+    amount: "$1,450.00",
+    origin: "Phoenix, AZ",
+    destination: "Denver, CO",
+    pickupTime: "Jun 4, 8:00 AM",
+    deliveryTime: "Jun 5, 2:00 PM",
+    deliveredAt: "Jun 5, 1:45 PM",
+    distance: "860 miles",
+    source: "manual",
+    fuelCost: "$320.00",
+    rateConfirmation: {
+      originalRate: "$1,450.00",
+      commodity: "Manufacturing Equipment",
+      weight: "42000 lbs"
+    }
+  },
+  {
     id: "1234",
     broker: "Continental Logistics Partners",
     status: "pending_pickup",

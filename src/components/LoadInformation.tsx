@@ -1,10 +1,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Package, Wifi, Clock, Phone, FileText, ExternalLink } from "lucide-react";
-import { useState } from "react";
-import LocationDetailsModal from "./LocationDetailsModal";
+import { Calendar, MapPin, Package, Clock, Truck, User, Phone, Mail } from "lucide-react";
 import { Load } from "@/types/load";
 
 interface LoadInformationProps {
@@ -12,112 +9,126 @@ interface LoadInformationProps {
 }
 
 const LoadInformation = ({ loadData }: LoadInformationProps) => {
-  const [showLocationModal, setShowLocationModal] = useState(false);
-
-  // Ensure deliveryTime is always defined for the modal
-  const loadDataWithDeliveryTime = {
-    ...loadData,
-    deliveryTime: loadData.deliveryTime || loadData.tmsData?.deliveryTime || "Delivery time TBD"
-  };
+  const isDelivered = loadData.status === "delivered" || loadData.status === "ready_to_invoice";
+  const deliveryLabel = isDelivered ? "Delivered On" : "Expected Delivery";
 
   return (
-    <>
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center space-x-2">
-              <FileText className="w-5 h-5 text-blue-600" />
-              <span>Load Information</span>
-            </CardTitle>
-            {loadData.source === "tms" && (
-              <Badge variant="outline" className="bg-blue-50 border-blue-200 text-blue-700">
-                <Wifi className="w-3 h-3 mr-1" />
-                TMS Integration
-              </Badge>
-            )}
-          </div>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div>
-              <span className="text-sm font-medium text-slate-700 mb-1 block">Freight Broker</span>
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center space-x-2">
+          <Package className="w-5 h-5 text-blue-600" />
+          <span>Load Information</span>
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        {/* Route Information */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-4">
+            <div className="flex items-start space-x-3">
+              <MapPin className="w-5 h-5 text-green-600 mt-0.5" />
               <div>
-                <p className="text-sm text-slate-700">{loadData.broker}</p>
-                {loadData.tmsData?.brokerLoadNumber && (
-                  <p className="text-xs text-slate-500">Ref: {loadData.tmsData.brokerLoadNumber}</p>
-                )}
+                <p className="text-sm font-medium text-slate-700">Pickup Location</p>
+                <p className="text-sm text-slate-900">{loadData.origin}</p>
+                <p className="text-xs text-slate-500">{loadData.pickupTime}</p>
               </div>
             </div>
-            <div>
-              <span className="text-sm font-medium text-slate-700 mb-1 block">Delivery Location</span>
-              <div className="flex items-center space-x-2">
-                <p 
-                  className="text-sm text-slate-700 cursor-pointer hover:text-blue-600 hover:underline"
-                  onClick={() => setShowLocationModal(true)}
-                >
+            
+            <div className="flex items-start space-x-3">
+              <MapPin className="w-5 h-5 text-red-600 mt-0.5" />
+              <div>
+                <p className="text-sm font-medium text-slate-700">Delivery Location</p>
+                <p className="text-sm text-slate-900 cursor-pointer hover:text-blue-600 hover:underline">
                   {loadData.destination}
                 </p>
-                <ExternalLink className="w-3 h-3 text-slate-400 cursor-pointer hover:text-blue-600" onClick={() => setShowLocationModal(true)} />
+                <p className="text-xs text-slate-500">
+                  {isDelivered && loadData.deliveredAt ? loadData.deliveredAt : loadData.deliveryTime}
+                </p>
               </div>
             </div>
+          </div>
+          
+          <div className="space-y-4">
+            <div className="flex items-start space-x-3">
+              <Calendar className="w-5 h-5 text-blue-600 mt-0.5" />
+              <div>
+                <p className="text-sm font-medium text-slate-700">Pickup Time</p>
+                <p className="text-sm text-slate-900">{loadData.pickupTime}</p>
+              </div>
+            </div>
+            
+            <div className="flex items-start space-x-3">
+              <Clock className="w-5 h-5 text-purple-600 mt-0.5" />
+              <div>
+                <p className="text-sm font-medium text-slate-700">{deliveryLabel}</p>
+                <p className="text-sm text-slate-900">
+                  {isDelivered && loadData.deliveredAt ? loadData.deliveredAt : loadData.deliveryTime}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Load Details */}
+        <div className="border-t pt-4">
+          <h4 className="text-sm font-medium text-slate-700 mb-3">Load Details</h4>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div>
-              <span className="text-sm font-medium text-slate-700 mb-1 block">Expected Delivery</span>
-              <p className="text-xs text-slate-500">
-                {loadDataWithDeliveryTime.deliveryTime}
+              <span className="text-xs text-slate-500">Distance</span>
+              <p className="text-sm font-medium text-slate-900">{loadData.distance}</p>
+            </div>
+            <div>
+              <span className="text-xs text-slate-500">Equipment</span>
+              <p className="text-sm font-medium text-slate-900">
+                {loadData.tmsData?.equipment || "53' Dry Van"}
+              </p>
+            </div>
+            <div>
+              <span className="text-xs text-slate-500">Commodity</span>
+              <p className="text-sm font-medium text-slate-900">
+                {loadData.tmsData?.commodity || loadData.rateConfirmation?.commodity || "General Freight"}
+              </p>
+            </div>
+            <div>
+              <span className="text-xs text-slate-500">Weight</span>
+              <p className="text-sm font-medium text-slate-900">
+                {loadData.tmsData?.weight || loadData.rateConfirmation?.weight || "N/A"}
               </p>
             </div>
           </div>
+        </div>
 
-          {/* TMS-specific information */}
-          {loadData.tmsData && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <div className="flex items-center space-x-2 mb-1">
-                  <Package className="w-4 h-4 text-purple-600" />
-                  <span className="text-sm font-medium text-slate-700">Equipment & Cargo</span>
-                </div>
-                <p className="text-sm text-slate-700">{loadData.tmsData.equipment}</p>
-                <p className="text-xs text-slate-500">
-                  {loadData.tmsData.commodity} • {loadData.tmsData.weight}
-                  {loadData.tmsData.pieces && ` • ${loadData.tmsData.pieces}`}
-                </p>
+        {/* Contact Information - Only show if TMS data is available */}
+        {loadData.tmsData?.contactInfo && (
+          <div className="border-t pt-4">
+            <h4 className="text-sm font-medium text-slate-700 mb-3">Broker Contact</h4>
+            <div className="flex flex-wrap gap-4">
+              <div className="flex items-center space-x-2">
+                <User className="w-4 h-4 text-slate-500" />
+                <span className="text-sm text-slate-900">{loadData.tmsData.contactInfo.name}</span>
               </div>
-              
-              {loadData.tmsData.contactInfo && (
-                <div>
-                  <div className="flex items-center space-x-2 mb-1">
-                    <Phone className="w-4 h-4 text-blue-600" />
-                    <span className="text-sm font-medium text-slate-700">Broker Contact</span>
-                  </div>
-                  <p className="text-sm text-slate-700">{loadData.tmsData.contactInfo.name}</p>
-                  <div className="flex items-center space-x-3 text-xs text-slate-500 mt-1">
-                    <span>{loadData.tmsData.contactInfo.phone}</span>
-                    <span>{loadData.tmsData.contactInfo.email}</span>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Special Instructions for TMS loads */}
-          {loadData.tmsData?.specialInstructions && (
-            <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg">
-              <div className="flex items-center space-x-2 mb-1">
-                <Clock className="w-4 h-4 text-amber-600" />
-                <span className="text-sm font-medium text-amber-900">Special Instructions</span>
+              <div className="flex items-center space-x-2">
+                <Phone className="w-4 h-4 text-slate-500" />
+                <span className="text-sm text-slate-900">{loadData.tmsData.contactInfo.phone}</span>
               </div>
-              <p className="text-sm text-amber-800">{loadData.tmsData.specialInstructions}</p>
+              <div className="flex items-center space-x-2">
+                <Mail className="w-4 h-4 text-slate-500" />
+                <span className="text-sm text-slate-900">{loadData.tmsData.contactInfo.email}</span>
+              </div>
             </div>
-          )}
-        </CardContent>
-      </Card>
+          </div>
+        )}
 
-      <LocationDetailsModal
-        isOpen={showLocationModal}
-        onClose={() => setShowLocationModal(false)}
-        loadData={loadDataWithDeliveryTime}
-      />
-    </>
+        {/* Special Instructions */}
+        {loadData.tmsData?.specialInstructions && (
+          <div className="border-t pt-4">
+            <h4 className="text-sm font-medium text-slate-700 mb-2">Special Instructions</h4>
+            <p className="text-sm text-slate-600 bg-yellow-50 p-3 rounded-lg border border-yellow-200">
+              {loadData.tmsData.specialInstructions}
+            </p>
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 };
 

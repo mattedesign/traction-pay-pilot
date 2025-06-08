@@ -4,6 +4,7 @@ import LoadDetailContent from "./LoadDetailContent";
 import LoadDocumentsContent from "./LoadDocumentsContent";
 import LoadIntelligenceContent from "./LoadIntelligenceContent";
 import LoadAcceptanceCard from "./LoadAcceptanceCard";
+import InvoiceRequestToast from "./InvoiceRequestToast";
 import { Load } from "@/types/load";
 import { EmailThread } from "@/services/emailService";
 
@@ -15,52 +16,59 @@ interface LoadDetailTabsProps {
 
 const LoadDetailTabs = ({ load, emailThreads, isLoadingEmails }: LoadDetailTabsProps) => {
   return (
-    <Tabs defaultValue="detail" className="flex flex-col">
-      <TabsList className="grid w-full grid-cols-3">
-        <TabsTrigger value="detail">Detail</TabsTrigger>
-        <TabsTrigger value="documents">Documents</TabsTrigger>
-        <TabsTrigger value="intelligence">Intelligence</TabsTrigger>
-      </TabsList>
-      
-      <div className="overflow-y-auto" style={{ height: 'calc(100vh - 140px)' }}>
-        <TabsContent value="detail" className="m-0">
-          <div className="max-w-6xl mx-auto p-6 space-y-6">
-            {/* Load Acceptance Card for pending loads - now within scrollable content */}
-            {load.status === "pending_acceptance" && (
-              <LoadAcceptanceCard load={load} />
-            )}
-            
-            <LoadDetailContent 
-              load={load}
-              emailThreads={emailThreads}
-              isLoadingEmails={isLoadingEmails}
-            />
-          </div>
-        </TabsContent>
+    <div>
+      <Tabs defaultValue="detail" className="flex flex-col">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="detail">Detail</TabsTrigger>
+          <TabsTrigger value="documents">Documents</TabsTrigger>
+          <TabsTrigger value="intelligence">Intelligence</TabsTrigger>
+        </TabsList>
         
-        <TabsContent value="documents" className="m-0">
-          <div className="max-w-6xl mx-auto p-6 space-y-6">
-            {/* Load Acceptance Card for pending loads - now within scrollable content */}
-            {load.status === "pending_acceptance" && (
-              <LoadAcceptanceCard load={load} />
-            )}
-            
-            <LoadDocumentsContent />
-          </div>
-        </TabsContent>
+        {/* Invoice Request Toast for Ready To Invoice loads */}
+        {load.status === "ready_to_invoice" && (
+          <InvoiceRequestToast brokerName={load.broker} />
+        )}
         
-        <TabsContent value="intelligence" className="m-0">
-          <div className="max-w-6xl mx-auto p-6 space-y-6">
-            {/* Load Acceptance Card for pending loads - now within scrollable content */}
-            {load.status === "pending_acceptance" && (
-              <LoadAcceptanceCard load={load} />
-            )}
-            
-            <LoadIntelligenceContent load={load} />
-          </div>
-        </TabsContent>
-      </div>
-    </Tabs>
+        <div className="overflow-y-auto" style={{ height: 'calc(100vh - 140px)', backgroundColor: '#F5F6FA' }}>
+          <TabsContent value="detail" className="m-0">
+            <div className="max-w-6xl mx-auto p-6 space-y-6">
+              {/* Load Acceptance Card for pending loads - now within scrollable content */}
+              {load.status === "pending_acceptance" && (
+                <LoadAcceptanceCard load={load} />
+              )}
+              
+              <LoadDetailContent 
+                load={load}
+                emailThreads={emailThreads}
+                isLoadingEmails={isLoadingEmails}
+              />
+            </div>
+          </TabsContent>
+          
+          <TabsContent value="documents" className="m-0">
+            <div className="max-w-6xl mx-auto p-6 space-y-6">
+              {/* Load Acceptance Card for pending loads - now within scrollable content */}
+              {load.status === "pending_acceptance" && (
+                <LoadAcceptanceCard load={load} />
+              )}
+              
+              <LoadDocumentsContent />
+            </div>
+          </TabsContent>
+          
+          <TabsContent value="intelligence" className="m-0">
+            <div className="max-w-6xl mx-auto p-6 space-y-6">
+              {/* Load Acceptance Card for pending loads - now within scrollable content */}
+              {load.status === "pending_acceptance" && (
+                <LoadAcceptanceCard load={load} />
+              )}
+              
+              <LoadIntelligenceContent load={load} />
+            </div>
+          </TabsContent>
+        </div>
+      </Tabs>
+    </div>
   );
 };
 

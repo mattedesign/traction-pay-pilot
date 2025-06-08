@@ -16,6 +16,7 @@ const LoadHeader = ({ loadData }: LoadHeaderProps) => {
     if (status === "pending_acceptance") return "border-orange-200 bg-orange-50 text-orange-700";
     if (status === "pending_pickup") return "border-blue-200 bg-blue-50 text-blue-700";
     if (status === "in_transit") return "border-green-200 bg-green-50 text-green-700";
+    if (status === "ready_to_invoice") return "border-purple-200 bg-purple-50 text-purple-700";
     return "border-slate-200 bg-slate-50 text-slate-700";
   };
 
@@ -29,6 +30,8 @@ const LoadHeader = ({ loadData }: LoadHeaderProps) => {
         return "IN TRANSIT";
       case "delivered":
         return "DELIVERED";
+      case "ready_to_invoice":
+        return "READY TO INVOICE";
       default:
         return status.replace("_", " ").toUpperCase();
     }

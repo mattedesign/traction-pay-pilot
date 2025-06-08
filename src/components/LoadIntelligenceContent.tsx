@@ -4,6 +4,7 @@ import RouteOptimization from "./RouteOptimization";
 import FinancialServices from "./FinancialServices";
 import LoadChatSection from "./LoadChatSection";
 import PaymentChatSection from "./PaymentChatSection";
+import DeliveredLoadIntelligence from "./DeliveredLoadIntelligence";
 import { Load } from "@/types/load";
 
 interface LoadIntelligenceContentProps {
@@ -11,6 +12,13 @@ interface LoadIntelligenceContentProps {
 }
 
 const LoadIntelligenceContent = ({ load }: LoadIntelligenceContentProps) => {
+  // Check if this is a delivered load that should show fuel analysis
+  const isDeliveredLoad = load.status === "delivered" || load.status === "ready_to_invoice";
+
+  if (isDeliveredLoad) {
+    return <DeliveredLoadIntelligence load={load} />;
+  }
+
   // Create extracted data for SmartFeaturesCards
   const extractedData = {
     rate: load.amount,

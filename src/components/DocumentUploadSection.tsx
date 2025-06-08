@@ -17,15 +17,17 @@ const DocumentUploadSection = () => {
     hasDiscrepancies
   } = useDocumentUpload();
 
-  // Mock check if load has been picked up (you can replace this with actual load status)
-  const loadStatus: Load["status"] = "in_transit"; // This would come from load data
-  const isPickedUp = loadStatus === "in_transit" || loadStatus === "delivered";
+  // Mock check if load has been picked up or delivered
+  const currentLoadId = window.location.pathname.split('/').pop();
+  const loadStatus: Load["status"] = currentLoadId === "INV-2024" ? "ready_to_invoice" : "in_transit";
+  const isPickedUp = loadStatus === "in_transit" || loadStatus === "delivered" || loadStatus === "ready_to_invoice";
+  const allDocsUploaded = loadStatus === "ready_to_invoice";
 
   const documentTypes = [
-    { name: "Rate Confirmation", required: true, mockUploaded: isPickedUp },
-    { name: "Bill of Lading", required: true },
-    { name: "Delivery Receipt", required: true },
-    { name: "Other Documents", required: false }
+    { name: "Rate Confirmation", required: true, mockUploaded: isPickedUp || allDocsUploaded },
+    { name: "Bill of Lading", required: true, mockUploaded: allDocsUploaded },
+    { name: "Delivery Receipt", required: true, mockUploaded: allDocsUploaded },
+    { name: "Other Documents", required: false, mockUploaded: allDocsUploaded }
   ];
 
   return (

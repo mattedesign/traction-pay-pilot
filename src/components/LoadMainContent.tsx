@@ -42,11 +42,14 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
   }, [loadData.id]);
 
   return (
-    <div className="flex-1 flex flex-col h-screen">
+    <div className="flex-1 flex flex-col h-screen" style={{ backgroundColor: '#F5F6FA' }}>
       {/* Header without notification bell */}
       <div className="border-b border-slate-200 bg-white px-6 py-4">
         <LoadHeader loadData={load} />
       </div>
+      
+      {/* Vertical gap between header and tabs */}
+      <div className="h-4"></div>
       
       {/* Fixed Tabs Container */}
       <div className="bg-white border-b border-slate-200 px-6 sticky top-0 z-10">
