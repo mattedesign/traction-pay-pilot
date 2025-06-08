@@ -53,8 +53,8 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
     navigate("/loads");
   };
 
-  // Check if load is delivered and should show QuickPay option
-  const shouldShowQuickPay = loadData.status === "delivered" && 
+  // Check if load is completed and should show QuickPay option at the top
+  const shouldShowQuickPayAtTop = loadData.status === "delivered" && 
     (loadData.fundingMethod === "Standard Pay ACH" || loadData.fundingMethod === "Standard Pay Check");
 
   return (
@@ -102,8 +102,10 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
               <ScrollArea className="h-full">
                 <div className="p-6 pb-32">
                   <div className="max-w-4xl space-y-6 w-full">
+                    {/* Show QuickPay at top for completed loads with standard funding */}
+                    {shouldShowQuickPayAtTop && <QuickPayOffer />}
+                    
                     <LoadInformation loadData={loadData} />
-                    {shouldShowQuickPay && <QuickPayOffer />}
                     <FinancialServices loadAmount={loadData.amount} />
                     
                     {/* Communications Section */}
