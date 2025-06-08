@@ -29,7 +29,8 @@ export class LoadStatusService {
       case "delivered":
         return "DELIVERED";
       default:
-        return status.replace("_", " ").toUpperCase();
+        // This should never happen, but we handle it for type safety
+        return (status as string).replace("_", " ").toUpperCase();
     }
   }
 
