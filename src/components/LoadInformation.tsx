@@ -1,7 +1,8 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { DollarSign, MapPin, CreditCard, Edit, ExternalLink, Building2, Truck, Package, ShoppingCart, Zap, Globe, Target, Briefcase, Wifi, Clock, Phone, Mail } from "lucide-react";
+import { Edit, ExternalLink, Building2, Truck, Package, ShoppingCart, Zap, Globe, Target, Briefcase, Wifi, Clock, Phone, Mail, FileText } from "lucide-react";
 import { useState } from "react";
 import LocationDetailsModal from "./LocationDetailsModal";
 import { Load } from "@/types/load";
@@ -58,7 +59,10 @@ const LoadInformation = ({ loadData }: LoadInformationProps) => {
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle>Load Information</CardTitle>
+            <CardTitle className="flex items-center space-x-2">
+              <FileText className="w-5 h-5 text-blue-600" />
+              <span>Load Information</span>
+            </CardTitle>
             {loadData.source === "tms" && (
               <Badge variant="outline" className="bg-blue-50 border-blue-200 text-blue-700">
                 <Wifi className="w-3 h-3 mr-1" />
@@ -70,21 +74,20 @@ const LoadInformation = ({ loadData }: LoadInformationProps) => {
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <div className="flex items-center space-x-2 mb-1">
-                <DollarSign className="w-4 h-4 text-green-600" />
-                <span className="text-sm font-medium text-slate-700">Rate</span>
-              </div>
+              <span className="text-sm font-medium text-slate-700 mb-1 block">Rate</span>
               <p className="text-xl font-bold text-green-600">{loadData.amount}</p>
             </div>
             <div>
-              <div className="flex items-center space-x-2 mb-1">
+              <span className="text-sm font-medium text-slate-700 mb-1 block">Freight Broker</span>
+              <div className="flex items-center space-x-2">
                 {getBrokerLogo(loadData.broker)}
-                <span className="text-sm font-medium text-slate-700">Freight Broker</span>
+                <div>
+                  <p className="text-sm text-slate-700">{loadData.broker}</p>
+                  {loadData.tmsData?.brokerLoadNumber && (
+                    <p className="text-xs text-slate-500">Ref: {loadData.tmsData.brokerLoadNumber}</p>
+                  )}
+                </div>
               </div>
-              <p className="text-sm text-slate-700">{loadData.broker}</p>
-              {loadData.tmsData?.brokerLoadNumber && (
-                <p className="text-xs text-slate-500">Ref: {loadData.tmsData.brokerLoadNumber}</p>
-              )}
             </div>
           </div>
 
@@ -121,10 +124,7 @@ const LoadInformation = ({ loadData }: LoadInformationProps) => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <div className="flex items-center space-x-2 mb-1">
-                <CreditCard className="w-4 h-4 text-purple-600" />
-                <span className="text-sm font-medium text-slate-700">Funding Method</span>
-              </div>
+              <span className="text-sm font-medium text-slate-700 mb-1 block">Funding Method</span>
               <div className="flex items-center space-x-2">
                 <p className="text-sm text-slate-700">
                   {loadData.rateConfirmation?.originalRate || "Not specified"}
@@ -143,10 +143,7 @@ const LoadInformation = ({ loadData }: LoadInformationProps) => {
               </div>
             </div>
             <div>
-              <div className="flex items-center space-x-2 mb-1">
-                <MapPin className="w-4 h-4 text-purple-600" />
-                <span className="text-sm font-medium text-slate-700">Delivery Location</span>
-              </div>
+              <span className="text-sm font-medium text-slate-700 mb-1 block">Delivery Location</span>
               <p className="text-sm text-slate-700">{loadData.destination}</p>
               <p className="text-xs text-slate-500 mb-2">
                 {loadDataWithDeliveryTime.deliveryTime}

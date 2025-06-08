@@ -2,7 +2,7 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { X } from "lucide-react";
+import { XCircle } from "lucide-react";
 import { Load } from "@/types/load";
 
 interface LoadHeaderProps {
@@ -40,23 +40,9 @@ const LoadHeader = ({ loadData }: LoadHeaderProps) => {
   };
 
   return (
-    <div className="flex items-center space-x-4">
+    <div className="flex items-center justify-between">
       <div className="flex items-center space-x-3">
         <h1 className="text-xl font-bold text-slate-900">Load #{loadData.id}</h1>
-        <Button 
-          variant="ghost" 
-          size="icon"
-          onClick={handleCloseClick}
-          className="hover:bg-slate-100 w-6 h-6"
-          title="Close and return to Load Summary"
-        >
-          <X className="w-4 h-4" />
-        </Button>
-      </div>
-      <div>
-        <p className="text-sm text-slate-500">{loadData.broker}</p>
-      </div>
-      <div className="ml-auto">
         <Badge 
           variant="outline" 
           className={getStatusBadgeClass(loadData.status)}
@@ -64,6 +50,15 @@ const LoadHeader = ({ loadData }: LoadHeaderProps) => {
           {getStatusLabel(loadData.status)}
         </Badge>
       </div>
+      <Button 
+        variant="ghost" 
+        size="icon"
+        onClick={handleCloseClick}
+        className="hover:bg-slate-100 w-8 h-8"
+        title="Close and return to Load Summary"
+      >
+        <XCircle className="w-5 h-5" />
+      </Button>
     </div>
   );
 };
