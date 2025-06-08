@@ -84,6 +84,30 @@ const LoadsSidebar = () => {
     setExpandedEmailSections(newExpanded);
   };
 
+  const handleEmailThreadClick = (threadId: string, loadId: string) => {
+    console.log(`Opening email thread ${threadId} for load ${loadId}`);
+    // Mark thread as read when clicked
+    EmailService.markThreadAsRead(threadId);
+    
+    // Navigate to the load detail page and scroll to communications section
+    navigate(`/load/${loadId}`, { 
+      state: { 
+        scrollTo: 'communications',
+        selectedThread: threadId 
+      } 
+    });
+    
+    // Refresh email threads to update unread counts
+    const threadsMap = new Map<string, EmailThread[]>();
+    loads.forEach(load => {
+      const threads = EmailService.getEmailThreadsForLoad(load.id);
+      if (threads.length > 0) {
+        threadsMap.set(load.id, threads);
+      }
+    });
+    setEmailThreads(threadsMap);
+  };
+
   const getUnreadEmailCount = (loadId: string) => {
     const threads = emailThreads.get(loadId) || [];
     return threads.reduce((total, thread) => total + thread.unreadCount, 0);
@@ -139,7 +163,7 @@ const LoadsSidebar = () => {
                       {loadThreads.length > 0 && (
                         <div className="flex items-center space-x-1">
                           <Mail 
-                            className="w-3 h-3 text-blue-500 cursor-pointer" 
+                            className="w-3 h-3 text-blue-500 cursor-pointer hover:text-blue-700" 
                             onClick={(e) => {
                               e.stopPropagation();
                               toggleEmailSection(load.id);
@@ -179,7 +203,21 @@ const LoadsSidebar = () => {
               {/* Email Threads Section */}
               {loadThreads.length > 0 && isEmailExpanded && (
                 <div className="ml-2">
-                  <EmailThreadDisplay threads={loadThreads} compact={true} />
+                  <div className="space-y-2">
+                    {loadThreads.map((thread) => (
+                      <div
+                        key={thread.threadId}
+                        className="cursor-pointer"
+                        onClick={() => handleEmailThreadClick(thread.threadId, load.id)}
+                      >
+                        <EmailThreadDisplay 
+                          threads={[thread]} 
+                          compact={true}
+                          onThreadClick={(threadId) => handleEmailThreadClick(threadId, load.id)}
+                        />
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>

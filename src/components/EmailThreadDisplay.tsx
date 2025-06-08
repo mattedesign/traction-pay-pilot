@@ -9,12 +9,17 @@ import { EmailThread, EmailCommunication } from "@/services/emailService";
 interface EmailThreadDisplayProps {
   threads: EmailThread[];
   compact?: boolean;
+  onThreadClick?: (threadId: string) => void;
 }
 
-const EmailThreadDisplay = ({ threads, compact = true }: EmailThreadDisplayProps) => {
+const EmailThreadDisplay = ({ threads, compact = true, onThreadClick }: EmailThreadDisplayProps) => {
   const [expandedThreads, setExpandedThreads] = useState<Set<string>>(new Set());
 
-  const toggleThread = (threadId: string) => {
+  const toggleThread = (threadId: string, event?: React.MouseEvent) => {
+    if (event) {
+      event.stopPropagation();
+    }
+    
     const newExpanded = new Set(expandedThreads);
     if (newExpanded.has(threadId)) {
       newExpanded.delete(threadId);
@@ -22,6 +27,13 @@ const EmailThreadDisplay = ({ threads, compact = true }: EmailThreadDisplayProps
       newExpanded.add(threadId);
     }
     setExpandedThreads(newExpanded);
+  };
+
+  const handleThreadClick = (threadId: string, event: React.MouseEvent) => {
+    event.stopPropagation();
+    if (onThreadClick) {
+      onThreadClick(threadId);
+    }
   };
 
   const formatTimeAgo = (date: Date) => {
@@ -63,10 +75,16 @@ const EmailThreadDisplay = ({ threads, compact = true }: EmailThreadDisplayProps
         );
 
         return (
-          <Card key={thread.threadId} className="transition-all duration-200">
+          <Card 
+            key={thread.threadId} 
+            className={`transition-all duration-200 ${
+              onThreadClick ? 'cursor-pointer hover:bg-slate-50 hover:shadow-md' : ''
+            }`}
+            onClick={onThreadClick ? (e) => handleThreadClick(thread.threadId, e) : undefined}
+          >
             <CardHeader 
               className="pb-2 cursor-pointer hover:bg-slate-50"
-              onClick={() => toggleThread(thread.threadId)}
+              onClick={(e) => toggleThread(thread.threadId, e)}
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-start space-x-2 flex-1">
@@ -171,7 +189,12 @@ const EmailThreadDisplay = ({ threads, compact = true }: EmailThreadDisplayProps
                 </div>
                 
                 <div className="mt-3 pt-3 border-t border-slate-200">
-                  <Button size="sm" variant="outline" className="text-xs">
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    className="text-xs"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     Reply
                   </Button>
                 </div>
