@@ -20,6 +20,13 @@ export const useDocumentUpload = () => {
 
   const simulateDocumentExtraction = (docType: string, fileName: string) => {
     const mockExtractions: Record<string, any> = {
+      "Rate Confirmation": {
+        broker: "Global Freight Solutions",
+        totalAmount: "$775.00",
+        origin: "Atlanta, GA",
+        destination: "Memphis, TN",
+        commodity: "Electronics Components"
+      },
       "Bill of Lading": {
         commodity: "Electronics Components",
         weight: "35500 lbs",
@@ -33,10 +40,11 @@ export const useDocumentUpload = () => {
         totalAmount: "$750.00",
         receivedBy: "John Smith"
       },
-      "Weight Ticket": {
+      "Other Documents": {
         weight: "36200 lbs",
         scaleLocation: "Certified Truck Scale #456",
-        totalAmount: "$750.00"
+        totalAmount: "$750.00",
+        documentType: fileName.toLowerCase().includes('weight') ? 'Weight Ticket' : 'Supporting Documentation'
       }
     };
 
@@ -49,60 +57,64 @@ export const useDocumentUpload = () => {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = ALLOWED_FILE_TYPES.all.join(',');
+    input.multiple = docType === "Other Documents"; // Allow multiple files for other documents
+    
     input.onchange = (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0];
-      if (file) {
-        const validation = validateFile(file);
-        
-        if (!validation.isValid) {
-          toast({
-            title: "File Validation Failed",
-            description: validation.error,
-            variant: "destructive"
-          });
-          return;
-        }
-
-        toast({
-          title: "Processing Document",
-          description: `Analyzing ${docType} for discrepancies...`,
-        });
-
-        setTimeout(() => {
-          const extractedData = simulateDocumentExtraction(docType, file.name);
-          const currentLoadId = window.location.pathname.split('/').pop() || "1234";
-          const discrepancies = LoadService.detectDiscrepancies(currentLoadId, docType, extractedData);
+      const files = (e.target as HTMLInputElement).files;
+      if (files && files.length > 0) {
+        Array.from(files).forEach((file) => {
+          const validation = validateFile(file);
           
-          const newDoc: UploadedDocument = {
-            type: docType,
-            fileName: file.name,
-            uploadTime: new Date(),
-            validated: true,
-            extractedData,
-            discrepancies
-          };
-          
-          setUploadedDocs(prev => [
-            ...prev.filter(doc => doc.type !== docType),
-            newDoc
-          ]);
-
-          if (discrepancies.length > 0) {
-            const resolutionSuggestions = LoadService.getDiscrepancyResolutionSuggestions(discrepancies);
-            setDiscrepancyAlerts(prev => [...prev, { docType, discrepancies, resolutionSuggestions }]);
-            
+          if (!validation.isValid) {
             toast({
-              title: "Potential Issues Detected",
-              description: `${discrepancies.length} discrepancy(ies) found in ${docType}. Review suggestions below.`,
+              title: "File Validation Failed",
+              description: validation.error,
               variant: "destructive"
             });
-          } else {
-            toast({
-              title: "Document Processed Successfully",
-              description: `${docType} validated with no discrepancies found.`,
-            });
+            return;
           }
-        }, 2000);
+
+          toast({
+            title: "Processing Document",
+            description: `Analyzing ${docType} for discrepancies...`,
+          });
+
+          setTimeout(() => {
+            const extractedData = simulateDocumentExtraction(docType, file.name);
+            const currentLoadId = window.location.pathname.split('/').pop() || "1234";
+            const discrepancies = LoadService.detectDiscrepancies(currentLoadId, docType, extractedData);
+            
+            const newDoc: UploadedDocument = {
+              type: docType,
+              fileName: file.name,
+              uploadTime: new Date(),
+              validated: true,
+              extractedData,
+              discrepancies
+            };
+            
+            setUploadedDocs(prev => [
+              ...prev.filter(doc => !(doc.type === docType && doc.fileName === file.name)),
+              newDoc
+            ]);
+
+            if (discrepancies.length > 0) {
+              const resolutionSuggestions = LoadService.getDiscrepancyResolutionSuggestions(discrepancies);
+              setDiscrepancyAlerts(prev => [...prev, { docType, discrepancies, resolutionSuggestions }]);
+              
+              toast({
+                title: "Potential Issues Detected",
+                description: `${discrepancies.length} discrepancy(ies) found in ${docType}. Review suggestions below.`,
+                variant: "destructive"
+              });
+            } else {
+              toast({
+                title: "Document Processed Successfully",
+                description: `${docType} validated with no discrepancies found.`,
+              });
+            }
+          }, 2000);
+        });
       }
     };
     input.click();

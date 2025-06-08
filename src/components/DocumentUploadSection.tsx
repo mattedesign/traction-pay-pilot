@@ -16,11 +16,15 @@ const DocumentUploadSection = () => {
     hasDiscrepancies
   } = useDocumentUpload();
 
+  // Mock check if load has been picked up (you can replace this with actual load status)
+  const loadStatus = "in_transit"; // This would come from load data
+  const isPickedUp = loadStatus !== "pending_pickup" && loadStatus !== "pending_acceptance";
+
   const documentTypes = [
+    { name: "Rate Confirmation", required: true, mockUploaded: isPickedUp },
     { name: "Bill of Lading", required: true },
     { name: "Delivery Receipt", required: true },
-    { name: "Weight Ticket", required: false },
-    { name: "Photos", required: false }
+    { name: "Other Documents", required: false }
   ];
 
   return (
@@ -41,8 +45,8 @@ const DocumentUploadSection = () => {
               <DocumentTypeCard
                 key={docType.name}
                 docType={docType}
-                isUploaded={isDocumentUploaded(docType.name)}
-                uploadedDoc={getUploadedDoc(docType.name)}
+                isUploaded={docType.mockUploaded || isDocumentUploaded(docType.name)}
+                uploadedDoc={docType.mockUploaded ? { fileName: `${docType.name.toLowerCase().replace(' ', '_')}_confirmation.pdf` } : getUploadedDoc(docType.name)}
                 hasIssues={hasDiscrepancies(docType.name)}
                 onUpload={handleUpload}
               />

@@ -1,11 +1,12 @@
 
 import { Button } from "@/components/ui/button";
-import { Upload, CheckCircle, AlertTriangle, Shield } from "lucide-react";
+import { Upload, CheckCircle, AlertTriangle, Shield, FileText } from "lucide-react";
 
 interface DocumentTypeCardProps {
   docType: {
     name: string;
     required: boolean;
+    mockUploaded?: boolean;
   };
   isUploaded: boolean;
   uploadedDoc?: {
@@ -22,6 +23,19 @@ const DocumentTypeCard = ({
   hasIssues, 
   onUpload 
 }: DocumentTypeCardProps) => {
+  const getDescription = () => {
+    switch (docType.name) {
+      case "Rate Confirmation":
+        return "Original rate agreement document";
+      case "Other Documents":
+        return "Weight tickets, photos, and additional documentation";
+      default:
+        return null;
+    }
+  };
+
+  const description = getDescription();
+
   return (
     <div 
       className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors ${
@@ -41,6 +55,8 @@ const DocumentTypeCard = ({
           <CheckCircle className="w-6 h-6 text-green-600" />
         ) : docType.required ? (
           <AlertTriangle className="w-6 h-6 text-orange-500" />
+        ) : docType.name === "Other Documents" ? (
+          <FileText className="w-6 h-6 text-slate-400" />
         ) : (
           <Upload className="w-6 h-6 text-slate-400" />
         )}
@@ -50,6 +66,10 @@ const DocumentTypeCard = ({
       </div>
       
       <p className="text-sm font-medium text-slate-700 mb-1">{docType.name}</p>
+      
+      {description && (
+        <p className="text-xs text-slate-500 mb-2">{description}</p>
+      )}
       
       {uploadedDoc && (
         <p className="text-xs text-slate-500 mb-2">
