@@ -9,6 +9,9 @@ import LoadChatSection from "./LoadChatSection";
 import PaymentChatSection from "./PaymentChatSection";
 import LoadAcceptanceCard from "./LoadAcceptanceCard";
 import FloatingChatWidget from "./FloatingChatWidget";
+import RouteOptimization from "./RouteOptimization";
+import FinancialServices from "./FinancialServices";
+import SmartFeaturesCards from "./SmartFeaturesCards";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -51,6 +54,14 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
 
     loadEmails();
   }, [loadData.id]);
+
+  // Create extracted data for SmartFeaturesCards
+  const extractedData = {
+    rate: load.amount,
+    origin: load.origin,
+    destination: load.destination,
+    distance: load.distance
+  };
 
   return (
     <div className="flex-1 flex flex-col h-screen overflow-hidden">
@@ -126,6 +137,15 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
             </TabsContent>
             
             <TabsContent value="intelligence" className="space-y-6">
+              {/* Smart Features Overview */}
+              <SmartFeaturesCards extractedData={extractedData} />
+              
+              {/* Route Optimization */}
+              <RouteOptimization />
+              
+              {/* Financial Services */}
+              <FinancialServices loadAmount={load.amount} />
+              
               {/* Load-specific Chat */}
               <LoadChatSection loadId={load.id} />
               
