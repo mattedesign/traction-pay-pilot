@@ -32,8 +32,8 @@ export const useChatHandlers = ({
 
     if (!isInitialized) {
       toast({
-        title: "API Key Required",
-        description: "Please enter your Anthropic API key to use Claude AI assistant.",
+        title: "Service Not Ready",
+        description: "Please wait for the AI service to initialize.",
         variant: "destructive"
       });
       return;
@@ -43,7 +43,7 @@ export const useChatHandlers = ({
     setMessage("");
 
     try {
-      console.log('Sending secure message to Claude via enhanced AI service...');
+      console.log('Sending secure message to Claude via Supabase Edge Functions...');
       
       // Convert chat history to Claude service format
       const messages = [...chatHistory, userMessage].map(msg => ({
@@ -58,68 +58,55 @@ export const useChatHandlers = ({
     } catch (error) {
       console.error('Claude chat error:', error);
       
-      let errorMessage = "❌ Connection failed. Please check your Anthropic API key and try again.";
+      let errorMessage = "❌ Connection failed. Please check the system configuration and try again.";
       
       if (error instanceof Error) {
         if (error.message.includes('401') || error.message.includes('authentication')) {
-          errorMessage = "❌ **Authentication Error**\n\nYour Anthropic API key appears to be invalid or expired. Please check your key and try again.";
-          clearAPIKey(); // Clear potentially invalid key
+          errorMessage = "❌ **Authentication Error**\n\nThere was an authentication issue with the AI service. Please try again.";
         } else if (error.message.includes('429')) {
-          errorMessage = "❌ **Rate Limit Exceeded**\n\nYou've hit the rate limit for the Anthropic API. Please wait a moment before trying again.";
+          errorMessage = "❌ **Rate Limit Exceeded**\n\nYou've hit the rate limit for the AI service. Please wait a moment before trying again.";
         } else if (error.message.includes('Network') || error.message.includes('fetch')) {
-          errorMessage = "❌ **Connection Error**\n\nUnable to connect to the Anthropic API. Please check your internet connection and try again.";
+          errorMessage = "❌ **Connection Error**\n\nUnable to connect to the AI service. Please check your internet connection and try again.";
         }
       }
       
       addAIMessage(errorMessage);
       
       toast({
-        title: "Claude AI Error",
-        description: "Failed to get response from Claude. Please check your API key and try again.",
+        title: "AI Service Error",
+        description: "Failed to get response from the AI assistant. Please try again.",
         variant: "destructive"
       });
     }
   };
 
-  const handleAPIKeySubmit = async (key: string) => {
-    console.log('Setting up secure Claude AI service with validated key...');
+  const handleAPIKeySubmit = async () => {
+    console.log('API key setup now managed by Supabase Edge Functions...');
     
     try {
-      if (!validateAPIKey(key)) {
-        toast({
-          title: "Invalid API Key",
-          description: "Please enter a valid Anthropic API key starting with 'sk-ant-'",
-          variant: "destructive"
-        });
-        return;
-      }
-
-      // Store key securely
-      storeAPIKey(key);
-      
-      initializeService(key);
+      // Since API keys are now handled in Supabase Edge Functions,
+      // we just need to ensure the service is initialized
+      initializeService();
       
       toast({
-        title: "Claude AI Assistant Ready",
-        description: "Your Anthropic API key has been validated and stored securely. You can now start chatting with Claude.",
+        title: "AI Assistant Ready",
+        description: "Your AI chat assistant is now ready. API keys are securely managed via Supabase.",
       });
       
     } catch (error) {
-      console.error('API key setup error:', error);
-      clearAPIKey(); // Clear any problematic key
+      console.error('Service initialization error:', error);
       toast({
         title: "Setup Error",
-        description: "There was an issue setting up Claude AI service. Please try again with a valid API key.",
+        description: "There was an issue setting up the chat system. Please ensure Supabase is properly configured.",
         variant: "destructive"
       });
     }
   };
 
-  // Auto-load stored API key on hook initialization
+  // Auto-initialize service on mount if not already initialized
   useState(() => {
-    const storedKey = getAPIKey();
-    if (storedKey) {
-      initializeService(storedKey);
+    if (!isInitialized) {
+      initializeService();
     }
   });
 
