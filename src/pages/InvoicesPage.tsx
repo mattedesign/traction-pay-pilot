@@ -1,4 +1,4 @@
-
+import { useNavigate } from "react-router-dom";
 import NavigationSidebar from "@/components/NavigationSidebar";
 import InvoicesSidebar from "@/components/InvoicesSidebar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,6 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { FileText, Download, Eye, Plus, TrendingUp, Clock, AlertCircle } from "lucide-react";
 
 const InvoicesPage = () => {
+  const navigate = useNavigate();
+
   const recentInvoices = [
     { id: "INV-2024-001", load: "TMS-001", amount: "$2,450.00", status: "pending", date: "2024-06-08" },
     { id: "INV-2024-002", load: "1234", amount: "$1,850.00", status: "paid", date: "2024-06-05" },
@@ -22,6 +24,10 @@ const InvoicesPage = () => {
     }
   };
 
+  const handleCreateInvoice = () => {
+    navigate('/invoices/new');
+  };
+
   return (
     <div className="min-h-screen flex w-full" style={{ backgroundColor: '#F5F6FA' }}>
       <NavigationSidebar />
@@ -34,7 +40,7 @@ const InvoicesPage = () => {
               <h1 className="text-3xl font-bold text-slate-900 mb-2">Invoice Overview</h1>
               <p className="text-slate-600">Track and manage your invoice payments</p>
             </div>
-            <Button className="flex items-center space-x-2">
+            <Button className="flex items-center space-x-2" onClick={handleCreateInvoice}>
               <Plus className="w-4 h-4" />
               <span>Create Invoice</span>
             </Button>

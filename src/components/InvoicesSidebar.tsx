@@ -73,7 +73,7 @@ const InvoicesSidebar = () => {
   }, []);
 
   const handleNewInvoice = () => {
-    navigate('/invoices');
+    navigate('/invoices/new');
   };
 
   if (isLoading) {
