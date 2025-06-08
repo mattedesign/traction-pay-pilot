@@ -57,8 +57,8 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
             </TabsList>
           </div>
           
-          <div className="flex-1 overflow-hidden bg-slate-50">
-            <TabsContent value="details" className="h-full p-6 overflow-y-auto">
+          <div className="flex-1 overflow-hidden bg-slate-50 relative">
+            <TabsContent value="details" className="h-full p-6 overflow-y-auto pb-32">
               <div className="max-w-4xl space-y-6 w-full">
                 <LoadInformation loadData={loadData} />
                 <RouteOptimization />
@@ -67,13 +67,13 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
               </div>
             </TabsContent>
 
-            <TabsContent value="documents" className="h-full p-6 overflow-y-auto">
+            <TabsContent value="documents" className="h-full p-6 overflow-y-auto pb-32">
               <div className="max-w-4xl w-full">
                 <DocumentUploadSection />
               </div>
             </TabsContent>
             
-            <TabsContent value="intelligence" className="h-full p-6 overflow-y-auto">
+            <TabsContent value="intelligence" className="h-full p-6 overflow-y-auto pb-32">
               <div className="max-w-4xl w-full">
                 <div className="bg-white rounded-lg p-6 shadow-sm">
                   <h3 className="text-lg font-semibold mb-4 text-slate-900">Load Intelligence</h3>
@@ -106,19 +106,19 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
                 </div>
               </div>
             </TabsContent>
+
+            {/* Fixed chat interface within the load details container */}
+            <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-slate-200 shadow-lg z-20 p-4">
+              <div className="max-w-4xl mx-auto">
+                <FunctionalChatInterface 
+                  onNavigateToLoad={handleNavigateToLoad}
+                  onFocusChange={handleFocusChange}
+                  isFocused={isChatFocused}
+                />
+              </div>
+            </div>
           </div>
         </Tabs>
-      </div>
-
-      {/* Fixed chat interface at bottom */}
-      <div className="fixed bottom-0 left-80 right-0 bg-white border-t border-slate-200 shadow-lg z-20 p-4">
-        <div className="max-w-4xl mx-auto">
-          <FunctionalChatInterface 
-            onNavigateToLoad={handleNavigateToLoad}
-            onFocusChange={handleFocusChange}
-            isFocused={isChatFocused}
-          />
-        </div>
       </div>
     </div>
   );
