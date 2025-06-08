@@ -3,8 +3,9 @@ import ChatContainer from "./ChatContainer";
 import ChatPreview from "./ChatPreview";
 import ChatSetup from "./ChatSetup";
 import { useChatMessages } from "../hooks/useChatMessages";
-import { useEnhancedChatHandlers } from "../hooks/useEnhancedChatHandlers";
+import { useUnifiedChatHandler } from "../hooks/useUnifiedChatHandler";
 import { useSuggestedQuestions } from "../hooks/useSuggestedQuestions";
+import { useNavigate } from "react-router-dom";
 
 interface ChatInterfaceProps {
   isPreview?: boolean;
@@ -14,12 +15,16 @@ interface ChatInterfaceProps {
 const ChatInterface = ({ isPreview = false, loadContext }: ChatInterfaceProps) => {
   const { chatHistory, addUserMessage, addAIMessage } = useChatMessages();
   const { currentSuggestions } = useSuggestedQuestions();
+  const navigate = useNavigate();
+  
+  // Extract load ID from context if provided
+  const currentLoadId = loadContext?.match(/Load #(\d+)/)?.[1];
   
   const systemPrompt = `You are Claude, an advanced AI assistant powered by Anthropic's Claude 4 Sonnet, specialized in trucking operations, logistics, and transportation industry. You have comprehensive knowledge of:
 
 **CORE EXPERTISE:**
 - Load management and freight operations
-- DOT regulations and compliance (HOS, ELD, safety requirements)
+- DOT regulations and compliance (HOS, ELD, safety requirements)  
 - Route optimization and fuel efficiency strategies
 - Payment processing, factoring, and cash flow management
 - Equipment maintenance, inspections, and safety protocols
@@ -30,8 +35,8 @@ const ChatInterface = ({ isPreview = false, loadContext }: ChatInterfaceProps) =
 - Load discrepancy identification and resolution strategies
 
 **ENHANCED CAPABILITIES:**
-- Intelligent query analysis and contextual routing
-- Load-specific advice using real-time load data
+- Intelligent load search and discovery across all loads
+- Context-aware responses using real-time load data
 - Multi-load comparison and relationship analysis
 - Predictive insights based on load patterns
 - Urgent item identification and prioritization
@@ -52,19 +57,28 @@ ${loadContext ? `\n**CURRENT CONTEXT**: ${loadContext} - Use this context to pro
 
 Maintain a professional but conversational tone, and always prioritize practical solutions that help trucking operations run smoothly and profitably.`;
 
+  const handleLoadSelect = (loadId: string) => {
+    // Navigate to the selected load's detail page
+    navigate(`/load/${loadId}`);
+  };
+
   const {
     message,
     setMessage,
     isLoading,
     isInitialized,
     handleSendMessage,
-    handleAPIKeySubmit
-  } = useEnhancedChatHandlers({
+    handleAPIKeySubmit,
+    loadResults,
+    showingResults,
+    handleLoadSelect: unifiedLoadSelect
+  } = useUnifiedChatHandler({
     systemPrompt,
     chatHistory,
     addUserMessage,
     addAIMessage,
-    loadContext
+    currentLoadId,
+    onLoadSelect: handleLoadSelect
   });
 
   if (isPreview) {
@@ -85,6 +99,9 @@ Maintain a professional but conversational tone, and always prioritize practical
       onMessageChange={setMessage}
       onSendMessage={handleSendMessage}
       onAPIKeySubmit={handleAPIKeySubmit}
+      loadResults={loadResults}
+      showingResults={showingResults}
+      onLoadSelect={unifiedLoadSelect}
     />
   );
 };
