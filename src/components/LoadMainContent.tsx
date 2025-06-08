@@ -1,4 +1,3 @@
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
@@ -55,7 +54,7 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
 
   // Check if load is completed and should show QuickPay option at the top
   const shouldShowQuickPayAtTop = loadData.status === "delivered" && 
-    (loadData.fundingMethod === "Standard Pay ACH" || loadData.fundingMethod === "Standard Pay Check");
+    loadData.fundingMethod === "Standard Pay ACH";
 
   return (
     <div className="flex-1 flex flex-col h-screen bg-slate-50 relative overflow-hidden">
