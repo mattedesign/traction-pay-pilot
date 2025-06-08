@@ -80,9 +80,10 @@ ${emailContent.body}`
 
       const response = await this.sendMessage(messages, systemPrompt);
       
-      // Parse JSON response
+      // Parse JSON response - response is a string from the content property
       try {
-        const analysis = JSON.parse(response);
+        const responseContent = typeof response === 'string' ? response : response.content;
+        const analysis = JSON.parse(responseContent);
         return analysis as EmailAnalysisResult;
       } catch (parseError) {
         console.error('Failed to parse AI analysis response:', parseError);
@@ -151,7 +152,8 @@ Identify any discrepancies between the original load and the document data.`
       const response = await this.sendMessage(messages, systemPrompt);
       
       try {
-        const analysis = JSON.parse(response);
+        const responseContent = typeof response === 'string' ? response : response.content;
+        const analysis = JSON.parse(responseContent);
         return analysis as LoadDiscrepancyAnalysis;
       } catch (parseError) {
         console.error('Failed to parse discrepancy analysis:', parseError);
@@ -223,7 +225,8 @@ Please generate an appropriate professional response.`
       const response = await this.sendMessage(messages, systemPrompt);
       
       try {
-        return JSON.parse(response);
+        const responseContent = typeof response === 'string' ? response : response.content;
+        return JSON.parse(responseContent);
       } catch (parseError) {
         console.error('Failed to parse email response:', parseError);
         return {

@@ -10,12 +10,20 @@ import { EmailService, EmailThread } from "@/services/emailService";
 
 const LoadsPage = () => {
   const [recentEmailThreads, setRecentEmailThreads] = useState<EmailThread[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const loadRecentThreads = async () => {
-      // Get recent email threads across all loads
-      const allThreads = await EmailService.getAllEmailThreads();
-      setRecentEmailThreads(allThreads.slice(0, 5)); // Show 5 most recent
+      try {
+        setIsLoading(true);
+        // Get recent email threads across all loads
+        const allThreads = await EmailService.getAllEmailThreads();
+        setRecentEmailThreads(allThreads.slice(0, 5)); // Show 5 most recent
+      } catch (error) {
+        console.error('Error loading recent email threads:', error);
+      } finally {
+        setIsLoading(false);
+      }
     };
     
     loadRecentThreads();
@@ -120,7 +128,11 @@ const LoadsPage = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                {recentEmailThreads.length > 0 ? (
+                {isLoading ? (
+                  <div className="text-center py-8">
+                    <div className="text-slate-500 text-sm">Loading communications...</div>
+                  </div>
+                ) : recentEmailThreads.length > 0 ? (
                   <EmailThreadDisplay threads={recentEmailThreads} compact={true} />
                 ) : (
                   <div className="text-center py-8">

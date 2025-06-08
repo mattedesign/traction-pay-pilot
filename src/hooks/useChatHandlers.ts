@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { useAI } from "./useAI";
+import { useClaude } from "./useClaude";
 import { useToast } from "@/hooks/use-toast";
 import { ChatMessage } from "./useChatMessages";
 import { validateAPIKey, storeAPIKey, getAPIKey, clearAPIKey, sanitizeInput } from "@/utils/security";
@@ -21,7 +21,7 @@ export const useChatHandlers = ({
   const [message, setMessage] = useState("");
   const { toast } = useToast();
   
-  const { isLoading, isInitialized, initializeService, sendMessage } = useAI({ 
+  const { isLoading, isInitialized, initializeService, sendMessage } = useClaude({ 
     systemPrompt 
   });
 
@@ -33,7 +33,7 @@ export const useChatHandlers = ({
     if (!isInitialized) {
       toast({
         title: "API Key Required",
-        description: "Please enter your Anthropic API key to use the AI assistant.",
+        description: "Please enter your Anthropic API key to use Claude AI assistant.",
         variant: "destructive"
       });
       return;
@@ -43,9 +43,9 @@ export const useChatHandlers = ({
     setMessage("");
 
     try {
-      console.log('Sending secure message to AI via CORS proxy...');
+      console.log('Sending secure message to Claude via enhanced AI service...');
       
-      // Convert chat history to AI service format
+      // Convert chat history to Claude service format
       const messages = [...chatHistory, userMessage].map(msg => ({
         role: msg.type === "user" ? "user" as const : "assistant" as const,
         content: sanitizeInput(msg.content)
@@ -53,51 +53,36 @@ export const useChatHandlers = ({
 
       const response = await sendMessage(messages);
       
-      if (response.error) {
-        console.error('AI Service returned error:', response.error);
-        
-        addAIMessage(response.content);
-        
-        if (response.error.includes('Network') || response.error.includes('CORS')) {
-          toast({
-            title: "Connection Issue",
-            description: "CORS proxy might be down. Try refreshing the page or check your network connection.",
-            variant: "destructive"
-          });
-        } else if (response.error.includes('401') || response.error.includes('authentication')) {
-          toast({
-            title: "Authentication Error",
-            description: "Your API key may be invalid or expired. Please check your key.",
-            variant: "destructive"
-          });
-          clearAPIKey(); // Clear potentially invalid key
-        } else {
-          toast({
-            title: "AI Service Error",
-            description: response.error,
-            variant: "destructive"
-          });
-        }
-        return;
-      }
-
-      addAIMessage(response.content);
+      addAIMessage(response);
       
     } catch (error) {
-      console.error('Chat error:', error);
+      console.error('Claude chat error:', error);
       
-      addAIMessage("❌ Connection failed. The CORS proxy might be temporarily unavailable. Please try again in a moment, or refresh the page to retry.");
+      let errorMessage = "❌ Connection failed. Please check your Anthropic API key and try again.";
+      
+      if (error instanceof Error) {
+        if (error.message.includes('401') || error.message.includes('authentication')) {
+          errorMessage = "❌ **Authentication Error**\n\nYour Anthropic API key appears to be invalid or expired. Please check your key and try again.";
+          clearAPIKey(); // Clear potentially invalid key
+        } else if (error.message.includes('429')) {
+          errorMessage = "❌ **Rate Limit Exceeded**\n\nYou've hit the rate limit for the Anthropic API. Please wait a moment before trying again.";
+        } else if (error.message.includes('Network') || error.message.includes('fetch')) {
+          errorMessage = "❌ **Connection Error**\n\nUnable to connect to the Anthropic API. Please check your internet connection and try again.";
+        }
+      }
+      
+      addAIMessage(errorMessage);
       
       toast({
-        title: "Connection Error",
-        description: "Failed to connect to AI service. Please try again.",
+        title: "Claude AI Error",
+        description: "Failed to get response from Claude. Please check your API key and try again.",
         variant: "destructive"
       });
     }
   };
 
   const handleAPIKeySubmit = async (key: string) => {
-    console.log('Setting up secure AI service with validated key...');
+    console.log('Setting up secure Claude AI service with validated key...');
     
     try {
       if (!validateAPIKey(key)) {
@@ -115,8 +100,8 @@ export const useChatHandlers = ({
       initializeService(key);
       
       toast({
-        title: "Secure AI Assistant Ready",
-        description: "Your API key has been validated and stored securely. You can now start chatting.",
+        title: "Claude AI Assistant Ready",
+        description: "Your Anthropic API key has been validated and stored securely. You can now start chatting with Claude.",
       });
       
     } catch (error) {
@@ -124,7 +109,7 @@ export const useChatHandlers = ({
       clearAPIKey(); // Clear any problematic key
       toast({
         title: "Setup Error",
-        description: "There was an issue setting up the AI service. Please try again with a valid API key.",
+        description: "There was an issue setting up Claude AI service. Please try again with a valid API key.",
         variant: "destructive"
       });
     }

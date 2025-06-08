@@ -51,21 +51,35 @@ const LoadsSidebar = () => {
   const [loads, setLoads] = useState<Load[]>([]);
   const [emailThreads, setEmailThreads] = useState<Map<string, EmailThread[]>>(new Map());
   const [expandedLoads, setExpandedLoads] = useState<Set<string>>(new Set());
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Get loads from the service
-    const allLoads = LoadService.getAllLoads();
-    setLoads(allLoads);
+    const loadEmailData = async () => {
+      setIsLoading(true);
+      
+      // Get loads from the service
+      const allLoads = LoadService.getAllLoads();
+      setLoads(allLoads);
 
-    // Get email threads for each load
-    const threadsMap = new Map<string, EmailThread[]>();
-    allLoads.forEach(load => {
-      const threads = EmailService.getEmailThreadsForLoad(load.id);
-      if (threads.length > 0) {
-        threadsMap.set(load.id, threads);
+      // Get email threads for each load asynchronously
+      const threadsMap = new Map<string, EmailThread[]>();
+      
+      for (const load of allLoads) {
+        try {
+          const threads = await EmailService.getEmailThreadsForLoad(load.id);
+          if (threads.length > 0) {
+            threadsMap.set(load.id, threads);
+          }
+        } catch (error) {
+          console.error(`Error loading threads for load ${load.id}:`, error);
+        }
       }
-    });
-    setEmailThreads(threadsMap);
+      
+      setEmailThreads(threadsMap);
+      setIsLoading(false);
+    };
+
+    loadEmailData();
   }, []);
 
   const handleViewDashboard = () => {
@@ -84,11 +98,12 @@ const LoadsSidebar = () => {
     setExpandedLoads(newExpanded);
   };
 
-  const handleEmailThreadClick = (threadId: string, loadId: string, event: React.MouseEvent) => {
+  const handleEmailThreadClick = async (threadId: string, loadId: string, event: React.MouseEvent) => {
     event.stopPropagation();
     console.log(`Opening email thread ${threadId} for load ${loadId}`);
+    
     // Mark thread as read when clicked
-    EmailService.markThreadAsRead(threadId);
+    await EmailService.markThreadAsRead(threadId);
     
     // Navigate to the load detail page and scroll to communications section
     navigate(`/load/${loadId}`, { 
@@ -100,12 +115,16 @@ const LoadsSidebar = () => {
     
     // Refresh email threads to update unread counts
     const threadsMap = new Map<string, EmailThread[]>();
-    loads.forEach(load => {
-      const threads = EmailService.getEmailThreadsForLoad(load.id);
-      if (threads.length > 0) {
-        threadsMap.set(load.id, threads);
+    for (const load of loads) {
+      try {
+        const threads = await EmailService.getEmailThreadsForLoad(load.id);
+        if (threads.length > 0) {
+          threadsMap.set(load.id, threads);
+        }
+      } catch (error) {
+        console.error(`Error refreshing threads for load ${load.id}:`, error);
       }
-    });
+    }
     setEmailThreads(threadsMap);
   };
 
@@ -132,6 +151,24 @@ const LoadsSidebar = () => {
   const getSenderName = (email: string) => {
     return email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
   };
+
+  if (isLoading) {
+    return (
+      <div className="w-80 bg-white text-slate-900 min-h-screen overflow-y-auto flex flex-col shadow-sm" style={{ borderRight: 'rgba(0, 0, 0, 0.06) 1px solid' }}>
+        <div className="p-6 border-b border-slate-200">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-semibold flex items-center">
+              <Truck className="w-6 h-6 mr-2" />
+              Loads
+            </h2>
+          </div>
+        </div>
+        <div className="flex-1 p-4 flex items-center justify-center">
+          <div className="text-slate-500">Loading...</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-80 bg-white text-slate-900 min-h-screen overflow-y-auto flex flex-col shadow-sm" style={{ borderRight: 'rgba(0, 0, 0, 0.06) 1px solid' }}>
