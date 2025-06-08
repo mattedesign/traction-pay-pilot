@@ -37,18 +37,46 @@ export const useChatMessageHandler = ({
       console.log('Query routing result:', {
         queryType: routingResult.queryType,
         confidence: routingResult.confidence,
-        loadResultsCount: routingResult.loadResults?.length || 0
+        loadResultsCount: routingResult.loadResults?.length || 0,
+        requiresAI: routingResult.requiresAI
       });
 
-      // Step 2: Build smart context for AI
-      const smartContext = await SmartContextBuilder.buildContext(
-        sanitizedMessage,
-        routingResult,
-        currentLoadId
-      );
+      // Step 2: Handle pure search results without AI
+      if (!routingResult.requiresAI && routingResult.loadResults && routingResult.loadResults.length > 0) {
+        console.log('Handling pure search results without AI...');
+        
+        if (routingResult.queryType === 'load_search' && routingResult.loadResults.length > 1) {
+          // Multiple loads found - let the load search handler display them
+          console.log('Multiple loads found, returning results for display');
+          return routingResult;
+        } else if (routingResult.queryType === 'specific_load' && routingResult.loadResults.length === 1) {
+          // Single load found - provide basic info
+          const load = routingResult.loadResults[0].load;
+          const basicInfo = `**Load #${load.id} Information:**
 
-      // Step 3: Send to Claude if AI response is needed
+📊 **Status:** ${load.status.replace('_', ' ').toUpperCase()}
+🏢 **Broker:** ${load.broker}
+💰 **Amount:** ${load.amount}
+📍 **Route:** ${load.origin} → ${load.destination}
+⏰ **Pickup:** ${load.pickupTime}
+📏 **Distance:** ${load.distance}
+
+Click "View Load Details" above for more information or ask me specific questions about this load.`;
+          
+          addAIMessage(basicInfo);
+          return routingResult;
+        }
+      }
+
+      // Step 3: Build smart context for AI (only if AI is needed)
       if (routingResult.requiresAI) {
+        const smartContext = await SmartContextBuilder.buildContext(
+          sanitizedMessage,
+          routingResult,
+          currentLoadId
+        );
+
+        // Step 4: Send to Claude for AI response
         const messages = [...chatHistory, { ...userMessage, content: smartContext.enhancedUserMessage }].map(msg => ({
           role: msg.type === "user" ? "user" as const : "assistant" as const,
           content: sanitizeInput(msg.content)

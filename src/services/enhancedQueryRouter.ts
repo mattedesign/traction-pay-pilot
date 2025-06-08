@@ -1,4 +1,3 @@
-
 import { LoadSearchService, LoadSearchResult } from './loadSearchService';
 
 export interface QueryRoutingResult {
@@ -33,7 +32,7 @@ export class EnhancedQueryRouter {
           specificLoadId: loadIdMatches[0],
           loadResults: [{ load: specificLoad, relevanceScore: 100, matchedFields: ['loadId'], matchReason: 'Direct ID match' }],
           suggestedActions: this.getLoadSpecificActions(specificLoad, query),
-          requiresAI: true
+          requiresAI: this.shouldUseAI(query) // Only use AI if the query needs analysis
         };
       }
     }
@@ -48,19 +47,21 @@ export class EnhancedQueryRouter {
           specificLoadId: currentLoadId,
           loadResults: [{ load: currentLoad, relevanceScore: 90, matchedFields: ['context'], matchReason: 'Current load context' }],
           suggestedActions: this.getLoadSpecificActions(currentLoad, query),
-          requiresAI: true
+          requiresAI: this.shouldUseAI(query)
         };
       }
     }
 
     if (highRelevanceLoads.length > 0) {
-      // Multiple relevant loads found
+      // Multiple relevant loads found - check if it's a pure search or needs AI analysis
+      const isPureSearch = this.isPureSearchQuery(query);
+      
       return {
         queryType: 'load_search',
         confidence: Math.min(85, highRelevanceLoads[0].relevanceScore),
         loadResults: highRelevanceLoads.slice(0, 5), // Limit to top 5 results
         suggestedActions: this.getSearchActions(highRelevanceLoads, query),
-        requiresAI: highRelevanceLoads.length === 1
+        requiresAI: !isPureSearch && highRelevanceLoads.length === 1 // Only use AI for complex analysis, not pure search
       };
     }
 
@@ -81,6 +82,44 @@ export class EnhancedQueryRouter {
       suggestedActions: ['Provide general help', 'Suggest load search'],
       requiresAI: true
     };
+  }
+
+  private static isPureSearchQuery(query: string): boolean {
+    const pureSearchKeywords = [
+      'search', 'find', 'show', 'list', 'loads', 'by', 'from', 'to',
+      'broker', 'status', 'id', 'number', '#'
+    ];
+    
+    const complexAnalysisKeywords = [
+      'analyze', 'compare', 'recommend', 'suggest', 'best', 'worst',
+      'why', 'how', 'explain', 'what should', 'advice', 'help'
+    ];
+    
+    const queryLower = query.toLowerCase();
+    const hasSearchKeywords = pureSearchKeywords.some(keyword => queryLower.includes(keyword));
+    const hasComplexKeywords = complexAnalysisKeywords.some(keyword => queryLower.includes(keyword));
+    
+    // If it has search keywords but no complex analysis keywords, it's a pure search
+    return hasSearchKeywords && !hasComplexKeywords;
+  }
+
+  private static shouldUseAI(query: string): boolean {
+    const queryLower = query.toLowerCase();
+    
+    // Don't use AI for simple status/info requests
+    const simpleInfoKeywords = ['status', 'where', 'when', 'info', 'information', 'details', 'show me'];
+    if (simpleInfoKeywords.some(keyword => queryLower.includes(keyword)) && queryLower.split(' ').length <= 4) {
+      return false;
+    }
+    
+    // Use AI for complex queries
+    const complexKeywords = [
+      'analyze', 'compare', 'recommend', 'suggest', 'best', 'worst',
+      'why', 'how', 'explain', 'what should', 'advice', 'help',
+      'problem', 'issue', 'delay', 'optimize'
+    ];
+    
+    return complexKeywords.some(keyword => queryLower.includes(keyword));
   }
 
   private static extractLoadIds(query: string): string[] {

@@ -42,7 +42,7 @@ const LoadResultsPresenter = ({ results, onLoadSelect, showingSearch = false }: 
   };
 
   if (results.length === 1 && !showingSearch) {
-    // Single result - show detailed view
+    // Single result - show detailed view with enhanced information
     const result = results[0];
     const { load } = result;
 
@@ -90,19 +90,21 @@ const LoadResultsPresenter = ({ results, onLoadSelect, showingSearch = false }: 
             <span className="text-sm">Broker: {load.broker}</span>
           </div>
 
-          <Button 
-            onClick={() => onLoadSelect(load.id)}
-            className="w-full mt-3"
-            size="sm"
-          >
-            View Load Details
-          </Button>
+          <div className="flex gap-2 mt-3">
+            <Button 
+              onClick={() => onLoadSelect(load.id)}
+              className="flex-1"
+              size="sm"
+            >
+              View Load Details
+            </Button>
+          </div>
         </CardContent>
       </Card>
     );
   }
 
-  // Multiple results - show list view
+  // Multiple results - show enhanced list view
   return (
     <Card className="border-purple-200 bg-purple-50">
       <CardHeader className="pb-3">
@@ -111,17 +113,17 @@ const LoadResultsPresenter = ({ results, onLoadSelect, showingSearch = false }: 
           Found {results.length} Matching Load{results.length > 1 ? 's' : ''}
         </CardTitle>
         <CardDescription>
-          Click on any load to view details or get specific help
+          Search results are displayed below. Click on any load for details or ask specific questions.
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="space-y-3 max-h-60 overflow-y-auto">
+        <div className="space-y-3 max-h-80 overflow-y-auto">
           {results.map((result) => {
             const { load } = result;
             return (
               <div 
                 key={load.id}
-                className="p-3 bg-white rounded-lg border border-purple-200 hover:border-purple-300 cursor-pointer transition-colors"
+                className="p-3 bg-white rounded-lg border border-purple-200 hover:border-purple-300 hover:shadow-sm cursor-pointer transition-all"
                 onClick={() => onLoadSelect(load.id)}
               >
                 <div className="flex items-center justify-between mb-2">
@@ -138,13 +140,26 @@ const LoadResultsPresenter = ({ results, onLoadSelect, showingSearch = false }: 
                   {load.broker} • {load.origin} → {load.destination}
                 </div>
                 
-                <div className="text-xs text-purple-600">
-                  Match: {result.matchReason} ({result.relevanceScore}% relevance)
+                <div className="flex items-center justify-between">
+                  <div className="text-xs text-purple-600">
+                    {result.matchReason} ({result.relevanceScore}% match)
+                  </div>
+                  <div className="text-xs text-gray-500">
+                    {load.pickupTime} • {load.distance}
+                  </div>
                 </div>
               </div>
             );
           })}
         </div>
+        
+        {results.length > 5 && (
+          <div className="mt-3 text-center">
+            <p className="text-sm text-purple-600">
+              Showing top {Math.min(results.length, 5)} results. Refine your search for more specific results.
+            </p>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
