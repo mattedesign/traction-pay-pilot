@@ -12,9 +12,13 @@ const LoadsPage = () => {
   const [recentEmailThreads, setRecentEmailThreads] = useState<EmailThread[]>([]);
 
   useEffect(() => {
-    // Get recent email threads across all loads
-    const allThreads = EmailService.getAllEmailThreads();
-    setRecentEmailThreads(allThreads.slice(0, 5)); // Show 5 most recent
+    const loadRecentThreads = async () => {
+      // Get recent email threads across all loads
+      const allThreads = await EmailService.getAllEmailThreads();
+      setRecentEmailThreads(allThreads.slice(0, 5)); // Show 5 most recent
+    };
+    
+    loadRecentThreads();
   }, []);
 
   return (

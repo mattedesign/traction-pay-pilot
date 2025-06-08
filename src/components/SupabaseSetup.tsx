@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Database, CheckCircle, AlertCircle, RefreshCw } from 'lucide-react';
 import { DataMigrationUtility } from '@/utils/dataMigration';
+import { SupabaseConnectionUtil } from '@/utils/supabaseConnection';
 import { toast } from '@/hooks/use-toast';
 
 const SupabaseSetup = () => {
@@ -13,12 +14,27 @@ const SupabaseSetup = () => {
   const [isMigrating, setIsMigrating] = useState(false);
 
   useEffect(() => {
-    testConnection();
+    checkConnection();
   }, []);
+
+  const checkConnection = () => {
+    const connectionStatus = SupabaseConnectionUtil.getConnectionStatus();
+    setIsConnected(connectionStatus.connected);
+  };
 
   const testConnection = async () => {
     setIsTesting(true);
     try {
+      if (!SupabaseConnectionUtil.isConnected()) {
+        toast({
+          title: "Not Connected",
+          description: "Please connect to Supabase first using the green button in the top right",
+          variant: "destructive"
+        });
+        setIsConnected(false);
+        return;
+      }
+
       const connected = await DataMigrationUtility.testSupabaseConnection();
       setIsConnected(connected);
       if (connected) {
@@ -40,6 +56,15 @@ const SupabaseSetup = () => {
   };
 
   const handleMigration = async () => {
+    if (!SupabaseConnectionUtil.isConnected()) {
+      toast({
+        title: "Not Connected",
+        description: "Please connect to Supabase first",
+        variant: "destructive"
+      });
+      return;
+    }
+
     setIsMigrating(true);
     try {
       await DataMigrationUtility.migrateEmailDataToSupabase();

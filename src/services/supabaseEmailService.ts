@@ -225,12 +225,11 @@ export class SupabaseEmailService {
       }
 
       // Update thread last activity and unread count
-      const unreadIncrement = email.isRead ? 0 : 1;
       const { error: threadError } = await supabase
         .from('email_threads')
         .update({
           last_activity: email.timestamp.toISOString(),
-          unread_count: supabase.sql`unread_count + ${unreadIncrement}`
+          unread_count: email.isRead ? 0 : 1
         })
         .eq('thread_id', email.threadId);
 
