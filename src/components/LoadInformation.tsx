@@ -2,7 +2,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Package, Wifi, Clock, Phone, FileText } from "lucide-react";
+import { Package, Wifi, Clock, Phone, FileText, ExternalLink } from "lucide-react";
 import { useState } from "react";
 import LocationDetailsModal from "./LocationDetailsModal";
 import { Load } from "@/types/load";
@@ -38,7 +38,7 @@ const LoadInformation = ({ loadData }: LoadInformationProps) => {
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <span className="text-sm font-medium text-slate-700 mb-1 block">Freight Broker</span>
               <div>
@@ -50,12 +50,18 @@ const LoadInformation = ({ loadData }: LoadInformationProps) => {
             </div>
             <div>
               <span className="text-sm font-medium text-slate-700 mb-1 block">Delivery Location</span>
-              <p 
-                className="text-sm text-slate-700 cursor-pointer hover:text-blue-600 hover:underline"
-                onClick={() => setShowLocationModal(true)}
-              >
-                {loadData.destination}
-              </p>
+              <div className="flex items-center space-x-2">
+                <p 
+                  className="text-sm text-slate-700 cursor-pointer hover:text-blue-600 hover:underline"
+                  onClick={() => setShowLocationModal(true)}
+                >
+                  {loadData.destination}
+                </p>
+                <ExternalLink className="w-3 h-3 text-slate-400 cursor-pointer hover:text-blue-600" onClick={() => setShowLocationModal(true)} />
+              </div>
+            </div>
+            <div>
+              <span className="text-sm font-medium text-slate-700 mb-1 block">Expected Delivery</span>
               <p className="text-xs text-slate-500">
                 {loadDataWithDeliveryTime.deliveryTime}
               </p>

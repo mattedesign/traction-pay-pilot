@@ -84,11 +84,16 @@ const FinancialSummaryCard = ({ loadData }: FinancialSummaryCardProps) => {
             <div className="flex items-center space-x-2 mb-1">
               <Banknote className="w-4 h-4 text-purple-600" />
               <span className="text-sm font-medium text-slate-700">Funding Method</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <p className="text-lg font-semibold text-purple-600">
+                {getFundingMethod()}
+              </p>
               {canEditFundingMethod && (
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-4 w-4 ml-1"
+                  className="h-4 w-4"
                   onClick={handleFundingMethodEdit}
                   title="Edit funding method"
                 >
@@ -96,9 +101,6 @@ const FinancialSummaryCard = ({ loadData }: FinancialSummaryCardProps) => {
                 </Button>
               )}
             </div>
-            <p className="text-lg font-semibold text-purple-600">
-              {getFundingMethod()}
-            </p>
           </div>
         </div>
 
