@@ -9,9 +9,11 @@ import DocumentUploadSection from "./DocumentUploadSection";
 import FinancialServices from "./FinancialServices";
 import FunctionalChatInterface from "./FunctionalChatInterface";
 import QuickPayOffer from "./QuickPayOffer";
-import { FileText, Upload, Brain, X } from "lucide-react";
-import { useState } from "react";
+import EmailThreadDisplay from "./EmailThreadDisplay";
+import { FileText, Upload, Brain, X, MessageSquare } from "lucide-react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { EmailService, EmailThread } from "@/services/emailService";
 
 interface LoadMainContentProps {
   loadData: any;
@@ -19,7 +21,25 @@ interface LoadMainContentProps {
 
 const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
   const [isChatFocused, setIsChatFocused] = useState(false);
+  const [emailThreads, setEmailThreads] = useState<EmailThread[]>([]);
+  const [isLoadingThreads, setIsLoadingThreads] = useState(true);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const loadEmailThreads = async () => {
+      setIsLoadingThreads(true);
+      try {
+        const threads = await EmailService.getEmailThreadsForLoad(loadData.loadId);
+        setEmailThreads(threads);
+      } catch (error) {
+        console.error(`Error loading threads for load ${loadData.loadId}:`, error);
+      } finally {
+        setIsLoadingThreads(false);
+      }
+    };
+
+    loadEmailThreads();
+  }, [loadData.loadId]);
 
   const handleNavigateToLoad = (path: string) => {
     navigate(path);
@@ -85,6 +105,21 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
                     <LoadInformation loadData={loadData} />
                     {shouldShowQuickPay && <QuickPayOffer />}
                     <FinancialServices loadAmount={loadData.amount} />
+                    
+                    {/* Communications Section */}
+                    {emailThreads.length > 0 && (
+                      <div className="bg-white rounded-lg p-6 shadow-sm">
+                        <div className="flex items-center space-x-2 mb-4">
+                          <MessageSquare className="w-5 h-5 text-slate-600" />
+                          <h3 className="text-lg font-semibold text-slate-900">Communications</h3>
+                        </div>
+                        {isLoadingThreads ? (
+                          <div className="text-slate-500 text-sm">Loading communications...</div>
+                        ) : (
+                          <EmailThreadDisplay threads={emailThreads} compact={true} />
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
               </ScrollArea>

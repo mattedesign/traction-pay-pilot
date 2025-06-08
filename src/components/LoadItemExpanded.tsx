@@ -3,7 +3,8 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { MapPin, Clock, DollarSign, MessageSquare } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { MapPin, Clock, DollarSign, MessageSquare, FileText, Calendar, CreditCard, Upload, Truck, PhoneCall, Clock3 } from "lucide-react";
 import { EmailService, EmailThread } from "@/services/emailService";
 import EmailThreadDisplay from "./EmailThreadDisplay";
 import { LoadService } from "@/services/loadService";
@@ -26,12 +27,14 @@ const LoadItemExpanded = ({ loadId, onClose }: LoadItemExpandedProps) => {
       const load = LoadService.getLoadById(loadId);
       setLoadData(load);
 
-      // Get email threads for this load
-      try {
-        const threads = await EmailService.getEmailThreadsForLoad(loadId);
-        setEmailThreads(threads);
-      } catch (error) {
-        console.error(`Error loading threads for load ${loadId}:`, error);
+      // Get email threads for this load only for in-progress loads
+      if (load && (load.status === "pending_pickup" || load.status === "in_transit")) {
+        try {
+          const threads = await EmailService.getEmailThreadsForLoad(loadId);
+          setEmailThreads(threads);
+        } catch (error) {
+          console.error(`Error loading threads for load ${loadId}:`, error);
+        }
       }
       
       setIsLoading(false);
@@ -69,6 +72,53 @@ const LoadItemExpanded = ({ loadId, onClose }: LoadItemExpandedProps) => {
       default: return status;
     }
   };
+
+  const getNextSteps = (status: string, fundingMethod?: string) => {
+    if (status === "delivered") {
+      return [];
+    }
+
+    const steps = [];
+    
+    if (status === "in_transit") {
+      steps.push({
+        icon: Upload,
+        text: "Upload Proof of Delivery (POD)",
+        action: "Upload POD"
+      });
+    }
+    
+    if (fundingMethod === "Standard Pay ACH" || fundingMethod === "Standard Pay Check") {
+      steps.push({
+        icon: CreditCard,
+        text: "Change to QuickPay for faster payment",
+        action: "Switch to QuickPay"
+      });
+    }
+    
+    steps.push(
+      {
+        icon: MessageSquare,
+        text: "Send message to broker",
+        action: "Send Message"
+      },
+      {
+        icon: Truck,
+        text: "Coordinate pickup time",
+        action: "Coordinate Pickup"
+      },
+      {
+        icon: PhoneCall,
+        text: "Ask for special instructions",
+        action: "Get Instructions"
+      }
+    );
+
+    return steps;
+  };
+
+  const isCompleted = loadData.status === "delivered";
+  const nextSteps = getNextSteps(loadData.status, loadData.fundingMethod);
 
   return (
     <div className="border-b border-slate-200 bg-slate-50">
@@ -112,17 +162,54 @@ const LoadItemExpanded = ({ loadId, onClose }: LoadItemExpandedProps) => {
           </div>
         </div>
 
-        {/* Email Threads */}
-        {emailThreads.length > 0 && (
+        {/* Conditional Content Based on Status */}
+        {isCompleted ? (
+          /* Completed Load Content */
           <div className="space-y-3">
             <div className="flex items-center space-x-2">
-              <MessageSquare className="w-4 h-4 text-slate-600" />
-              <h4 className="font-medium text-slate-900">Communications</h4>
+              <FileText className="w-4 h-4 text-slate-600" />
+              <h4 className="font-medium text-slate-900">Payment Information</h4>
             </div>
-            <div className="h-48 overflow-hidden">
-              <ScrollArea className="h-full">
-                <EmailThreadDisplay threads={emailThreads} compact={true} />
-              </ScrollArea>
+            <div className="space-y-2 pl-6">
+              <div className="flex items-center space-x-2">
+                <FileText className="w-3 h-3 text-blue-600" />
+                <Button variant="link" className="h-auto p-0 text-xs text-blue-600">
+                  View Invoice #INV-{loadData.id}
+                </Button>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Calendar className="w-3 h-3 text-slate-500" />
+                <span className="text-xs text-slate-600">
+                  Paid on May 30, 2024
+                </span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <CreditCard className="w-3 h-3 text-slate-500" />
+                <span className="text-xs text-slate-600">
+                  {loadData.fundingMethod || "ACH Transfer"}
+                </span>
+              </div>
+            </div>
+          </div>
+        ) : (
+          /* In Progress Load Content */
+          <div className="space-y-3">
+            <div className="flex items-center space-x-2">
+              <Clock3 className="w-4 h-4 text-slate-600" />
+              <h4 className="font-medium text-slate-900">Next Steps</h4>
+            </div>
+            <div className="space-y-2 pl-6">
+              {nextSteps.map((step, index) => (
+                <div key={index} className="flex items-center space-x-2">
+                  <step.icon className="w-3 h-3 text-slate-500" />
+                  <Button 
+                    variant="link" 
+                    className="h-auto p-0 text-xs text-slate-700 hover:text-blue-600"
+                  >
+                    {step.text}
+                  </Button>
+                </div>
+              ))}
             </div>
           </div>
         )}
