@@ -1,8 +1,7 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { DollarSign, TrendingUp, Clock, CreditCard, Calculator, Edit, Banknote } from "lucide-react";
+import { DollarSign, Clock, CreditCard, Edit } from "lucide-react";
 import { Load } from "@/types/load";
 
 interface FinancialSummaryCardProps {
@@ -65,28 +64,19 @@ const FinancialSummaryCard = ({ loadData }: FinancialSummaryCardProps) => {
         {/* Main Rate */}
         <div className="grid grid-cols-3 gap-4">
           <div>
-            <div className="flex items-center space-x-2 mb-1">
-              <TrendingUp className="w-4 h-4 text-green-600" />
-              <span className="text-sm font-medium text-slate-700">Total Rate</span>
-            </div>
-            <p className="text-lg font-semibold text-green-600">{loadData.amount}</p>
+            <span className="text-sm font-medium text-slate-700 mb-1 block">Total Rate</span>
+            <p className="text-sm font-semibold text-green-600">{loadData.amount}</p>
           </div>
           <div>
-            <div className="flex items-center space-x-2 mb-1">
-              <Calculator className="w-4 h-4 text-blue-600" />
-              <span className="text-sm font-medium text-slate-700">Per Mile</span>
-            </div>
-            <p className="text-lg font-semibold text-blue-600">
+            <span className="text-sm font-medium text-slate-700 mb-1 block">Per Mile</span>
+            <p className="text-sm font-semibold text-blue-600">
               ${(rate / parseFloat(loadData.distance.replace(' miles', ''))).toFixed(2)}
             </p>
           </div>
           <div>
-            <div className="flex items-center space-x-2 mb-1">
-              <Banknote className="w-4 h-4 text-purple-600" />
-              <span className="text-sm font-medium text-slate-700">Funding Method</span>
-            </div>
+            <span className="text-sm font-medium text-slate-700 mb-1 block">Funding Method</span>
             <div className="flex items-center space-x-2">
-              <p className="text-lg font-semibold text-purple-600">
+              <p className="text-sm font-semibold text-purple-600">
                 {getFundingMethod()}
               </p>
               {canEditFundingMethod && (
