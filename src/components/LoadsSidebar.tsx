@@ -192,19 +192,20 @@ const LoadsSidebar = () => {
       </div>
       
       {/* Loads List */}
-      <div className="flex-1 p-4 space-y-3">
+      <div className="flex-1 p-4 space-y-4">
         {loads.map((load) => {
           const loadThreads = emailThreads.get(load.id) || [];
           const unreadCount = getUnreadEmailCount(load.id);
           const isExpanded = expandedLoads.has(load.id);
           const hasThreads = loadThreads.length > 0;
+          const isActive = loadId === load.id;
 
           return (
             <Card 
               key={load.id} 
               className={`cursor-pointer transition-all duration-200 hover:shadow-md ${
-                loadId === load.id 
-                  ? "bg-slate-100 border-slate-300" 
+                isActive 
+                  ? "bg-blue-50 border-blue-300 shadow-md" 
                   : "bg-slate-50 border-slate-200 hover:bg-slate-100"
               }`}
               onClick={() => navigate(`/load/${load.id}`)}

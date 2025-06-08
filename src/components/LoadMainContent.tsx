@@ -5,44 +5,31 @@ import RouteOptimization from "./RouteOptimization";
 import EldSharing from "./EldSharing";
 import DocumentUploadSection from "./DocumentUploadSection";
 import FinancialServices from "./FinancialServices";
-import MockChatInterface from "./MockChatInterface";
-import { FileText, Brain, Upload, X } from "lucide-react";
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
+import FunctionalChatInterface from "./FunctionalChatInterface";
+import { FileText, Upload, Brain } from "lucide-react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface LoadMainContentProps {
   loadData: any;
 }
 
 const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
-  const [isChatVisible, setIsChatVisible] = useState(true);
+  const [isChatFocused, setIsChatFocused] = useState(false);
+  const navigate = useNavigate();
 
-  // Handle escape key to close chat
-  useEffect(() => {
-    const handleEscapeKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && isChatVisible) {
-        setIsChatVisible(false);
-      }
-    };
-
-    document.addEventListener('keydown', handleEscapeKey);
-    return () => {
-      document.removeEventListener('keydown', handleEscapeKey);
-    };
-  }, [isChatVisible]);
-
-  const handleCloseChat = () => {
-    setIsChatVisible(false);
+  const handleNavigateToLoad = (path: string) => {
+    navigate(path);
   };
 
-  const handleShowChat = () => {
-    setIsChatVisible(true);
+  const handleFocusChange = (focused: boolean) => {
+    setIsChatFocused(focused);
   };
 
   return (
-    <div className="flex-1 flex flex-col min-h-screen bg-slate-50">
+    <div className="flex-1 flex flex-col min-h-screen bg-slate-50 relative">
       {/* Main content area */}
-      <div className="flex-1 border-r border-slate-200">
+      <div className="flex-1 pb-24">
         <Tabs defaultValue="details" className="h-full flex flex-col">
           <div className="border-b border-slate-200 bg-white px-6 py-4 shrink-0">
             <div className="flex items-center justify-between mb-4">
@@ -70,7 +57,7 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
             </TabsList>
           </div>
           
-          <div className="flex-1 overflow-hidden pb-20 bg-slate-50">
+          <div className="flex-1 overflow-hidden bg-slate-50">
             <TabsContent value="details" className="h-full p-6 overflow-y-auto">
               <div className="max-w-4xl space-y-6 w-full">
                 <LoadInformation loadData={loadData} />
@@ -123,37 +110,16 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
         </Tabs>
       </div>
 
-      {/* Floating AI chat input at bottom */}
-      {isChatVisible ? (
-        <div className="fixed bottom-4 left-96 right-4 bg-white border border-slate-200 rounded-lg shadow-lg z-10 p-4">
-          <div className="flex items-center justify-between mb-2">
-            <h4 className="font-medium text-slate-900">Ask about this load</h4>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleCloseChat}
-              className="h-6 w-6"
-              title="Close chat (Esc)"
-            >
-              <X className="w-3 h-3" />
-            </Button>
-          </div>
-          <MockChatInterface 
-            loadContext={`Load #${loadData.loadId} from ${loadData.origin} to ${loadData.destination}, Rate: ${loadData.amount}`}
+      {/* Fixed chat interface at bottom */}
+      <div className="fixed bottom-0 left-80 right-0 bg-white border-t border-slate-200 shadow-lg z-20 p-4">
+        <div className="max-w-4xl mx-auto">
+          <FunctionalChatInterface 
+            onNavigateToLoad={handleNavigateToLoad}
+            onFocusChange={handleFocusChange}
+            isFocused={isChatFocused}
           />
         </div>
-      ) : (
-        <div className="fixed bottom-4 right-4 z-10">
-          <Button
-            onClick={handleShowChat}
-            className="rounded-full shadow-lg"
-            title="Open AI assistant"
-          >
-            <Brain className="w-4 h-4 mr-2" />
-            Ask AI
-          </Button>
-        </div>
-      )}
+      </div>
     </div>
   );
 };
