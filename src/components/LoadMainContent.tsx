@@ -1,212 +1,97 @@
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import LoadInformation from "./LoadInformation";
-import RouteOptimization from "./RouteOptimization";
-import EldSharing from "./EldSharing";
-import DocumentUploadSection from "./DocumentUploadSection";
-import FinancialServices from "./FinancialServices";
-import FunctionalChatInterface from "./FunctionalChatInterface";
-import QuickPayOffer from "./QuickPayOffer";
-import EmailThreadDisplay from "./EmailThreadDisplay";
-import { FileText, Upload, Brain, X, MessageSquare } from "lucide-react";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import LoadHeader from "./LoadHeader";
+import LoadInformation from "./LoadInformation";
+import DocumentUploadSection from "./DocumentUploadSection";
+import EmailThreadDisplay from "./EmailThreadDisplay";
+import LoadChatSection from "./LoadChatSection";
+import PaymentChatSection from "./PaymentChatSection";
+import LoadAcceptanceCard from "./LoadAcceptanceCard";
+import NotificationBell from "./NotificationBell";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { EmailService, EmailThread } from "@/services/emailService";
+import { LoadRepository } from "@/services/loadRepository";
 
 interface LoadMainContentProps {
   loadData: any;
 }
 
 const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
-  const [isChatFocused, setIsChatFocused] = useState(false);
   const [emailThreads, setEmailThreads] = useState<EmailThread[]>([]);
-  const [isLoadingThreads, setIsLoadingThreads] = useState(true);
-  const navigate = useNavigate();
+  const [isLoadingEmails, setIsLoadingEmails] = useState(true);
+  const [load, setLoad] = useState(loadData);
 
   useEffect(() => {
-    const loadEmailThreads = async () => {
-      setIsLoadingThreads(true);
+    // Refresh load data from repository
+    const refreshedLoad = LoadRepository.getLoadById(loadData.loadId);
+    if (refreshedLoad) {
+      setLoad(refreshedLoad);
+    }
+  }, [loadData.loadId]);
+
+  useEffect(() => {
+    const loadEmails = async () => {
+      setIsLoadingEmails(true);
       try {
         const threads = await EmailService.getEmailThreadsForLoad(loadData.loadId);
         setEmailThreads(threads);
       } catch (error) {
-        console.error(`Error loading threads for load ${loadData.loadId}:`, error);
+        console.error('Error loading email threads:', error);
       } finally {
-        setIsLoadingThreads(false);
+        setIsLoadingEmails(false);
       }
     };
 
-    loadEmailThreads();
+    loadEmails();
   }, [loadData.loadId]);
 
-  const handleNavigateToLoad = (path: string) => {
-    navigate(path);
-  };
-
-  const handleFocusChange = (focused: boolean) => {
-    setIsChatFocused(focused);
-  };
-
-  const handleClose = () => {
-    navigate("/loads");
-  };
-
-  const getStatusBadgeClass = (status: string) => {
-    if (status === "pending_pickup") return "border-orange-200 bg-orange-50 text-orange-700";
-    if (status === "in_transit") return "border-blue-200 bg-blue-50 text-blue-700";
-    return "border-green-200 bg-green-50 text-green-700";
-  };
-
-  const getStatusText = (status: string) => {
-    return status.replace("_", " ").toUpperCase();
-  };
-
-  // Check if load is completed and should show QuickPay option at the top
-  const shouldShowQuickPayAtTop = loadData.status === "delivered" && 
-    loadData.fundingMethod === "Standard Pay ACH";
-
   return (
-    <div className="flex-1 flex flex-col h-screen bg-slate-50 relative overflow-hidden">
-      {/* Main content area */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <Tabs defaultValue="details" className="h-full flex flex-col">
-          <div className="border-b border-slate-200 bg-white px-6 py-4 shrink-0">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center space-x-4">
-                <div>
-                  <h1 className="text-2xl font-semibold text-slate-900">
-                    Load #{loadData.loadId}
-                  </h1>
-                </div>
-                <Badge 
-                  variant="outline" 
-                  className={getStatusBadgeClass(loadData.status)}
-                >
-                  {getStatusText(loadData.status)}
-                </Badge>
-              </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={handleClose}
-                className="hover:bg-slate-100"
-                title="Close load details"
-              >
-                <X className="w-5 h-5" />
-              </Button>
-            </div>
-            
-            <TabsList className="grid w-full grid-cols-3 bg-slate-100">
-              <TabsTrigger value="details" className="flex items-center space-x-2 text-slate-700">
-                <FileText className="w-4 h-4" />
-                <span>Details</span>
-              </TabsTrigger>
-              <TabsTrigger value="documents" className="flex items-center space-x-2 text-slate-700">
-                <Upload className="w-4 h-4" />
-                <span>Documents</span>
-              </TabsTrigger>
-              <TabsTrigger value="intelligence" className="flex items-center space-x-2 text-slate-700">
-                <Brain className="w-4 h-4" />
-                <span>Intelligence</span>
-              </TabsTrigger>
-            </TabsList>
-          </div>
+    <div className="flex-1 flex flex-col h-screen overflow-hidden">
+      {/* Header with notification bell */}
+      <div className="border-b border-slate-200 bg-white px-6 py-4 flex items-center justify-between">
+        <LoadHeader loadData={load} />
+        <NotificationBell />
+      </div>
+      
+      <div className="flex-1 overflow-y-auto p-6">
+        <div className="max-w-6xl mx-auto space-y-6">
           
-          <div className="flex-1 flex flex-col overflow-hidden bg-slate-50 relative">
-            <TabsContent value="details" className="flex-1 overflow-hidden">
-              <ScrollArea className="h-full">
-                <div className="p-6 pb-32">
-                  <div className="max-w-4xl mx-auto space-y-6">
-                    {/* Show QuickPay at top for completed loads with standard funding */}
-                    {shouldShowQuickPayAtTop && <QuickPayOffer />}
-                    
-                    <LoadInformation loadData={loadData} />
-                    <FinancialServices loadAmount={loadData.amount} />
-                    
-                    {/* Communications Section */}
-                    {emailThreads.length > 0 && (
-                      <div className="bg-white rounded-lg p-6 shadow-sm">
-                        <div className="flex items-center space-x-2 mb-4">
-                          <MessageSquare className="w-5 h-5 text-slate-600" />
-                          <h3 className="text-lg font-semibold text-slate-900">Communications</h3>
-                        </div>
-                        {isLoadingThreads ? (
-                          <div className="text-slate-500 text-sm">Loading communications...</div>
-                        ) : (
-                          <EmailThreadDisplay threads={emailThreads} compact={true} />
-                        )}
-                      </div>
-                    )}
-                  </div>
+          {/* Load Acceptance Card for pending loads */}
+          {load.status === "pending_acceptance" && (
+            <LoadAcceptanceCard load={load} />
+          )}
+          
+          {/* Load Information */}
+          <LoadInformation loadData={load} />
+          
+          {/* Document Upload Section */}
+          <DocumentUploadSection loadId={load.loadId || load.id} />
+          
+          {/* Email Communications */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Email Communications</CardTitle>
+              <CardDescription>
+                Email threads and communications for this load
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {isLoadingEmails ? (
+                <div className="text-center py-8">
+                  <div className="text-slate-500 text-sm">Loading communications...</div>
                 </div>
-              </ScrollArea>
-            </TabsContent>
-
-            <TabsContent value="documents" className="flex-1 overflow-hidden">
-              <ScrollArea className="h-full">
-                <div className="p-6 pb-32">
-                  <div className="max-w-4xl mx-auto">
-                    <DocumentUploadSection />
-                  </div>
-                </div>
-              </ScrollArea>
-            </TabsContent>
-            
-            <TabsContent value="intelligence" className="flex-1 overflow-hidden">
-              <ScrollArea className="h-full">
-                <div className="p-6 pb-32">
-                  <div className="max-w-4xl mx-auto space-y-6">
-                    <RouteOptimization />
-                    <EldSharing />
-                    <div className="bg-white rounded-lg p-6 shadow-sm">
-                      <h3 className="text-lg font-semibold mb-4 text-slate-900">Load Intelligence</h3>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="bg-slate-50 p-4 rounded-lg shadow-sm">
-                          <h4 className="font-medium mb-2 text-slate-900">Route Analysis</h4>
-                          <p className="text-sm text-slate-600">
-                            Optimal route identified with 3% fuel savings potential.
-                          </p>
-                        </div>
-                        <div className="bg-slate-50 p-4 rounded-lg shadow-sm">
-                          <h4 className="font-medium mb-2 text-slate-900">Weather Impact</h4>
-                          <p className="text-sm text-slate-600">
-                            Clear conditions expected for the entire route.
-                          </p>
-                        </div>
-                        <div className="bg-slate-50 p-4 rounded-lg shadow-sm">
-                          <h4 className="font-medium mb-2 text-slate-900">Traffic Patterns</h4>
-                          <p className="text-sm text-slate-600">
-                            Light traffic expected during pickup window.
-                          </p>
-                        </div>
-                        <div className="bg-slate-50 p-4 rounded-lg shadow-sm">
-                          <h4 className="font-medium mb-2 text-slate-900">Historical Performance</h4>
-                          <p className="text-sm text-slate-600">
-                            Similar loads completed 15% faster than average.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </ScrollArea>
-            </TabsContent>
-
-            {/* Fixed AI chat interface at the bottom - always visible */}
-            <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-slate-200 shadow-lg z-20">
-              <div className="max-w-4xl mx-auto p-4">
-                <FunctionalChatInterface 
-                  onNavigateToLoad={handleNavigateToLoad}
-                  onFocusChange={handleFocusChange}
-                  isFocused={isChatFocused}
-                />
-              </div>
-            </div>
-          </div>
-        </Tabs>
+              ) : (
+                <EmailThreadDisplay threads={emailThreads} />
+              )}
+            </CardContent>
+          </Card>
+          
+          {/* Load-specific Chat */}
+          <LoadChatSection loadId={load.loadId || load.id} />
+          
+          {/* Payment Chat */}
+          <PaymentChatSection loadId={load.loadId || load.id} />
+        </div>
       </div>
     </div>
   );

@@ -2,7 +2,7 @@
 export interface Load {
   id: string;
   broker: string;
-  status: "pending_pickup" | "in_transit" | "delivered";
+  status: "pending_pickup" | "in_transit" | "delivered" | "pending_acceptance";
   amount: string;
   origin: string;
   destination: string;
@@ -14,6 +14,24 @@ export interface Load {
     weight: string;
     referenceNumber?: string;
   };
+  source?: "manual" | "tms";
+  tmsData?: {
+    loadNumber: string;
+    brokerLoadNumber?: string;
+    equipment: string;
+    commodity: string;
+    weight: string;
+    pieces?: string;
+    deliveryTime?: string;
+    specialInstructions?: string;
+    contactInfo?: {
+      name: string;
+      phone: string;
+      email: string;
+    };
+  };
+  notificationSent?: boolean;
+  acceptedAt?: string;
 }
 
 export interface RateConfirmationData {
@@ -45,4 +63,15 @@ export interface DiscrepancyResolutionSuggestions {
   recommendedActions: string[];
   requiredDocuments: string[];
   estimatedResolutionTime: string;
+}
+
+export interface LoadNotification {
+  id: string;
+  loadId: string;
+  type: "new_load" | "load_update" | "payment_ready";
+  title: string;
+  message: string;
+  timestamp: Date;
+  read: boolean;
+  actionUrl?: string;
 }

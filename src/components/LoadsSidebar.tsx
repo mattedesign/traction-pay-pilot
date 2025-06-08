@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Search, Plus, Building2, Truck, Package, ShoppingCart, Zap, Globe, Target, Briefcase } from "lucide-react";
@@ -7,6 +6,7 @@ import { LoadService } from "@/services/loadService";
 import { EmailService, EmailThread } from "@/services/emailService";
 import LoadGroupHeader from "./LoadGroupHeader";
 import LoadItem from "./LoadItem";
+import { Load } from "@/types/load";
 
 interface Load {
   id: string;
@@ -45,18 +45,12 @@ const LoadsSidebar = () => {
       // Get loads from the service
       const allLoads = LoadService.getAllLoads();
       
-      // Replace broker names with real names
-      const loadsWithRealBrokers = allLoads.map((load, index) => ({
-        ...load,
-        broker: brokerNames[index % brokerNames.length]
-      }));
-      
-      setLoads(loadsWithRealBrokers);
+      setLoads(allLoads);
 
       // Get email threads for each load asynchronously
       const threadsMap = new Map<string, EmailThread[]>();
       
-      for (const load of loadsWithRealBrokers) {
+      for (const load of allLoads) {
         try {
           const threads = await EmailService.getEmailThreadsForLoad(load.id);
           if (threads.length > 0) {
@@ -107,6 +101,7 @@ const LoadsSidebar = () => {
   }
 
   // Group loads by status
+  const pendingAcceptanceLoads = loads.filter(load => load.status === "pending_acceptance");
   const activeLoads = loads.filter(load => load.status === "pending_pickup" || load.status === "in_transit");
   const completedLoads = loads.filter(load => load.status === "delivered");
 
@@ -130,6 +125,22 @@ const LoadsSidebar = () => {
       
       {/* Scrollable Loads List */}
       <div className="flex-1 overflow-y-auto">
+        {/* Pending Acceptance Section */}
+        {pendingAcceptanceLoads.length > 0 && (
+          <>
+            <LoadGroupHeader title="Awaiting Acceptance" isActive={true} />
+            <div>
+              {pendingAcceptanceLoads.map((load) => (
+                <LoadItem 
+                  key={load.id}
+                  load={load}
+                  avatarIcon={getAvatarIcon(load.broker)}
+                />
+              ))}
+            </div>
+          </>
+        )}
+
         {/* Active Loads Section */}
         <LoadGroupHeader title="Active" isActive={true} />
         <div>
