@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { ChevronDown, ChevronRight, LucideIcon, Wifi } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Badge } from "@/components/ui/badge";
 import LoadItemExpanded from "./LoadItemExpanded";
 
 interface LoadItemProps {
@@ -40,21 +39,6 @@ const LoadItem = ({
 
   const IconComponent = avatarIcon.icon;
 
-  const getStatusBadge = () => {
-    switch (load.status) {
-      case "pending_acceptance":
-        return <Badge variant="outline" className="bg-orange-50 border-orange-200 text-orange-700 text-xs">Pending</Badge>;
-      case "pending_pickup":
-        return <Badge variant="outline" className="bg-blue-50 border-blue-200 text-blue-700 text-xs">Pickup</Badge>;
-      case "in_transit":
-        return <Badge variant="outline" className="bg-green-50 border-green-200 text-green-700 text-xs">Transit</Badge>;
-      case "delivered":
-        return <Badge variant="outline" className="bg-slate-50 border-slate-200 text-slate-600 text-xs">Delivered</Badge>;
-      default:
-        return null;
-    }
-  };
-
   return (
     <div>
       <div className={`flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-slate-50 transition-colors ${isActive ? "bg-blue-50 border-r-2 border-blue-500" : ""}`} onClick={handleLoadClick}>
@@ -70,10 +54,7 @@ const LoadItem = ({
             )}
           </div>
           <div className="flex-1 min-w-0">
-            <div className="flex items-center space-x-2">
-              <div className="text-sm font-medium text-slate-900 truncate">Load #{load.id}</div>
-              {getStatusBadge()}
-            </div>
+            <div className="text-sm font-medium text-slate-900 truncate">Load #{load.id}</div>
             <div className="text-xs text-slate-500 truncate">{load.broker}</div>
           </div>
         </div>

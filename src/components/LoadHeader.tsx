@@ -41,17 +41,19 @@ const LoadHeader = ({ loadData }: LoadHeaderProps) => {
 
   return (
     <div className="flex items-center space-x-4">
-      <Button 
-        variant="ghost" 
-        size="icon"
-        onClick={handleCloseClick}
-        className="hover:bg-slate-100"
-        title="Close and return to Load Summary"
-      >
-        <X className="w-5 h-5" />
-      </Button>
-      <div>
+      <div className="flex items-center space-x-3">
         <h1 className="text-xl font-bold text-slate-900">Load #{loadData.id}</h1>
+        <Button 
+          variant="ghost" 
+          size="icon"
+          onClick={handleCloseClick}
+          className="hover:bg-slate-100 w-6 h-6"
+          title="Close and return to Load Summary"
+        >
+          <X className="w-4 h-4" />
+        </Button>
+      </div>
+      <div>
         <p className="text-sm text-slate-500">{loadData.broker}</p>
       </div>
       <div className="ml-auto">

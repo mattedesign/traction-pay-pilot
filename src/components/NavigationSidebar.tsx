@@ -24,14 +24,14 @@ const NavigationSidebar = () => {
   return (
     <div className="w-16 bg-slate-800 text-white min-h-screen flex flex-col items-center py-4">
       {/* Main navigation items */}
-      <div className="space-y-4">
+      <div className="space-y-4 flex flex-col items-center">
         {navigationItems.map((item) => (
           <Button
             key={item.label}
             variant="ghost"
             size="icon"
             onClick={() => handleNavClick(item.path)}
-            className="w-12 h-12 text-slate-300 hover:text-white hover:bg-slate-700"
+            className="w-12 h-12 text-slate-300 hover:text-white hover:bg-slate-700 flex items-center justify-center"
             title={item.label}
           >
             <item.icon className="w-6 h-6" />
