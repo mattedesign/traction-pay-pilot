@@ -2,7 +2,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ExternalLink, Package, Wifi, Clock, Phone, FileText } from "lucide-react";
+import { Package, Wifi, Clock, Phone, FileText } from "lucide-react";
 import { useState } from "react";
 import LocationDetailsModal from "./LocationDetailsModal";
 import { Load } from "@/types/load";
@@ -50,19 +50,15 @@ const LoadInformation = ({ loadData }: LoadInformationProps) => {
             </div>
             <div>
               <span className="text-sm font-medium text-slate-700 mb-1 block">Delivery Location</span>
-              <p className="text-sm text-slate-700">{loadData.destination}</p>
-              <p className="text-xs text-slate-500 mb-2">
-                {loadDataWithDeliveryTime.deliveryTime}
-              </p>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-6 px-2 text-xs"
+              <p 
+                className="text-sm text-slate-700 cursor-pointer hover:text-blue-600 hover:underline"
                 onClick={() => setShowLocationModal(true)}
               >
-                <ExternalLink className="w-3 h-3 mr-1" />
-                View route details
-              </Button>
+                {loadData.destination}
+              </p>
+              <p className="text-xs text-slate-500">
+                {loadDataWithDeliveryTime.deliveryTime}
+              </p>
             </div>
           </div>
 

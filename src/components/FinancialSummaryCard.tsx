@@ -69,7 +69,7 @@ const FinancialSummaryCard = ({ loadData }: FinancialSummaryCardProps) => {
               <TrendingUp className="w-4 h-4 text-green-600" />
               <span className="text-sm font-medium text-slate-700">Total Rate</span>
             </div>
-            <p className="text-2xl font-bold text-green-600">{loadData.amount}</p>
+            <p className="text-lg font-semibold text-green-600">{loadData.amount}</p>
           </div>
           <div>
             <div className="flex items-center space-x-2 mb-1">
