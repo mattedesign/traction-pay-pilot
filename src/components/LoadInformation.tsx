@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -46,6 +45,12 @@ const LoadInformation = ({ loadData }: LoadInformationProps) => {
         )}
       </div>
     );
+  };
+
+  // Ensure deliveryTime is always defined for the modal
+  const loadDataWithDeliveryTime = {
+    ...loadData,
+    deliveryTime: loadData.deliveryTime || loadData.tmsData?.deliveryTime || "Delivery time TBD"
   };
 
   return (
@@ -144,7 +149,7 @@ const LoadInformation = ({ loadData }: LoadInformationProps) => {
               </div>
               <p className="text-sm text-slate-700">{loadData.destination}</p>
               <p className="text-xs text-slate-500 mb-2">
-                {loadData.tmsData?.deliveryTime || "Delivery time TBD"}
+                {loadDataWithDeliveryTime.deliveryTime}
               </p>
               <Button
                 variant="ghost"
@@ -174,7 +179,7 @@ const LoadInformation = ({ loadData }: LoadInformationProps) => {
       <LocationDetailsModal
         isOpen={showLocationModal}
         onClose={() => setShowLocationModal(false)}
-        loadData={loadData}
+        loadData={loadDataWithDeliveryTime}
       />
     </>
   );
