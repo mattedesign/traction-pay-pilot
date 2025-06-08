@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Truck, FileText, MapPin, DollarSign, Route, CreditCard } from "lucide-react";
@@ -6,62 +5,52 @@ import { useNavigate } from "react-router-dom";
 import { useRef, useState } from "react";
 import NavigationSidebar from "@/components/NavigationSidebar";
 import FunctionalChatInterface from "@/components/FunctionalChatInterface";
-
 const Index = () => {
   const navigate = useNavigate();
   const [isChatFocused, setIsChatFocused] = useState(false);
-
   const handleChatFocus = (focused: boolean) => {
     setIsChatFocused(focused);
   };
-
-  const suggestedActions = [
-    {
-      icon: Truck,
-      title: "Track a load",
-      description: "Monitor load status and location",
-      color: "text-blue-600",
-      onClick: () => {
-        setIsChatFocused(true);
-      }
-    },
-    {
-      icon: FileText,
-      title: "Check payment status",
-      description: "View invoice and payment details",
-      color: "text-green-600",
-      onClick: () => {
-        setIsChatFocused(true);
-      }
-    },
-    {
-      icon: Route,
-      title: "Plan optimal route",
-      description: "Get best routes for fuel efficiency",
-      color: "text-purple-600",
-      onClick: () => {
-        setIsChatFocused(true);
-      }
-    },
-    {
-      icon: CreditCard,
-      title: "QuickPay Available",
-      description: "You have $1,250 available for QuickPay",
-      color: "text-orange-600",
-      onClick: () => {
-        setIsChatFocused(true);
-      }
+  const suggestedActions = [{
+    icon: Truck,
+    title: "Track a load",
+    description: "Monitor load status and location",
+    color: "text-blue-600",
+    onClick: () => {
+      setIsChatFocused(true);
     }
-  ];
-
-  return (
-    <div className="h-screen flex w-full bg-slate-50 overflow-hidden">
+  }, {
+    icon: FileText,
+    title: "Check payment status",
+    description: "View invoice and payment details",
+    color: "text-green-600",
+    onClick: () => {
+      setIsChatFocused(true);
+    }
+  }, {
+    icon: Route,
+    title: "Plan optimal route",
+    description: "Get best routes for fuel efficiency",
+    color: "text-purple-600",
+    onClick: () => {
+      setIsChatFocused(true);
+    }
+  }, {
+    icon: CreditCard,
+    title: "QuickPay Available",
+    description: "You have $1,250 available for QuickPay",
+    color: "text-orange-600",
+    onClick: () => {
+      setIsChatFocused(true);
+    }
+  }];
+  return <div className="min-h-screen flex w-full bg-slate-50">
       <NavigationSidebar />
       
-      <div className="flex-1 flex flex-col h-full">
-        {/* Main Content Area - Scrollable when needed */}
-        <div className="flex-1 overflow-y-auto p-4">
-          <div className="flex flex-col items-center w-full max-w-4xl mx-auto">
+      <div className="flex-1 flex flex-col h-screen">
+        {/* Main Content Area - Takes remaining space */}
+        <div className={`flex-1 flex items-center justify-center p-4 transition-all duration-300 ${isChatFocused ? 'flex-shrink-1 min-h-0' : ''}`}>
+          <div className="flex flex-col items-center w-full max-w-4xl">
             {/* Welcome Header */}
             <div className="text-center mb-8">
               <div className="w-16 h-16 bg-slate-900 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -76,14 +65,8 @@ const Index = () => {
             </div>
 
             {/* Suggested Actions - Only show when chat is not focused */}
-            {!isChatFocused && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-                {suggestedActions.map((action, index) => (
-                  <Card 
-                    key={index} 
-                    className="hover:shadow-md transition-shadow cursor-pointer border border-slate-200 bg-white"
-                    onClick={action.onClick}
-                  >
+            {!isChatFocused && <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                {suggestedActions.map((action, index) => <Card key={index} className="hover:shadow-md transition-shadow cursor-pointer border border-slate-200 bg-white" onClick={action.onClick}>
                     <CardContent className="p-6">
                       <div className="flex items-start space-x-4">
                         <div className={`w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center`}>
@@ -95,37 +78,25 @@ const Index = () => {
                         </div>
                       </div>
                     </CardContent>
-                  </Card>
-                ))}
-              </div>
-            )}
+                  </Card>)}
+              </div>}
 
             {/* Additional Help - Only show when chat is not focused */}
-            {!isChatFocused && (
-              <div className="text-center">
+            {!isChatFocused && <div className="text-center">
                 <p className="text-sm text-slate-500 mb-4">
                   Traction might provide inaccurate information. Always verify critical details.
                 </p>
-              </div>
-            )}
+              </div>}
           </div>
         </div>
 
-        {/* Chat Interface - Fixed at bottom */}
-        <div className="flex-shrink-0 border-t border-slate-200 bg-white">
-          <div className="w-full max-w-4xl mx-auto p-4">
-            <div className={`transition-all duration-300 ${isChatFocused ? 'h-96' : 'h-auto'}`}>
-              <FunctionalChatInterface 
-                onNavigateToLoad={navigate} 
-                onFocusChange={handleChatFocus}
-                isFocused={isChatFocused}
-              />
-            </div>
+        {/* Chat Interface - Fixed at bottom, expands when focused */}
+        <div className="">
+          <div className="w-full max-w-4xl mx-auto h-full p-4 py-[16px]">
+            <FunctionalChatInterface onNavigateToLoad={navigate} onFocusChange={handleChatFocus} isFocused={isChatFocused} />
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
