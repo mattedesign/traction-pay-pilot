@@ -21,7 +21,6 @@ const FunctionalChatInterface = ({
   onFocusChange,
   isFocused = false 
 }: FunctionalChatInterfaceProps) => {
-  const [mode, setMode] = useState<"search" | "chat">("search");
   const { chatHistory, addUserMessage, addAIMessage } = useChatMessages();
   const { currentSuggestions } = useSuggestedQuestions();
 
@@ -81,11 +80,6 @@ Always provide practical, actionable advice in a clear, professional tone. Focus
       onFocusChange(false);
     }
     setMessage("");
-  };
-
-  const handleModeChange = (newMode: "search" | "chat") => {
-    setMode(newMode);
-    console.log('Mode changed to:', newMode);
   };
 
   const handleMessageChange = (newMessage: string) => {
@@ -156,14 +150,12 @@ Always provide practical, actionable advice in a clear, professional tone. Focus
         </div>
       )}
       
-      {/* Chat Input - Always at bottom with mode integrated */}
+      {/* Chat Input - Always at bottom without mode selector */}
       <ChatInput
         message={message}
         onMessageChange={handleMessageChange}
         onSendMessage={handleSend}
         isLoading={isLoading}
-        mode={mode}
-        onModeChange={handleModeChange}
       />
     </div>
   );

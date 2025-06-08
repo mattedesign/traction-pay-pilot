@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Truck, FileText, MapPin, DollarSign, Route, CreditCard } from "lucide-react";
@@ -5,12 +6,15 @@ import { useNavigate } from "react-router-dom";
 import { useRef, useState } from "react";
 import NavigationSidebar from "@/components/NavigationSidebar";
 import FunctionalChatInterface from "@/components/FunctionalChatInterface";
+
 const Index = () => {
   const navigate = useNavigate();
   const [isChatFocused, setIsChatFocused] = useState(false);
+
   const handleChatFocus = (focused: boolean) => {
     setIsChatFocused(focused);
   };
+
   const suggestedActions = [{
     icon: Truck,
     title: "Track a load",
@@ -44,7 +48,9 @@ const Index = () => {
       setIsChatFocused(true);
     }
   }];
-  return <div className="min-h-screen flex w-full bg-slate-50">
+
+  return (
+    <div className="min-h-screen flex w-full bg-slate-50">
       <NavigationSidebar />
       
       <div className="flex-1 flex flex-col h-screen">
@@ -65,8 +71,10 @@ const Index = () => {
             </div>
 
             {/* Suggested Actions - Only show when chat is not focused */}
-            {!isChatFocused && <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-                {suggestedActions.map((action, index) => <Card key={index} className="hover:shadow-md transition-shadow cursor-pointer border border-slate-200 bg-white" onClick={action.onClick}>
+            {!isChatFocused && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                {suggestedActions.map((action, index) => (
+                  <Card key={index} className="hover:shadow-md transition-shadow cursor-pointer border border-slate-200 bg-white" onClick={action.onClick}>
                     <CardContent className="p-6">
                       <div className="flex items-start space-x-4">
                         <div className={`w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center`}>
@@ -78,15 +86,10 @@ const Index = () => {
                         </div>
                       </div>
                     </CardContent>
-                  </Card>)}
-              </div>}
-
-            {/* Additional Help - Only show when chat is not focused */}
-            {!isChatFocused && <div className="text-center">
-                <p className="text-sm text-slate-500 mb-4">
-                  Traction might provide inaccurate information. Always verify critical details.
-                </p>
-              </div>}
+                  </Card>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
@@ -97,6 +100,8 @@ const Index = () => {
           </div>
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default Index;
