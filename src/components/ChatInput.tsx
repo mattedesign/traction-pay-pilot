@@ -1,10 +1,11 @@
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Send, Paperclip, Mic } from "lucide-react";
 import { validateFile, ALLOWED_FILE_TYPES } from "@/utils/security";
 import { useToast } from "@/hooks/use-toast";
 import ModeDropdown from "./ModeDropdown";
+import { forwardRef, useImperativeHandle } from "react";
+import { useInputFocus, InputFocusHandle } from "@/hooks/useInputFocus";
 
 interface ChatInputProps {
   message: string;
@@ -16,7 +17,7 @@ interface ChatInputProps {
   onModeChange?: (mode: "search" | "chat") => void;
 }
 
-const ChatInput = ({
+const ChatInput = forwardRef<InputFocusHandle, ChatInputProps>(({
   message,
   onMessageChange,
   onSendMessage,
@@ -24,8 +25,13 @@ const ChatInput = ({
   isPreview = false,
   mode = "chat",
   onModeChange
-}: ChatInputProps) => {
+}, ref) => {
   const { toast } = useToast();
+  const { inputRef, focus } = useInputFocus();
+
+  useImperativeHandle(ref, () => ({
+    focus
+  }));
 
   const getPlaceholder = () => {
     if (mode === "search") {
@@ -91,11 +97,12 @@ const ChatInput = ({
   return (
     <div className="relative">
       <Input
+        ref={inputRef}
         placeholder={getPlaceholder()}
         value={message}
         onChange={handleInputChange}
         onKeyPress={handleKeyPress}
-        className="pl-32 pr-44 py-3 h-12 rounded-[18px]" // Increased right padding for three buttons
+        className="pl-32 pr-44 py-3 h-12 rounded-[18px]"
         disabled={isLoading || isPreview}
         maxLength={1000}
         autoComplete="off"
@@ -163,6 +170,8 @@ const ChatInput = ({
       </div>
     </div>
   );
-};
+});
+
+ChatInput.displayName = "ChatInput";
 
 export default ChatInput;

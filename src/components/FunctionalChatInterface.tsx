@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import ChatInput from "./ChatInput";
 import ChatSetup from "./ChatSetup";
 import ChatDemoHandler from "./ChatDemoHandler";
@@ -10,6 +10,7 @@ import ChatModeManager from "./ChatModeManager";
 import ChatTitleManager from "./ChatTitleManager";
 import ChatFocusManager from "./ChatFocusManager";
 import ChatDemoResponseHandler from "./ChatDemoResponseHandler";
+import { InputFocusHandle } from "@/hooks/useInputFocus";
 import { useChatMessages } from "../hooks/useChatMessages";
 import { useSuggestedQuestions } from "../hooks/useSuggestedQuestions";
 import { useUnifiedChatHandler } from "../hooks/useUnifiedChatHandler";
@@ -30,6 +31,7 @@ const FunctionalChatInterface = ({
 }: FunctionalChatInterfaceProps) => {
   const [isInDemoMode, setIsInDemoMode] = useState(false);
   const [demoStep, setDemoStep] = useState<string | null>(null);
+  const inputRef = useRef<InputFocusHandle>(null);
   const { chatHistory, addUserMessage, addAIMessage } = useChatMessages();
   const { currentSuggestions } = useSuggestedQuestions();
 
@@ -56,6 +58,17 @@ const FunctionalChatInterface = ({
       }
     }
   });
+
+  // Auto-focus input when chat becomes focused
+  useEffect(() => {
+    if (isFocused && inputRef.current) {
+      // Small delay to ensure the component is fully rendered
+      const timer = setTimeout(() => {
+        inputRef.current?.focus();
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [isFocused]);
 
   // Show setup if not initialized
   if (!isInitialized) {
@@ -163,6 +176,7 @@ const FunctionalChatInterface = ({
                 <div className="shrink-0 p-4">
                   <div className="w-full max-w-4xl mx-auto">
                     <ChatInput
+                      ref={inputRef}
                       message={message}
                       onMessageChange={finalHandleMessageChange}
                       onSendMessage={handleSend}

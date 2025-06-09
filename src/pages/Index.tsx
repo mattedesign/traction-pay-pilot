@@ -61,6 +61,7 @@ const Index = () => {
       <div className="flex-1 flex flex-col h-screen overflow-hidden">
         {/* Content area that fills remaining space when chat not focused */}
         <div className="flex-1 flex flex-col min-h-0">
+          {/* Welcome content - hidden when chat is focused */}
           {!isChatFocused && (
             <div className="flex-1 flex items-center justify-center px-8">
               <div className="flex flex-col items-center w-full">
@@ -100,22 +101,12 @@ const Index = () => {
             </div>
           )}
 
-          {/* Chat content area that expands when focused */}
-          {isChatFocused && (
-            <div className="flex-1 flex flex-col min-h-0">
-              <FunctionalChatInterface 
-                onNavigateToLoad={navigate} 
-                onFocusChange={handleChatFocus} 
-                isFocused={isChatFocused}
-                currentAction={currentAction}
-              />
-            </div>
-          )}
-        </div>
-
-        {/* Chat input always at bottom when not focused */}
-        {!isChatFocused && (
-          <div className="shrink-0 px-8 pb-4">
+          {/* Single FunctionalChatInterface instance - positioned based on focus state */}
+          <div className={`${
+            isChatFocused 
+              ? 'flex-1 flex flex-col min-h-0' 
+              : 'shrink-0 px-8 pb-4'
+          }`}>
             <div className="w-full">
               <FunctionalChatInterface 
                 onNavigateToLoad={navigate} 
@@ -125,7 +116,7 @@ const Index = () => {
               />
             </div>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
