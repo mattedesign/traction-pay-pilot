@@ -103,7 +103,7 @@ Always provide practical, actionable advice in a clear, professional tone. Focus
   // Show setup if not initialized
   if (!isInitialized) {
     return (
-      <div className="flex flex-col space-y-4">
+      <div className={`flex flex-col space-y-4 ${isFocused ? 'h-full' : ''}`}>
         {isFocused && (
           <div className="flex items-center justify-end">
             <Button
@@ -123,10 +123,10 @@ Always provide practical, actionable advice in a clear, professional tone. Focus
   }
 
   return (
-    <div className="flex flex-col space-y-4">
+    <div className={`flex flex-col space-y-4 ${isFocused ? 'h-full' : ''}`}>
       {/* Header with Close Button only when focused */}
       {isFocused && (
-        <div className="flex items-center justify-end">
+        <div className="flex items-center justify-end shrink-0">
           <Button
             variant="ghost"
             size="icon"
@@ -139,9 +139,9 @@ Always provide practical, actionable advice in a clear, professional tone. Focus
         </div>
       )}
       
-      {/* Chat History and Load Results in same container - Show when focused and has content */}
+      {/* Chat History and Load Results container - Fills available space when focused */}
       {isFocused && (
-        <div className="max-h-64 overflow-y-auto border rounded-lg bg-slate-50">
+        <div className="flex-1 min-h-0 overflow-y-auto border rounded-lg bg-slate-50">
           {/* Show search results if available */}
           {showingResults && loadResults.length > 0 && (
             <div className="p-4 border-b">
