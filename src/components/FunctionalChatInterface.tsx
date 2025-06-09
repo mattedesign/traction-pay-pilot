@@ -309,7 +309,7 @@ Just let me know which loads you'd like to process!`);
   // Show setup if not initialized
   if (!isInitialized) {
     return (
-      <div className={`flex flex-col space-y-4 ${isFocused ? 'h-full' : ''}`}>
+      <div className={`flex flex-col ${isFocused ? 'h-full' : ''}`}>
         {isFocused && (
           <div className="bg-white border-b shadow-sm p-4 shrink-0">
             <div className="flex items-center justify-between max-w-4xl mx-auto">
@@ -334,7 +334,7 @@ Just let me know which loads you'd like to process!`);
   }
 
   return (
-    <div className={`flex flex-col space-y-4 ${isFocused ? 'h-full' : ''}`}>
+    <div className={`flex flex-col ${isFocused ? 'h-full' : 'space-y-4'}`}>
       {/* Header Bar for Full Screen Mode */}
       {isFocused && (
         <div className="bg-white border-b shadow-sm p-4 shrink-0">
@@ -371,12 +371,14 @@ Just let me know which loads you'd like to process!`);
             
             {/* Show chat history if available */}
             {chatHistory.length > 0 && (
-              <ChatHistory messages={chatHistory} isLoading={isLoading} />
+              <div className="flex-1 p-4">
+                <ChatHistory messages={chatHistory} isLoading={isLoading} />
+              </div>
             )}
             
             {/* Show message when no content */}
             {!showingResults && chatHistory.length === 0 && (
-              <div className="p-4 text-center text-slate-500 text-sm">
+              <div className="flex-1 flex items-center justify-center p-4 text-center text-slate-500 text-sm">
                 Start a conversation or search for loads
               </div>
             )}
@@ -384,7 +386,7 @@ Just let me know which loads you'd like to process!`);
         </div>
       )}
       
-      {/* Chat Input - Always at bottom with removed background */}
+      {/* Chat Input - Always at bottom */}
       <div className="shrink-0 p-4">
         <div className="w-full max-w-4xl mx-auto">
           <ChatInput
