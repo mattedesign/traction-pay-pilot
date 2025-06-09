@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useRef, useState } from "react";
 import NavigationSidebar from "@/components/NavigationSidebar";
 import FunctionalChatInterface from "@/components/FunctionalChatInterface";
+import PromptDownloader from "@/components/PromptDownloader";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -96,6 +97,11 @@ const Index = () => {
                       </CardContent>
                     </Card>
                   ))}
+                </div>
+
+                {/* Download Prompt Section */}
+                <div className="w-full max-w-2xl">
+                  <PromptDownloader />
                 </div>
               </div>
             </div>
