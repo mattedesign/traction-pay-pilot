@@ -1,9 +1,11 @@
 
 import { useState, useEffect } from "react";
-import { Search, Plus, FileText } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import InvoicesHeader from "./InvoicesHeader";
+import InvoiceGroupHeader from "./InvoiceGroupHeader";
+import InvoicesEmptyState from "./InvoicesEmptyState";
+import InvoicesLoadingState from "./InvoicesLoadingState";
 import InvoiceItem from "./InvoiceItem";
-import LoadGroupHeader from "./LoadGroupHeader";
 
 interface Invoice {
   id: string;
@@ -77,15 +79,7 @@ const InvoicesSidebar = () => {
   };
 
   if (isLoading) {
-    return (
-      <div className="w-80 bg-white text-slate-900 h-screen flex flex-col shadow-sm border-r border-slate-200">
-        <div className="p-4 border-b border-slate-200">
-          <div className="flex items-center justify-center">
-            <div className="text-slate-500">Loading invoices...</div>
-          </div>
-        </div>
-      </div>
-    );
+    return <InvoicesLoadingState />;
   }
 
   // Group invoices by status
@@ -95,31 +89,18 @@ const InvoicesSidebar = () => {
 
   return (
     <div className="w-80 bg-white text-slate-900 h-screen flex flex-col shadow-sm border-r border-slate-200">
-      {/* Fixed Header */}
-      <div className="p-4 border-b border-slate-200 flex-shrink-0">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-slate-900">Invoices</h2>
-          <Search className="w-5 h-5 text-slate-400" />
-        </div>
-        
-        <button 
-          onClick={handleNewInvoice}
-          className="w-full flex items-center justify-center space-x-2 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-lg px-4 py-3 shadow-sm transition-colors"
-        >
-          <Plus className="w-4 h-4" />
-          <span>Create Invoice</span>
-        </button>
-      </div>
+      <InvoicesHeader onNewInvoice={handleNewInvoice} />
       
       {/* Scrollable Invoices List */}
       <div className="flex-1 overflow-y-auto">
         {/* Overdue Invoices Section */}
         {overdueInvoices.length > 0 && (
           <>
-            <div className="flex items-center space-x-2 px-4 py-3 text-sm font-medium text-red-600 bg-red-50 border-b border-red-100">
-              <FileText className="w-4 h-4" />
-              <span>Overdue ({overdueInvoices.length})</span>
-            </div>
+            <InvoiceGroupHeader 
+              title="Overdue" 
+              count={overdueInvoices.length} 
+              colorClasses="text-red-600 bg-red-50 border-red-100" 
+            />
             <div>
               {overdueInvoices.map((invoice) => (
                 <InvoiceItem key={invoice.id} invoice={invoice} />
@@ -131,10 +112,11 @@ const InvoicesSidebar = () => {
         {/* Pending Invoices Section */}
         {pendingInvoices.length > 0 && (
           <>
-            <div className="flex items-center space-x-2 px-4 py-3 text-sm font-medium text-yellow-600 bg-yellow-50 border-b border-yellow-100">
-              <FileText className="w-4 h-4" />
-              <span>Pending ({pendingInvoices.length})</span>
-            </div>
+            <InvoiceGroupHeader 
+              title="Pending" 
+              count={pendingInvoices.length} 
+              colorClasses="text-yellow-600 bg-yellow-50 border-yellow-100" 
+            />
             <div>
               {pendingInvoices.map((invoice) => (
                 <InvoiceItem key={invoice.id} invoice={invoice} />
@@ -146,10 +128,11 @@ const InvoicesSidebar = () => {
         {/* Paid Invoices Section */}
         {paidInvoices.length > 0 && (
           <>
-            <div className="flex items-center space-x-2 px-4 py-3 text-sm font-medium text-green-600 bg-green-50 border-b border-green-100">
-              <FileText className="w-4 h-4" />
-              <span>Paid ({paidInvoices.length})</span>
-            </div>
+            <InvoiceGroupHeader 
+              title="Paid" 
+              count={paidInvoices.length} 
+              colorClasses="text-green-600 bg-green-50 border-green-100" 
+            />
             <div>
               {paidInvoices.map((invoice) => (
                 <InvoiceItem key={invoice.id} invoice={invoice} />
@@ -159,12 +142,7 @@ const InvoicesSidebar = () => {
         )}
 
         {/* Empty State */}
-        {invoices.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-12">
-            <FileText className="w-12 h-12 text-slate-300 mb-3" />
-            <p className="text-slate-500 text-sm">No invoices found</p>
-          </div>
-        )}
+        {invoices.length === 0 && <InvoicesEmptyState />}
       </div>
     </div>
   );
