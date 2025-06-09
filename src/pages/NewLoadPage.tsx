@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NavigationSidebar from "@/components/NavigationSidebar";
-import LoadsSidebar from "@/components/LoadsSidebar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -88,7 +87,7 @@ const NewLoadPage = () => {
   return (
     <div className="min-h-screen bg-slate-50 flex w-full">
       <NavigationSidebar />
-      <LoadsSidebar />
+      {/* LoadsSidebar removed to give more space for creating new loads */}
       
       <div className="flex-1 flex flex-col h-screen overflow-hidden">
         <div className="border-b border-slate-200 bg-white px-6 py-4 shrink-0">
