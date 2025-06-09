@@ -14,12 +14,14 @@ interface FunctionalChatInterfaceProps {
   onNavigateToLoad?: (path: string) => void;
   onFocusChange?: (focused: boolean) => void;
   isFocused?: boolean;
+  currentAction?: string;
 }
 
 const FunctionalChatInterface = ({ 
   onNavigateToLoad, 
   onFocusChange,
-  isFocused = false 
+  isFocused = false,
+  currentAction
 }: FunctionalChatInterfaceProps) => {
   const [mode, setMode] = useState<"search" | "chat">("search");
   const { chatHistory, addUserMessage, addAIMessage } = useChatMessages();
@@ -100,6 +102,14 @@ Always provide practical, actionable advice in a clear, professional tone. Focus
     await handleSendMessage();
   };
 
+  // Determine the dynamic title
+  const getDynamicTitle = () => {
+    if (currentAction) {
+      return currentAction;
+    }
+    return mode === "search" ? "Search" : "Chat";
+  };
+
   // Show setup if not initialized
   if (!isInitialized) {
     return (
@@ -134,7 +144,7 @@ Always provide practical, actionable advice in a clear, professional tone. Focus
         <div className="bg-white border-b shadow-sm p-4 shrink-0">
           <div className="flex items-center justify-between max-w-4xl mx-auto">
             <h1 className="text-xl font-semibold text-slate-900">
-              {mode === "search" ? "Load Search" : "AI Assistant"}
+              {getDynamicTitle()}
             </h1>
             <Button
               variant="ghost"

@@ -10,9 +10,13 @@ import FunctionalChatInterface from "@/components/FunctionalChatInterface";
 const Index = () => {
   const navigate = useNavigate();
   const [isChatFocused, setIsChatFocused] = useState(false);
+  const [currentAction, setCurrentAction] = useState<string | undefined>(undefined);
 
   const handleChatFocus = (focused: boolean) => {
     setIsChatFocused(focused);
+    if (!focused) {
+      setCurrentAction(undefined);
+    }
   };
 
   const suggestedActions = [{
@@ -20,6 +24,7 @@ const Index = () => {
     title: "Track a load",
     description: "Monitor load status and location",
     onClick: () => {
+      setCurrentAction("Track a Load");
       setIsChatFocused(true);
     }
   }, {
@@ -27,6 +32,7 @@ const Index = () => {
     title: "Check payment status", 
     description: "View invoice and payment details",
     onClick: () => {
+      setCurrentAction("Check Payment Status");
       setIsChatFocused(true);
     }
   }, {
@@ -34,6 +40,7 @@ const Index = () => {
     title: "Plan optimal route",
     description: "Get best routes for fuel efficiency", 
     onClick: () => {
+      setCurrentAction("Plan Optimal Route");
       setIsChatFocused(true);
     }
   }, {
@@ -41,6 +48,7 @@ const Index = () => {
     title: "QuickPay Available",
     description: "You have $1,250 available for QuickPay",
     onClick: () => {
+      setCurrentAction("QuickPay Available");
       setIsChatFocused(true);
     }
   }];
@@ -89,26 +97,29 @@ const Index = () => {
                     </Card>
                   ))}
                 </div>
-
-                {/* Additional Help */}
-                <div className="text-center">
-                  <p className="text-sm text-slate-500 mb-4">
-                    Traction might provide inaccurate information. Always verify critical details.
-                  </p>
-                </div>
               </div>
             </div>}
 
           {/* Chat content area that expands when focused */}
           {isChatFocused && <div className="flex-1 flex flex-col min-h-0">
-              <FunctionalChatInterface onNavigateToLoad={navigate} onFocusChange={handleChatFocus} isFocused={isChatFocused} />
+              <FunctionalChatInterface 
+                onNavigateToLoad={navigate} 
+                onFocusChange={handleChatFocus} 
+                isFocused={isChatFocused}
+                currentAction={currentAction}
+              />
             </div>}
         </div>
 
         {/* Chat input always at bottom when not focused */}
         {!isChatFocused && <div className="shrink-0 px-8 pb-4">
             <div className="w-full">
-              <FunctionalChatInterface onNavigateToLoad={navigate} onFocusChange={handleChatFocus} isFocused={isChatFocused} />
+              <FunctionalChatInterface 
+                onNavigateToLoad={navigate} 
+                onFocusChange={handleChatFocus} 
+                isFocused={isChatFocused}
+                currentAction={currentAction}
+              />
             </div>
           </div>}
       </div>
