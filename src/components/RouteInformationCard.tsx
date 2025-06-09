@@ -22,7 +22,7 @@ const RouteInformationCard = ({ formData, onInputChange }: RouteInformationCardP
         <CardTitle>Route Information</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="space-y-2">
             <Label htmlFor="origin">Origin</Label>
             <Textarea
@@ -43,6 +43,8 @@ const RouteInformationCard = ({ formData, onInputChange }: RouteInformationCardP
               rows={2}
             />
           </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <div className="space-y-2">
             <Label htmlFor="pickupDate">Pickup Date</Label>
             <Input

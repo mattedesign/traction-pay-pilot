@@ -92,7 +92,7 @@ const NewLoadPage = () => {
         <NewLoadHeader onClose={handleClose} />
 
         <div className="flex-1 overflow-y-auto p-6 pb-24">
-          <div className="max-w-4xl mx-auto">
+          <div className="w-full">
             <Tabs defaultValue="details" className="space-y-6">
               <TabsList className="grid w-full grid-cols-2 bg-slate-100">
                 <TabsTrigger value="details">Load Details</TabsTrigger>
