@@ -64,14 +64,11 @@ const Index = () => {
               <div className="flex flex-col items-center w-full">
                 {/* Welcome Header */}
                 <div className="text-center mb-8">
-                  {/* Logo and Title in horizontal layout with reduced gap */}
-                  <div className="flex items-center justify-center gap-2 mb-6 mx-0">
-                    <div className="w-16 h-16 flex items-center justify-center">
-                      <img alt="Traction Logo" className="w-12 h-12 object-contain" src="/lovable-uploads/1e8a0255-0ebe-4d8b-9b8f-22dbf1e48ef7.png" />
+                  {/* Logo only - no title text */}
+                  <div className="flex items-center justify-center mb-6 mx-0">
+                    <div className="flex items-center justify-center">
+                      <img alt="Traction Logo" className="h-16 object-contain" src="/lovable-uploads/2fa0b3cc-e679-429c-be88-4fd0f236e713.png" />
                     </div>
-                    <h1 className="text-4xl font-bold text-slate-900">
-                      Traction
-                    </h1>
                   </div>
                   <p className="text-xl text-slate-600 max-w-lg mx-auto">
                     Less Friction, More Traction For Carriers
