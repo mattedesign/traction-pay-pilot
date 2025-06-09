@@ -1,16 +1,14 @@
 
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Search, Plus, Building2, Truck, Package, ShoppingCart, Zap, Globe, Target, Briefcase } from "lucide-react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { LoadService } from "@/services/loadService";
 import { EmailService, EmailThread } from "@/services/emailService";
-import LoadGroupHeader from "./LoadGroupHeader";
-import LoadItem from "./LoadItem";
 import { Load } from "@/types/load";
+import { Building2, Truck, Package, ShoppingCart, Zap, Globe, Target, Briefcase } from "lucide-react";
+import LoadsSidebarHeader from "./LoadsSidebarHeader";
+import LoadsSidebarContent from "./LoadsSidebarContent";
 
 const LoadsSidebar = () => {
-  const { loadId } = useParams();
   const navigate = useNavigate();
   const [loads, setLoads] = useState<Load[]>([]);
   const [emailThreads, setEmailThreads] = useState<Map<string, EmailThread[]>>(new Map());
@@ -90,71 +88,10 @@ const LoadsSidebar = () => {
     );
   }
 
-  // Group loads by status
-  const pendingAcceptanceLoads = loads.filter(load => load.status === "pending_acceptance");
-  const activeLoads = loads.filter(load => load.status === "pending_pickup" || load.status === "in_transit" || load.status === "ready_to_invoice");
-  const completedLoads = loads.filter(load => load.status === "delivered");
-
   return (
     <div className="w-80 bg-white text-slate-900 h-screen flex flex-col shadow-sm border-r border-slate-200">
-      {/* Fixed Header */}
-      <div className="p-4 border-b border-slate-200 flex-shrink-0">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-slate-900">Loads</h2>
-          <Search className="w-5 h-5 text-slate-400" />
-        </div>
-        
-        <button 
-          onClick={handleNewLoad}
-          className="w-full flex items-center justify-center space-x-2 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-lg px-4 py-3 shadow-sm transition-colors"
-        >
-          <Plus className="w-4 h-4" />
-          <span>New Load</span>
-        </button>
-      </div>
-      
-      {/* Scrollable Loads List */}
-      <div className="flex-1 overflow-y-auto">
-        {/* Pending Acceptance Section */}
-        {pendingAcceptanceLoads.length > 0 && (
-          <>
-            <LoadGroupHeader title="Awaiting Acceptance" isActive={true} />
-            <div>
-              {pendingAcceptanceLoads.map((load) => (
-                <LoadItem 
-                  key={load.id}
-                  load={load}
-                  avatarIcon={getAvatarIcon(load.broker)}
-                />
-              ))}
-            </div>
-          </>
-        )}
-
-        {/* Active Loads Section */}
-        <LoadGroupHeader title="Active" isActive={true} />
-        <div>
-          {activeLoads.map((load) => (
-            <LoadItem 
-              key={load.id}
-              load={load}
-              avatarIcon={getAvatarIcon(load.broker)}
-            />
-          ))}
-        </div>
-
-        {/* Completed Loads Section */}
-        <LoadGroupHeader title="Completed" />
-        <div>
-          {completedLoads.map((load) => (
-            <LoadItem 
-              key={load.id}
-              load={load}
-              avatarIcon={getAvatarIcon(load.broker)}
-            />
-          ))}
-        </div>
-      </div>
+      <LoadsSidebarHeader onNewLoad={handleNewLoad} />
+      <LoadsSidebarContent loads={loads} getAvatarIcon={getAvatarIcon} />
     </div>
   );
 };
