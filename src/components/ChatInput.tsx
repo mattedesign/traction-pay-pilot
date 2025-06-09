@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Send, Paperclip } from "lucide-react";
+import { Send, Paperclip, Mic } from "lucide-react";
 import { validateFile, ALLOWED_FILE_TYPES } from "@/utils/security";
 import { useToast } from "@/hooks/use-toast";
 import ModeDropdown from "./ModeDropdown";
@@ -95,7 +95,7 @@ const ChatInput = ({
         value={message}
         onChange={handleInputChange}
         onKeyPress={handleKeyPress}
-        className="pl-32 pr-36 py-3 h-12 rounded-[18px]" // Increased left padding more for gap, increased right padding for multiple buttons
+        className="pl-32 pr-44 py-3 h-12 rounded-[18px]" // Increased right padding for three buttons
         disabled={isLoading || isPreview}
         maxLength={1000}
         autoComplete="off"
@@ -119,7 +119,7 @@ const ChatInput = ({
       </div>
 
       {/* Attachment button */}
-      <div className="absolute right-24 top-1/2 transform -translate-y-1/2">
+      <div className="absolute right-32 top-1/2 transform -translate-y-1/2">
         <Button
           variant="ghost"
           size="icon"
@@ -133,7 +133,7 @@ const ChatInput = ({
       </div>
 
       {/* Voice input button */}
-      <div className="absolute right-16 top-1/2 transform -translate-y-1/2">
+      <div className="absolute right-24 top-1/2 transform -translate-y-1/2">
         <Button
           variant="ghost"
           size="icon"
@@ -142,12 +142,7 @@ const ChatInput = ({
           onClick={handleVoiceInput}
           title="Voice input"
         >
-          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
-            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-            <line x1="12" x2="12" y1="19" y2="22"/>
-            <line x1="8" x2="16" y1="22" y2="22"/>
-          </svg>
+          <Mic className="w-4 h-4" />
         </Button>
       </div>
 
