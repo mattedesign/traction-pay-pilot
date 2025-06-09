@@ -35,8 +35,8 @@ const NavigationSidebar = () => {
       {/* Logo */}
       <div className="mb-8">
         <img 
-          src="/lovable-uploads/119b9f72-e8f9-4fc4-904c-dd979c0e38c7.png" 
-          alt="Traction Logo" 
+          src="/lovable-uploads/6f78e8f9-f79b-435c-bc75-4b0a1e3454df.png" 
+          alt="Logo" 
           className="w-10 h-10 object-contain"
         />
       </div>

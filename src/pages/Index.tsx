@@ -67,7 +67,7 @@ const Index = () => {
               <div className="text-center mb-8">
                 <div className="w-16 h-16 bg-slate-900 rounded-full flex items-center justify-center mx-auto mb-6">
                   <img 
-                    src="/lovable-uploads/119b9f72-e8f9-4fc4-904c-dd979c0e38c7.png" 
+                    src="/lovable-uploads/6f78e8f9-f79b-435c-bc75-4b0a1e3454df.png" 
                     alt="Traction Logo" 
                     className="w-8 h-8 object-contain"
                   />
