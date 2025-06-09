@@ -42,9 +42,9 @@ const NavigationSidebar = () => {
     return location.pathname === path || location.pathname.startsWith(path);
   };
   return <div className="w-16 bg-slate-800 text-white min-h-screen flex flex-col items-center py-4">
-      {/* Logo */}
+      {/* Logo - reduced size by 25% from w-10 h-10 to w-8 h-8 */}
       <div className="mb-8">
-        <img alt="Logo" className="w-10 h-10 object-contain" src="/lovable-uploads/b21fd570-2ee4-4af9-8ee7-44980e7d6708.png" />
+        <img alt="Logo" className="w-8 h-8 object-contain" src="/lovable-uploads/b21fd570-2ee4-4af9-8ee7-44980e7d6708.png" />
       </div>
 
       {/* Main navigation items */}
