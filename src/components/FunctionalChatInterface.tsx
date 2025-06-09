@@ -178,8 +178,8 @@ Always provide practical, actionable advice in a clear, professional tone. Focus
         </div>
       )}
       
-      {/* Chat Input - Always at bottom with fixed positioning */}
-      <div className="shrink-0 p-4 bg-white border-t">
+      {/* Chat Input - Always at bottom with removed background */}
+      <div className="shrink-0 p-4">
         <div className="w-full max-w-4xl mx-auto">
           <ChatInput
             message={message}

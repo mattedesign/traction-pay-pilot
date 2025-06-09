@@ -75,15 +75,15 @@ const Index = () => {
         {/* Content area that fills remaining space when chat not focused */}
         <div className="flex-1 flex flex-col min-h-0">
           {!isChatFocused && (
-            <div className="flex-1 flex items-center justify-center p-4">
-              <div className="flex flex-col items-center w-full max-w-4xl">
+            <div className="flex-1 flex items-center justify-center px-8">
+              <div className="flex flex-col items-center w-full">
                 {/* Welcome Header */}
                 <div className="text-center mb-8">
-                  {/* Logo and Title in horizontal layout */}
-                  <div className="flex items-center justify-center gap-4 mb-6">
+                  {/* Logo and Title in horizontal layout with reduced gap */}
+                  <div className="flex items-center justify-center gap-2 mb-6">
                     <div className="w-16 h-16 flex items-center justify-center">
                       <img 
-                        src="/lovable-uploads/9c7f43ac-d9db-486b-bb6a-fc72efae0f39.png" 
+                        src="/lovable-uploads/dfd9fdbf-b823-4362-8ae5-78923d41e1ba.png" 
                         alt="Traction Logo" 
                         className="w-12 h-12 object-contain"
                       />
@@ -97,7 +97,7 @@ const Index = () => {
                   </p>
                 </div>
 
-                {/* Suggested Actions with colored backgrounds */}
+                {/* Suggested Actions with colored backgrounds - Full width with padding */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 w-full">
                   {suggestedActions.map((action, index) => (
                     <Card 
@@ -150,8 +150,8 @@ const Index = () => {
 
         {/* Chat input always at bottom when not focused */}
         {!isChatFocused && (
-          <div className="shrink-0 p-4">
-            <div className="w-full max-w-4xl mx-auto">
+          <div className="shrink-0 px-8 pb-4">
+            <div className="w-full">
               <FunctionalChatInterface 
                 onNavigateToLoad={navigate} 
                 onFocusChange={handleChatFocus} 
