@@ -32,6 +32,15 @@ const NavigationSidebar = () => {
 
   return (
     <div className="w-16 bg-slate-800 text-white min-h-screen flex flex-col items-center py-4">
+      {/* Logo */}
+      <div className="mb-8">
+        <img 
+          src="/lovable-uploads/119b9f72-e8f9-4fc4-904c-dd979c0e38c7.png" 
+          alt="Traction Logo" 
+          className="w-10 h-10 object-contain"
+        />
+      </div>
+
       {/* Main navigation items */}
       <div className="space-y-4 flex flex-col items-center">
         {navigationItems.map((item) => (

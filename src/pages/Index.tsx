@@ -66,7 +66,11 @@ const Index = () => {
               {/* Welcome Header */}
               <div className="text-center mb-8">
                 <div className="w-16 h-16 bg-slate-900 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Truck className="w-8 h-8 text-white" />
+                  <img 
+                    src="/lovable-uploads/119b9f72-e8f9-4fc4-904c-dd979c0e38c7.png" 
+                    alt="Traction Logo" 
+                    className="w-8 h-8 object-contain"
+                  />
                 </div>
                 <h1 className="text-4xl font-bold text-slate-900 mb-4">
                   Traction
