@@ -20,7 +20,10 @@ const Index = () => {
       icon: Truck,
       title: "Track a load",
       description: "Monitor load status and location",
-      color: "text-blue-600",
+      backgroundColor: "bg-yellow-50",
+      borderColor: "border-yellow-200",
+      iconColor: "text-yellow-700",
+      textColor: "text-yellow-900",
       onClick: () => {
         setIsChatFocused(true);
       }
@@ -29,7 +32,10 @@ const Index = () => {
       icon: FileText,
       title: "Check payment status", 
       description: "View invoice and payment details",
-      color: "text-green-600",
+      backgroundColor: "bg-purple-50",
+      borderColor: "border-purple-200",
+      iconColor: "text-purple-700",
+      textColor: "text-purple-900",
       onClick: () => {
         setIsChatFocused(true);
       }
@@ -38,7 +44,10 @@ const Index = () => {
       icon: Route,
       title: "Plan optimal route",
       description: "Get best routes for fuel efficiency", 
-      color: "text-purple-600",
+      backgroundColor: "bg-blue-50",
+      borderColor: "border-blue-200",
+      iconColor: "text-blue-700",
+      textColor: "text-blue-900",
       onClick: () => {
         setIsChatFocused(true);
       }
@@ -47,7 +56,10 @@ const Index = () => {
       icon: CreditCard,
       title: "QuickPay Available",
       description: "You have $1,250 available for QuickPay",
-      color: "text-orange-600", 
+      backgroundColor: "bg-green-50",
+      borderColor: "border-green-200",
+      iconColor: "text-green-700",
+      textColor: "text-green-900",
       onClick: () => {
         setIsChatFocused(true);
       }
@@ -67,37 +79,46 @@ const Index = () => {
               <div className="flex flex-col items-center w-full max-w-4xl">
                 {/* Welcome Header */}
                 <div className="text-center mb-8">
-                  <div className="w-16 h-16 bg-slate-900 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <img 
-                      src="/lovable-uploads/9c7f43ac-d9db-486b-bb6a-fc72efae0f39.png" 
-                      alt="Traction Logo" 
-                      className="w-8 h-8 object-contain"
-                    />
+                  {/* Logo and Title in horizontal layout */}
+                  <div className="flex items-center justify-center gap-4 mb-6">
+                    <div className="w-16 h-16 flex items-center justify-center">
+                      <img 
+                        src="/lovable-uploads/9c7f43ac-d9db-486b-bb6a-fc72efae0f39.png" 
+                        alt="Traction Logo" 
+                        className="w-12 h-12 object-contain"
+                      />
+                    </div>
+                    <h1 className="text-4xl font-bold text-slate-900">
+                      Traction
+                    </h1>
                   </div>
-                  <h1 className="text-4xl font-bold text-slate-900 mb-4">
-                    Traction
-                  </h1>
                   <p className="text-xl text-slate-600 max-w-lg mx-auto">
                     Less Friction, More Traction For Carriers
                   </p>
                 </div>
 
-                {/* Suggested Actions */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                {/* Suggested Actions with colored backgrounds */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 w-full">
                   {suggestedActions.map((action, index) => (
                     <Card 
                       key={index} 
-                      className="hover:shadow-md transition-shadow cursor-pointer border border-slate-200 bg-white" 
+                      className={`hover:shadow-lg transition-all duration-200 cursor-pointer ${action.backgroundColor} ${action.borderColor} border-2 hover:scale-105`}
                       onClick={action.onClick}
                     >
-                      <CardContent className="p-6">
-                        <div className="flex items-start space-x-4">
-                          <div className={`w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center`}>
-                            <action.icon className={`w-5 h-5 ${action.color}`} />
+                      <CardContent className="p-8">
+                        <div className="flex flex-col items-start space-y-4">
+                          <div className="w-12 h-12 rounded-xl bg-white shadow-sm flex items-center justify-center">
+                            <action.icon className={`w-6 h-6 ${action.iconColor}`} />
                           </div>
                           <div>
-                            <h3 className="font-medium text-slate-900 mb-1">{action.title}</h3>
-                            <p className="text-sm text-slate-600">{action.description}</p>
+                            <h3 className={`font-semibold text-lg ${action.textColor} mb-2`}>{action.title}</h3>
+                            <p className={`text-sm ${action.textColor} opacity-80`}>{action.description}</p>
+                          </div>
+                          <div className="flex items-center text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">
+                            <span>Read more</span>
+                            <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
                           </div>
                         </div>
                       </CardContent>
@@ -117,14 +138,12 @@ const Index = () => {
 
           {/* Chat content area that expands when focused */}
           {isChatFocused && (
-            <div className="flex-1 flex flex-col min-h-0 p-4">
-              <div className="w-full max-w-4xl mx-auto h-full flex flex-col">
-                <FunctionalChatInterface 
-                  onNavigateToLoad={navigate} 
-                  onFocusChange={handleChatFocus} 
-                  isFocused={isChatFocused} 
-                />
-              </div>
+            <div className="flex-1 flex flex-col min-h-0">
+              <FunctionalChatInterface 
+                onNavigateToLoad={navigate} 
+                onFocusChange={handleChatFocus} 
+                isFocused={isChatFocused} 
+              />
             </div>
           )}
         </div>

@@ -105,7 +105,37 @@ Always provide practical, actionable advice in a clear, professional tone. Focus
     return (
       <div className={`flex flex-col space-y-4 ${isFocused ? 'h-full' : ''}`}>
         {isFocused && (
-          <div className="flex items-center justify-end">
+          <div className="bg-white border-b shadow-sm p-4 shrink-0">
+            <div className="flex items-center justify-between max-w-4xl mx-auto">
+              <h1 className="text-xl font-semibold text-slate-900">AI Assistant Setup</h1>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleClose}
+                className="h-8 w-8"
+                title="Close chat (Esc)"
+              >
+                <X className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
+        )}
+        <div className="flex-1 flex items-center justify-center p-4">
+          <ChatSetup onAPIKeySubmit={handleAPIKeySubmit} isLoading={isLoading} />
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className={`flex flex-col space-y-4 ${isFocused ? 'h-full' : ''}`}>
+      {/* Header Bar for Full Screen Mode */}
+      {isFocused && (
+        <div className="bg-white border-b shadow-sm p-4 shrink-0">
+          <div className="flex items-center justify-between max-w-4xl mx-auto">
+            <h1 className="text-xl font-semibold text-slate-900">
+              {mode === "search" ? "Load Search" : "AI Assistant"}
+            </h1>
             <Button
               variant="ghost"
               size="icon"
@@ -116,66 +146,50 @@ Always provide practical, actionable advice in a clear, professional tone. Focus
               <X className="w-4 h-4" />
             </Button>
           </div>
-        )}
-        <ChatSetup onAPIKeySubmit={handleAPIKeySubmit} isLoading={isLoading} />
-      </div>
-    );
-  }
-
-  return (
-    <div className={`flex flex-col space-y-4 ${isFocused ? 'h-full' : ''}`}>
-      {/* Header with Close Button only when focused */}
-      {isFocused && (
-        <div className="flex items-center justify-end shrink-0">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleClose}
-            className="h-8 w-8"
-            title="Close chat (Esc)"
-          >
-            <X className="w-4 h-4" />
-          </Button>
         </div>
       )}
       
       {/* Chat History and Load Results container - Fills available space when focused */}
       {isFocused && (
-        <div className="flex-1 min-h-0 overflow-y-auto border rounded-lg bg-slate-50">
-          {/* Show search results if available */}
-          {showingResults && loadResults.length > 0 && (
-            <div className="p-4 border-b">
-              <LoadResultsPresenter 
-                results={loadResults}
-                onLoadSelect={handleLoadSelect}
-              />
-            </div>
-          )}
-          
-          {/* Show chat history if available */}
-          {chatHistory.length > 0 && (
-            <ChatHistory messages={chatHistory} isLoading={isLoading} />
-          )}
-          
-          {/* Show message when no content */}
-          {!showingResults && chatHistory.length === 0 && (
-            <div className="p-4 text-center text-slate-500 text-sm">
-              Start a conversation or search for loads
-            </div>
-          )}
+        <div className="flex-1 min-h-0 overflow-y-auto bg-slate-50 w-full">
+          <div className="max-w-4xl mx-auto h-full flex flex-col">
+            {/* Show search results if available */}
+            {showingResults && loadResults.length > 0 && (
+              <div className="p-4 border-b">
+                <LoadResultsPresenter 
+                  results={loadResults}
+                  onLoadSelect={handleLoadSelect}
+                />
+              </div>
+            )}
+            
+            {/* Show chat history if available */}
+            {chatHistory.length > 0 && (
+              <ChatHistory messages={chatHistory} isLoading={isLoading} />
+            )}
+            
+            {/* Show message when no content */}
+            {!showingResults && chatHistory.length === 0 && (
+              <div className="p-4 text-center text-slate-500 text-sm">
+                Start a conversation or search for loads
+              </div>
+            )}
+          </div>
         </div>
       )}
       
       {/* Chat Input - Always at bottom with fixed positioning */}
-      <div className="shrink-0">
-        <ChatInput
-          message={message}
-          onMessageChange={handleMessageChange}
-          onSendMessage={handleSend}
-          isLoading={isLoading}
-          mode={mode}
-          onModeChange={handleModeChange}
-        />
+      <div className="shrink-0 p-4 bg-white border-t">
+        <div className="w-full max-w-4xl mx-auto">
+          <ChatInput
+            message={message}
+            onMessageChange={handleMessageChange}
+            onSendMessage={handleSend}
+            isLoading={isLoading}
+            mode={mode}
+            onModeChange={handleModeChange}
+          />
+        </div>
       </div>
     </div>
   );
