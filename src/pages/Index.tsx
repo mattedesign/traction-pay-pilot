@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Truck, FileText, MapPin, DollarSign, Route, CreditCard, ExternalLink } from "lucide-react";
@@ -64,10 +63,10 @@ const Index = () => {
               <div className="flex flex-col items-center w-full">
                 {/* Welcome Header */}
                 <div className="text-center mb-8">
-                  {/* Logo only - no title text */}
+                  {/* Logo only - 30% smaller (from h-16 to h-11) */}
                   <div className="flex items-center justify-center mb-6 mx-0">
                     <div className="flex items-center justify-center">
-                      <img alt="Traction Logo" className="h-16 object-contain" src="/lovable-uploads/2fa0b3cc-e679-429c-be88-4fd0f236e713.png" />
+                      <img alt="Traction Logo" className="h-11 object-contain" src="/lovable-uploads/2fa0b3cc-e679-429c-be88-4fd0f236e713.png" />
                     </div>
                   </div>
                   <p className="text-xl text-slate-600 max-w-lg mx-auto">
