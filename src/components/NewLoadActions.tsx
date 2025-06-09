@@ -8,13 +8,15 @@ interface NewLoadActionsProps {
 
 const NewLoadActions = ({ onCancel, onSubmit }: NewLoadActionsProps) => {
   return (
-    <div className="flex justify-end space-x-3 pt-6 border-t border-slate-200">
-      <Button variant="outline" onClick={onCancel}>
-        Cancel
-      </Button>
-      <Button onClick={onSubmit} className="bg-blue-600 hover:bg-blue-700">
-        Create Load
-      </Button>
+    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-6 py-4 z-10">
+      <div className="max-w-4xl mx-auto flex justify-end space-x-3">
+        <Button variant="outline" onClick={onCancel}>
+          Cancel
+        </Button>
+        <Button onClick={onSubmit} className="bg-blue-600 hover:bg-blue-700">
+          Create Load
+        </Button>
+      </div>
     </div>
   );
 };

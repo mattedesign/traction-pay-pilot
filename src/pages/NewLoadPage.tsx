@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NavigationSidebar from "@/components/NavigationSidebar";
@@ -92,7 +91,7 @@ const NewLoadPage = () => {
       <div className="flex-1 flex flex-col h-screen overflow-hidden">
         <NewLoadHeader onClose={handleClose} />
 
-        <div className="flex-1 overflow-y-auto p-6">
+        <div className="flex-1 overflow-y-auto p-6 pb-24">
           <div className="max-w-4xl mx-auto">
             <Tabs defaultValue="details" className="space-y-6">
               <TabsList className="grid w-full grid-cols-2 bg-slate-100">
@@ -140,13 +139,13 @@ const NewLoadPage = () => {
                 />
               </TabsContent>
             </Tabs>
-
-            <NewLoadActions 
-              onCancel={handleClose}
-              onSubmit={handleSubmit}
-            />
           </div>
         </div>
+
+        <NewLoadActions 
+          onCancel={handleClose}
+          onSubmit={handleSubmit}
+        />
       </div>
     </div>
   );
