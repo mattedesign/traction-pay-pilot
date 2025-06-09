@@ -1,14 +1,14 @@
 
 import { useState, useEffect } from "react";
 import ChatInput from "./ChatInput";
-import ChatHistory from "./ChatHistory";
 import ChatSetup from "./ChatSetup";
-import LoadResultsPresenter from "./LoadResultsPresenter";
+import ChatDemoHandler from "./ChatDemoHandler";
+import ChatHeader from "./ChatHeader";
+import ChatContentArea from "./ChatContentArea";
 import { useChatMessages } from "../hooks/useChatMessages";
 import { useSuggestedQuestions } from "../hooks/useSuggestedQuestions";
 import { useUnifiedChatHandler } from "../hooks/useUnifiedChatHandler";
-import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
+import { getChatSystemPrompt } from "./ChatSystemPrompt";
 
 interface FunctionalChatInterfaceProps {
   onNavigateToLoad?: (path: string) => void;
@@ -29,20 +29,7 @@ const FunctionalChatInterface = ({
   const { chatHistory, addUserMessage, addAIMessage } = useChatMessages();
   const { currentSuggestions } = useSuggestedQuestions();
 
-  // Enhanced system prompt that supports both modes
-  const systemPrompt = `You are an AI assistant specialized in trucking operations and load management. You can operate in two modes:
-
-**SEARCH MODE**: Help users find and analyze specific loads by ID, broker, route, or status. Provide detailed load information, status updates, and actionable insights.
-
-**CHAT MODE**: Provide general trucking advice, compliance guidance, route optimization, and industry knowledge including:
-- DOT regulations and compliance (HOS, ELD, safety requirements)
-- Route optimization and fuel efficiency
-- Equipment maintenance and safety
-- Freight operations and logistics
-- Payment processing and factoring
-- Professional communication
-
-Always provide practical, actionable advice in a clear, professional tone. Focus on safety, compliance, and profitability.`;
+  const systemPrompt = getChatSystemPrompt();
 
   const {
     message,
@@ -65,35 +52,6 @@ Always provide practical, actionable advice in a clear, professional tone. Focus
       }
     }
   });
-
-  // Handle demo scenarios based on currentAction
-  useEffect(() => {
-    if (currentAction && isFocused) {
-      setIsInDemoMode(true);
-      
-      switch (currentAction) {
-        case "Track a Load":
-          setMessage("Show me load status for #1234");
-          setDemoStep("track-load");
-          break;
-        case "Check Payment Status":
-          setMessage("Check Payment Status for Load #9012");
-          setDemoStep("check-payment");
-          break;
-        case "Plan Optimal Route":
-          setMessage("Plan optimal route");
-          setDemoStep("plan-route-initial");
-          break;
-        case "QuickPay Available":
-          setMessage("Show QuickPay available loads");
-          setDemoStep("quickpay");
-          break;
-        default:
-          setIsInDemoMode(false);
-          setDemoStep(null);
-      }
-    }
-  }, [currentAction, isFocused]);
 
   const handleDemoResponse = async () => {
     if (!isInDemoMode || !demoStep) {
@@ -310,22 +268,11 @@ Just let me know which loads you'd like to process!`);
   if (!isInitialized) {
     return (
       <div className={`flex flex-col ${isFocused ? 'h-full' : ''}`}>
-        {isFocused && (
-          <div className="bg-white border-b shadow-sm p-4 shrink-0">
-            <div className="flex items-center justify-between max-w-4xl mx-auto">
-              <h1 className="text-xl font-semibold text-slate-900">AI Assistant Setup</h1>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={handleClose}
-                className="h-8 w-8"
-                title="Close chat (Esc)"
-              >
-                <X className="w-4 h-4" />
-              </Button>
-            </div>
-          </div>
-        )}
+        <ChatHeader 
+          isFocused={isFocused}
+          title="AI Assistant Setup"
+          onClose={handleClose}
+        />
         <div className="flex-1 flex items-center justify-center p-4">
           <ChatSetup onAPIKeySubmit={handleAPIKeySubmit} isLoading={isLoading} />
         </div>
@@ -335,56 +282,28 @@ Just let me know which loads you'd like to process!`);
 
   return (
     <div className={`flex flex-col ${isFocused ? 'h-full' : 'space-y-4'}`}>
-      {/* Header Bar for Full Screen Mode */}
-      {isFocused && (
-        <div className="bg-white border-b shadow-sm p-4 shrink-0">
-          <div className="flex items-center justify-between max-w-4xl mx-auto">
-            <h1 className="text-xl font-semibold text-slate-900">
-              {getDynamicTitle()}
-            </h1>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleClose}
-              className="h-8 w-8"
-              title="Close chat (Esc)"
-            >
-              <X className="w-4 h-4" />
-            </Button>
-          </div>
-        </div>
-      )}
+      <ChatDemoHandler
+        currentAction={currentAction}
+        isFocused={isFocused}
+        setIsInDemoMode={setIsInDemoMode}
+        setDemoStep={setDemoStep}
+        setMessage={setMessage}
+      />
       
-      {/* Chat History and Load Results container - Fills available space when focused */}
-      {isFocused && (
-        <div className="flex-1 min-h-0 overflow-y-auto bg-slate-50 w-full">
-          <div className="max-w-4xl mx-auto h-full flex flex-col">
-            {/* Show search results if available */}
-            {showingResults && loadResults.length > 0 && (
-              <div className="p-4 border-b">
-                <LoadResultsPresenter 
-                  results={loadResults}
-                  onLoadSelect={handleLoadSelect}
-                />
-              </div>
-            )}
-            
-            {/* Show chat history if available */}
-            {chatHistory.length > 0 && (
-              <div className="flex-1 p-4">
-                <ChatHistory messages={chatHistory} isLoading={isLoading} />
-              </div>
-            )}
-            
-            {/* Show message when no content */}
-            {!showingResults && chatHistory.length === 0 && (
-              <div className="flex-1 flex items-center justify-center p-4 text-center text-slate-500 text-sm">
-                Start a conversation or search for loads
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+      <ChatHeader 
+        isFocused={isFocused}
+        title={getDynamicTitle()}
+        onClose={handleClose}
+      />
+      
+      <ChatContentArea
+        isFocused={isFocused}
+        showingResults={showingResults}
+        loadResults={loadResults}
+        chatHistory={chatHistory}
+        isLoading={isLoading}
+        onLoadSelect={handleLoadSelect}
+      />
       
       {/* Chat Input - Always at bottom */}
       <div className="shrink-0 p-4">
