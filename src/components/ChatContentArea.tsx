@@ -23,11 +23,11 @@ const ChatContentArea = ({
   if (!isFocused) return null;
 
   return (
-    <div className="flex-1 min-h-0 overflow-y-auto bg-slate-50 w-full">
-      <div className="max-w-4xl mx-auto h-full flex flex-col">
+    <div className="flex-1 min-h-0 overflow-hidden bg-slate-50 w-full">
+      <div className="h-full max-w-4xl mx-auto flex flex-col">
         {/* Show search results if available */}
         {showingResults && loadResults.length > 0 && (
-          <div className="p-4 border-b">
+          <div className="shrink-0 p-4 border-b">
             <LoadResultsPresenter 
               results={loadResults}
               onLoadSelect={onLoadSelect}
@@ -35,9 +35,9 @@ const ChatContentArea = ({
           </div>
         )}
         
-        {/* Show chat history if available */}
+        {/* Show chat history if available - takes remaining space */}
         {chatHistory.length > 0 && (
-          <div className="flex-1 p-4">
+          <div className="flex-1 min-h-0 overflow-y-auto p-4">
             <ChatHistory messages={chatHistory} isLoading={isLoading} />
           </div>
         )}

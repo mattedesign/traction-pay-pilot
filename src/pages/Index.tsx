@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Truck, FileText, MapPin, DollarSign, Route, CreditCard, ExternalLink } from "lucide-react";
@@ -52,14 +53,16 @@ const Index = () => {
     }
   }];
 
-  return <div className="min-h-screen flex w-full bg-slate-50">
+  return (
+    <div className="min-h-screen flex w-full bg-slate-50">
       <NavigationSidebar />
       
       {/* Main content area with full viewport height and flex column */}
-      <div className="flex-1 flex flex-col h-screen">
+      <div className="flex-1 flex flex-col h-screen overflow-hidden">
         {/* Content area that fills remaining space when chat not focused */}
         <div className="flex-1 flex flex-col min-h-0">
-          {!isChatFocused && <div className="flex-1 flex items-center justify-center px-8">
+          {!isChatFocused && (
+            <div className="flex-1 flex items-center justify-center px-8">
               <div className="flex flex-col items-center w-full">
                 {/* Welcome Header */}
                 <div className="text-center mb-8">
@@ -94,21 +97,25 @@ const Index = () => {
                   ))}
                 </div>
               </div>
-            </div>}
+            </div>
+          )}
 
           {/* Chat content area that expands when focused */}
-          {isChatFocused && <div className="flex-1 flex flex-col min-h-0">
+          {isChatFocused && (
+            <div className="flex-1 flex flex-col min-h-0">
               <FunctionalChatInterface 
                 onNavigateToLoad={navigate} 
                 onFocusChange={handleChatFocus} 
                 isFocused={isChatFocused}
                 currentAction={currentAction}
               />
-            </div>}
+            </div>
+          )}
         </div>
 
         {/* Chat input always at bottom when not focused */}
-        {!isChatFocused && <div className="shrink-0 px-8 pb-4">
+        {!isChatFocused && (
+          <div className="shrink-0 px-8 pb-4">
             <div className="w-full">
               <FunctionalChatInterface 
                 onNavigateToLoad={navigate} 
@@ -117,9 +124,11 @@ const Index = () => {
                 currentAction={currentAction}
               />
             </div>
-          </div>}
+          </div>
+        )}
       </div>
-    </div>;
+    </div>
+  );
 };
 
 export default Index;

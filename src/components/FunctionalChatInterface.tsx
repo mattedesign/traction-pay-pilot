@@ -267,7 +267,7 @@ Just let me know which loads you'd like to process!`);
   // Show setup if not initialized
   if (!isInitialized) {
     return (
-      <div className={`flex flex-col ${isFocused ? 'h-full' : ''}`}>
+      <div className={`flex flex-col ${isFocused ? 'h-full' : 'h-auto'}`}>
         <ChatHeader 
           isFocused={isFocused}
           title="AI Assistant Setup"
@@ -281,7 +281,9 @@ Just let me know which loads you'd like to process!`);
   }
 
   return (
-    <div className={`flex flex-col ${isFocused ? 'h-full' : 'space-y-4'}`}>
+    <div className={`flex flex-col transition-all duration-300 ease-in-out ${
+      isFocused ? 'h-full' : 'h-auto'
+    }`}>
       <ChatDemoHandler
         currentAction={currentAction}
         isFocused={isFocused}
@@ -290,11 +292,13 @@ Just let me know which loads you'd like to process!`);
         setMessage={setMessage}
       />
       
-      <ChatHeader 
-        isFocused={isFocused}
-        title={getDynamicTitle()}
-        onClose={handleClose}
-      />
+      {isFocused && (
+        <ChatHeader 
+          isFocused={isFocused}
+          title={getDynamicTitle()}
+          onClose={handleClose}
+        />
+      )}
       
       <ChatContentArea
         isFocused={isFocused}
@@ -305,7 +309,7 @@ Just let me know which loads you'd like to process!`);
         onLoadSelect={handleLoadSelect}
       />
       
-      {/* Chat Input - Always at bottom */}
+      {/* Chat Input - Always at bottom with consistent positioning */}
       <div className="shrink-0 p-4">
         <div className="w-full max-w-4xl mx-auto">
           <ChatInput
