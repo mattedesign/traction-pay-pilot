@@ -18,29 +18,39 @@ const LoginForm = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('Login attempt for:', email);
     setIsLoading(true);
     setError("");
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
+      console.log('Login response:', { user: data.user?.email, error });
+
       if (error) {
+        console.error('Login error:', error);
         if (error.message.includes("Invalid login credentials")) {
           setError("Invalid email or password. Please try again.");
+        } else if (error.message.includes("Email not confirmed")) {
+          setError("Please check your email and click the confirmation link before signing in.");
         } else {
           setError(error.message);
         }
         return;
       }
 
-      toast({
-        title: "Welcome back!",
-        description: "Successfully signed in to your account.",
-      });
+      if (data.user) {
+        console.log('Login successful for user:', data.user.email);
+        toast({
+          title: "Welcome back!",
+          description: "Successfully signed in to your account.",
+        });
+      }
     } catch (err) {
+      console.error('Unexpected login error:', err);
       setError("An unexpected error occurred. Please try again.");
     } finally {
       setIsLoading(false);
