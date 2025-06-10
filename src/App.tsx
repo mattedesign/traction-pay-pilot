@@ -19,6 +19,7 @@ import AccountPage from "./pages/AccountPage";
 import NotFound from "./pages/NotFound";
 import RouteOptionsPage from "./pages/RouteOptionsPage";
 import BrokerDashboard from "./pages/BrokerDashboard";
+import BrokerLoadsInProgressPage from "./pages/BrokerLoadsInProgressPage";
 import BrokerPaymentsPage from "./pages/BrokerPaymentsPage";
 import BrokerInsightsPage from "./pages/BrokerInsightsPage";
 import BrokerCarriersPage from "./pages/BrokerCarriersPage";
@@ -104,6 +105,11 @@ function App() {
             <Route path="/broker" element={
               <ProtectedRoute requiredUserType="broker">
                 <BrokerDashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/broker/loads-in-progress" element={
+              <ProtectedRoute requiredUserType="broker">
+                <BrokerLoadsInProgressPage />
               </ProtectedRoute>
             } />
             <Route path="/broker/payments" element={
