@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { User, Settings, HelpCircle, LogOut, ChevronUp } from "lucide-react";
 import {
@@ -22,7 +21,7 @@ const UserProfileMenu = () => {
   const handleSignOut = async () => {
     try {
       await signOut();
-      navigate('/login');
+      navigate('/auth');
     } catch (error) {
       console.error('Error signing out:', error);
     }

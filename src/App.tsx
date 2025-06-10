@@ -14,6 +14,8 @@ import CreateInvoicePage from "./pages/CreateInvoicePage";
 import BankingPage from "./pages/BankingPage";
 import SearchPage from "./pages/SearchPage";
 import SupportPage from "./pages/SupportPage";
+import ProfilePage from "./pages/ProfilePage";
+import AccountPage from "./pages/AccountPage";
 import NotFound from "./pages/NotFound";
 import RouteOptionsPage from "./pages/RouteOptionsPage";
 import BrokerDashboard from "./pages/BrokerDashboard";
@@ -82,6 +84,16 @@ function App() {
             <Route path="/support" element={
               <ProtectedRoute>
                 <SupportPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/profile" element={
+              <ProtectedRoute>
+                <ProfilePage />
+              </ProtectedRoute>
+            } />
+            <Route path="/account" element={
+              <ProtectedRoute>
+                <AccountPage />
               </ProtectedRoute>
             } />
             <Route path="/route-options" element={
