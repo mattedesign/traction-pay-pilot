@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useClaude } from "./useClaude";
 import { useToast } from "@/hooks/use-toast";
-import { ChatMessage } from "./useChatMessages";
+import { ChatMessage, InteractiveButton } from "./useChatMessages";
 import { EnhancedQueryRouter } from "@/services/enhancedQueryRouter";
 import { SmartContextBuilder } from "@/services/smartContextBuilder";
 import { sanitizeInput, clearAPIKey } from "@/utils/security";
@@ -11,7 +11,7 @@ interface UseChatMessageHandlerProps {
   systemPrompt: string;
   chatHistory: ChatMessage[];
   addUserMessage: (content: string) => ChatMessage;
-  addAIMessage: (content: string) => ChatMessage;
+  addAIMessage: (content: string, interactiveButtons?: InteractiveButton[]) => ChatMessage;
   currentLoadId?: string;
 }
 

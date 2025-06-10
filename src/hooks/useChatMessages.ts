@@ -1,10 +1,21 @@
 
 import { useState } from "react";
 
+export interface InteractiveButton {
+  id: string;
+  text: string;
+  action: 'navigate' | 'continue_chat';
+  actionData?: {
+    path?: string;
+    message?: string;
+  };
+}
+
 export interface ChatMessage {
   type: "ai" | "user";
   content: string;
   timestamp: Date;
+  interactiveButtons?: InteractiveButton[];
 }
 
 export const useChatMessages = () => {
@@ -24,11 +35,12 @@ export const useChatMessages = () => {
     return userMessage;
   };
 
-  const addAIMessage = (content: string) => {
+  const addAIMessage = (content: string, interactiveButtons?: InteractiveButton[]) => {
     const aiMessage: ChatMessage = {
       type: "ai",
       content,
-      timestamp: new Date()
+      timestamp: new Date(),
+      interactiveButtons
     };
     addMessage(aiMessage);
     return aiMessage;

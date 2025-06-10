@@ -2,19 +2,22 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Bot } from "lucide-react";
 import ChatMessage from "./ChatMessage";
+import { InteractiveButton } from "../hooks/useChatMessages";
 
 interface ChatMessage {
   type: "ai" | "user";
   content: string;
   timestamp: Date;
+  interactiveButtons?: InteractiveButton[];
 }
 
 interface ChatHistoryProps {
   messages: ChatMessage[];
   isLoading: boolean;
+  onButtonClick?: (button: InteractiveButton) => void;
 }
 
-const ChatHistory = ({ messages, isLoading }: ChatHistoryProps) => {
+const ChatHistory = ({ messages, isLoading, onButtonClick }: ChatHistoryProps) => {
   return (
     <div className="space-y-3">
       {messages.map((msg, index) => (
@@ -23,6 +26,8 @@ const ChatHistory = ({ messages, isLoading }: ChatHistoryProps) => {
           type={msg.type}
           content={msg.content}
           timestamp={msg.timestamp}
+          interactiveButtons={msg.interactiveButtons}
+          onButtonClick={onButtonClick}
         />
       ))}
       {isLoading && (

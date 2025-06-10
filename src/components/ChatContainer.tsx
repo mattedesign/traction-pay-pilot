@@ -7,6 +7,7 @@ import LoadResultsPresenter from "./LoadResultsPresenter";
 import { ChatMessage } from "../hooks/useChatMessages";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
+import { InteractiveButton } from "../hooks/useChatMessages";
 
 interface ChatContainerProps {
   isInitialized: boolean;
@@ -17,6 +18,7 @@ interface ChatContainerProps {
   onAPIKeySubmit: (key: string) => void;
   onLoadSelect?: (loadId: string) => void;
   onClose?: () => void;
+  onNavigate?: (path: string) => void;
 }
 
 const ChatContainer = ({
@@ -25,7 +27,8 @@ const ChatContainer = ({
   currentSuggestions,
   onChatMessage,
   onLoadSelect,
-  onClose
+  onClose,
+  onNavigate
 }: ChatContainerProps) => {
   const [message, setMessage] = useState("");
   const [mode, setMode] = useState<"search" | "chat">("search");
@@ -55,6 +58,22 @@ const ChatContainer = ({
     setMessage(question);
   };
 
+  const handleButtonClick = (button: InteractiveButton) => {
+    console.log('Interactive button clicked:', button);
+    
+    if (button.action === 'navigate' && button.actionData?.path && onNavigate) {
+      // Send the button response as a user message first
+      if (button.actionData.message) {
+        onChatMessage(button.actionData.message);
+      }
+      // Navigate to the specified path
+      onNavigate(button.actionData.path);
+    } else if (button.action === 'continue_chat' && button.actionData?.message) {
+      // Send the button response as a user message
+      onChatMessage(button.actionData.message);
+    }
+  };
+
   return (
     <div className="space-y-4 h-full flex flex-col">
       {/* Header with close button only */}
@@ -73,7 +92,11 @@ const ChatContainer = ({
       </div>
       
       <div className="flex-1 min-h-0">
-        <ChatHistory messages={chatHistory} isLoading={isLoading} />
+        <ChatHistory 
+          messages={chatHistory} 
+          isLoading={isLoading} 
+          onButtonClick={handleButtonClick}
+        />
       </div>
       
       <SuggestedQuestions 

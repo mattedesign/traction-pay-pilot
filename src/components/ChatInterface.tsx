@@ -6,6 +6,7 @@ import { useChatMessages } from "../hooks/useChatMessages";
 import { useUnifiedChatHandler } from "../hooks/useUnifiedChatHandler";
 import { useSuggestedQuestions } from "../hooks/useSuggestedQuestions";
 import { useNavigate } from "react-router-dom";
+import { InteractiveResponseService } from "../services/interactiveResponseService";
 
 interface ChatInterfaceProps {
   isPreview?: boolean;
@@ -30,7 +31,29 @@ const ChatInterface = ({ isPreview = false, loadContext }: ChatInterfaceProps) =
 - Payment processing and factoring
 - Professional communication
 
+When asking questions that could lead to specific actions, phrase them as yes/no questions when appropriate. For example:
+- "Would you like to see the details for Load #1234?"
+- "Should I show you the optimal route options?"
+- "Would you like to check your payment status?"
+
 Always provide practical, actionable advice in a clear, professional tone. Focus on safety, compliance, and profitability.`;
+
+  // Custom addAIMessage that processes responses for interactive buttons
+  const addAIMessageWithButtons = (content: string) => {
+    const processed = InteractiveResponseService.processResponse(content);
+    
+    // Add the main content first
+    const mainMessage = addAIMessage(processed.mainContent);
+    
+    // If there's an interactive question, add it as a separate message with buttons
+    if (processed.questionContent && processed.interactiveButtons) {
+      setTimeout(() => {
+        addAIMessage(processed.questionContent!, processed.interactiveButtons);
+      }, 500); // Small delay to show it's a separate message
+    }
+    
+    return mainMessage;
+  };
 
   const {
     message,
@@ -46,7 +69,7 @@ Always provide practical, actionable advice in a clear, professional tone. Focus
     systemPrompt,
     chatHistory,
     addUserMessage,
-    addAIMessage,
+    addAIMessage: addAIMessageWithButtons,
     currentLoadId: loadContext,
     onLoadSelect: (loadId) => navigate(`/load/${loadId}`)
   });
@@ -73,6 +96,7 @@ Always provide practical, actionable advice in a clear, professional tone. Focus
       onChatMessage={handleChatMessage}
       onAPIKeySubmit={handleAPIKeySubmit}
       onLoadSelect={handleLoadSelect}
+      onNavigate={navigate}
     />
   );
 };
