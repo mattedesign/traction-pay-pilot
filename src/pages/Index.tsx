@@ -60,9 +60,9 @@ const Index = () => {
     <div className="min-h-screen flex w-full bg-slate-50">
       <NavigationSidebar />
       
-      {/* Main content area with full viewport height and flex column */}
+      {/* Main content area with stable layout */}
       <div className="flex-1 flex flex-col h-screen overflow-hidden">
-        {/* Header */}
+        {/* Header - conditionally rendered but doesn't affect layout */}
         {!isChatFocused && (
           <div className="bg-white border-b border-slate-200 px-8 py-4 shrink-0">
             <div className="flex justify-between items-center">
@@ -83,11 +83,13 @@ const Index = () => {
           </div>
         )}
 
-        {/* Content area that fills remaining space when chat not focused */}
-        <div className="flex-1 flex flex-col min-h-0">
-          {/* Welcome content - hidden when chat is focused */}
-          {!isChatFocused && (
-            <div className="flex-1 flex items-center justify-center px-8">
+        {/* Stable main content area - always takes remaining space */}
+        <div className="flex-1 flex flex-col min-h-0 relative">
+          {/* Welcome content - positioned absolutely to not affect layout */}
+          <div className={`absolute inset-0 transition-opacity duration-300 ${
+            isChatFocused ? 'opacity-0 pointer-events-none' : 'opacity-100'
+          }`}>
+            <div className="h-full flex items-center justify-center px-8">
               <div className="flex flex-col items-center w-full">
                 {/* Welcome Header */}
                 <div className="text-center mb-8">
@@ -123,22 +125,16 @@ const Index = () => {
                 </div>
               </div>
             </div>
-          )}
+          </div>
 
-          {/* Single FunctionalChatInterface instance - positioned based on focus state */}
-          <div className={`${
-            isChatFocused 
-              ? 'flex-1 flex flex-col min-h-0' 
-              : 'shrink-0 px-8 pb-4'
-          }`}>
-            <div className="w-full">
-              <FunctionalChatInterface 
-                onNavigateToLoad={navigate} 
-                onFocusChange={handleChatFocus} 
-                isFocused={isChatFocused}
-                currentAction={currentAction}
-              />
-            </div>
+          {/* Chat interface - always present but with stable positioning */}
+          <div className="absolute inset-0 flex flex-col">
+            <FunctionalChatInterface 
+              onNavigateToLoad={navigate} 
+              onFocusChange={handleChatFocus} 
+              isFocused={isChatFocused}
+              currentAction={currentAction}
+            />
           </div>
         </div>
       </div>

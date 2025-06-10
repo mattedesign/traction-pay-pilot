@@ -91,7 +91,7 @@ const FunctionalChatInterface = ({
   // Show setup if not initialized
   if (!isInitialized) {
     return (
-      <div className={`flex flex-col ${isFocused ? 'h-full' : 'h-auto'}`}>
+      <div className="h-full flex flex-col">
         <ChatTitleManager currentAction={currentAction} mode="search">
           {(title) => (
             <ChatHeader 
@@ -156,9 +156,7 @@ const FunctionalChatInterface = ({
             }, [setMessage, handleMessageChange]);
 
             return (
-              <div className={`flex flex-col transition-all duration-300 ease-in-out ${
-                isFocused ? 'h-full' : 'h-auto'
-              }`}>
+              <div className="h-full flex flex-col">
                 <ChatEscapeHandler isFocused={isFocused} onClose={finalHandleClose} />
                 
                 <ChatDemoHandler
@@ -169,29 +167,39 @@ const FunctionalChatInterface = ({
                   setMessage={setMessage}
                 />
                 
+                {/* Header - only show when focused */}
                 {isFocused && (
-                  <ChatTitleManager currentAction={currentAction} mode={mode}>
-                    {(title) => (
-                      <ChatHeader 
-                        isFocused={isFocused}
-                        title={title}
-                        onClose={finalHandleClose}
-                      />
-                    )}
-                  </ChatTitleManager>
+                  <div className="shrink-0">
+                    <ChatTitleManager currentAction={currentAction} mode={mode}>
+                      {(title) => (
+                        <ChatHeader 
+                          isFocused={isFocused}
+                          title={title}
+                          onClose={finalHandleClose}
+                        />
+                      )}
+                    </ChatTitleManager>
+                  </div>
                 )}
                 
-                <ChatContentArea
-                  isFocused={isFocused}
-                  showingResults={showingResults}
-                  loadResults={loadResults}
-                  chatHistory={chatHistory}
-                  isLoading={isLoading}
-                  onLoadSelect={handleLoadSelect}
-                />
+                {/* Content area - only show when focused */}
+                {isFocused && (
+                  <div className="flex-1 min-h-0">
+                    <ChatContentArea
+                      isFocused={isFocused}
+                      showingResults={showingResults}
+                      loadResults={loadResults}
+                      chatHistory={chatHistory}
+                      isLoading={isLoading}
+                      onLoadSelect={handleLoadSelect}
+                    />
+                  </div>
+                )}
                 
-                {/* Chat Input - Always at bottom with consistent positioning */}
-                <div className="shrink-0 p-4">
+                {/* Chat Input - always at bottom with consistent positioning */}
+                <div className={`shrink-0 transition-all duration-300 ${
+                  isFocused ? 'p-4' : 'absolute bottom-0 left-0 right-0 p-4'
+                }`}>
                   <div className="w-full max-w-4xl mx-auto">
                     <ChatInput
                       ref={inputRef}
