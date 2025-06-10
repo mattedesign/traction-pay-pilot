@@ -1,5 +1,5 @@
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import ChatInput from "./ChatInput";
 import ChatSetup from "./ChatSetup";
 import ChatDemoHandler from "./ChatDemoHandler";
@@ -32,6 +32,7 @@ const FunctionalChatInterface = ({
   const [isInDemoMode, setIsInDemoMode] = useState(false);
   const [demoStep, setDemoStep] = useState<string | null>(null);
   const inputRef = useRef<InputFocusHandle>(null);
+  const focusTimeoutRef = useRef<NodeJS.Timeout>();
   const { chatHistory, addUserMessage, addAIMessage } = useChatMessages();
   const { currentSuggestions } = useSuggestedQuestions();
 
@@ -59,16 +60,33 @@ const FunctionalChatInterface = ({
     }
   });
 
+  // Stable focus handler that doesn't change on every render
+  const focusInput = useCallback(() => {
+    // Clear any pending focus timeout
+    if (focusTimeoutRef.current) {
+      clearTimeout(focusTimeoutRef.current);
+    }
+
+    // Delay focus to ensure component is stable
+    focusTimeoutRef.current = setTimeout(() => {
+      if (inputRef.current && isFocused) {
+        inputRef.current.focus();
+      }
+    }, 100);
+  }, [isFocused]);
+
   // Auto-focus input when chat becomes focused
   useEffect(() => {
-    if (isFocused && inputRef.current) {
-      // Small delay to ensure the component is fully rendered
-      const timer = setTimeout(() => {
-        inputRef.current?.focus();
-      }, 100);
-      return () => clearTimeout(timer);
+    if (isFocused) {
+      focusInput();
     }
-  }, [isFocused]);
+    
+    return () => {
+      if (focusTimeoutRef.current) {
+        clearTimeout(focusTimeoutRef.current);
+      }
+    };
+  }, [isFocused, focusInput]);
 
   // Show setup if not initialized
   if (!isInitialized) {
@@ -125,17 +143,17 @@ const FunctionalChatInterface = ({
               }
             };
 
-            const finalHandleClose = () => {
+            const finalHandleClose = useCallback(() => {
               handleClose();
               setMessage("");
               setIsInDemoMode(false);
               setDemoStep(null);
-            };
+            }, [handleClose, setMessage]);
 
-            const finalHandleMessageChange = (newMessage: string) => {
+            const finalHandleMessageChange = useCallback((newMessage: string) => {
               setMessage(newMessage);
               handleMessageChange(newMessage);
-            };
+            }, [setMessage, handleMessageChange]);
 
             return (
               <div className={`flex flex-col transition-all duration-300 ease-in-out ${

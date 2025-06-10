@@ -1,10 +1,11 @@
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Send, Paperclip, Mic } from "lucide-react";
 import { validateFile, ALLOWED_FILE_TYPES } from "@/utils/security";
 import { useToast } from "@/hooks/use-toast";
 import ModeDropdown from "./ModeDropdown";
-import { forwardRef, useImperativeHandle } from "react";
+import { forwardRef, useImperativeHandle, useCallback, useRef, useEffect } from "react";
 import { useInputFocus, InputFocusHandle } from "@/hooks/useInputFocus";
 
 interface ChatInputProps {
@@ -28,29 +29,69 @@ const ChatInput = forwardRef<InputFocusHandle, ChatInputProps>(({
 }, ref) => {
   const { toast } = useToast();
   const { inputRef, focus } = useInputFocus();
+  const lastFocusAttempt = useRef<number>(0);
+  const focusTimeoutRef = useRef<NodeJS.Timeout>();
 
   useImperativeHandle(ref, () => ({
-    focus
+    focus: () => {
+      // Debounce focus attempts to prevent rapid re-focus cycles
+      const now = Date.now();
+      if (now - lastFocusAttempt.current < 100) {
+        return;
+      }
+      lastFocusAttempt.current = now;
+
+      // Clear any pending focus timeout
+      if (focusTimeoutRef.current) {
+        clearTimeout(focusTimeoutRef.current);
+      }
+
+      // Use setTimeout to ensure DOM is ready and prevent focus conflicts
+      focusTimeoutRef.current = setTimeout(() => {
+        if (inputRef.current && !isPreview) {
+          try {
+            inputRef.current.focus();
+            // Restore cursor position to end of text if there's content
+            if (message) {
+              const length = message.length;
+              inputRef.current.setSelectionRange(length, length);
+            }
+          } catch (error) {
+            console.warn('Focus attempt failed:', error);
+          }
+        }
+      }, 10);
+    }
   }));
 
-  const getPlaceholder = () => {
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (focusTimeoutRef.current) {
+        clearTimeout(focusTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const getPlaceholder = useCallback(() => {
     if (mode === "search") {
       return "Search for loads by ID, broker, route, or status...";
     }
     return "Ask about loads, routes, payments, compliance...";
-  };
+  }, [mode]);
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !isPreview && !isLoading) {
+  const handleKeyPress = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !isPreview && !isLoading && message.trim()) {
+      e.preventDefault();
       onSendMessage();
     }
-  };
+  }, [isPreview, isLoading, message, onSendMessage]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     onMessageChange(e.target.value);
-  };
+  }, [onMessageChange]);
 
-  const handleAttachment = () => {
+  const handleAttachment = useCallback(() => {
     if (isPreview) return;
     const input = document.createElement('input');
     input.type = 'file';
@@ -79,20 +120,20 @@ const ChatInput = forwardRef<InputFocusHandle, ChatInputProps>(({
       }
     };
     input.click();
-  };
+  }, [isPreview, toast]);
 
-  const handleVoiceInput = () => {
+  const handleVoiceInput = useCallback(() => {
     if (isPreview) return;
     toast({
       title: "Voice Input",
       description: "Voice input feature coming soon!"
     });
-  };
+  }, [isPreview, toast]);
 
-  const handleSend = () => {
+  const handleSend = useCallback(() => {
     if (isPreview || isLoading || !message.trim()) return;
     onSendMessage();
-  };
+  }, [isPreview, isLoading, message, onSendMessage]);
 
   return (
     <div className="relative">
@@ -106,16 +147,21 @@ const ChatInput = forwardRef<InputFocusHandle, ChatInputProps>(({
         disabled={isLoading || isPreview}
         maxLength={1000}
         autoComplete="off"
+        spellCheck={false}
+        data-form-type="other"
+        data-lpignore="true"
       />
       
       {/* Mode dropdown on the left */}
-      <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
+      <div className="absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
         {onModeChange ? (
-          <ModeDropdown 
-            mode={mode} 
-            onModeChange={onModeChange}
-            isPreview={isPreview}
-          />
+          <div className="pointer-events-auto">
+            <ModeDropdown 
+              mode={mode} 
+              onModeChange={onModeChange}
+              isPreview={isPreview}
+            />
+          </div>
         ) : (
           <div className="h-8 w-16 flex items-center justify-center">
             <span className="text-xs text-muted-foreground">
@@ -134,6 +180,7 @@ const ChatInput = forwardRef<InputFocusHandle, ChatInputProps>(({
           disabled={isLoading || isPreview}
           onClick={handleAttachment}
           title="Upload secure document"
+          tabIndex={-1}
         >
           <Paperclip className="w-4 h-4" />
         </Button>
@@ -148,6 +195,7 @@ const ChatInput = forwardRef<InputFocusHandle, ChatInputProps>(({
           disabled={isLoading || isPreview}
           onClick={handleVoiceInput}
           title="Voice input"
+          tabIndex={-1}
         >
           <Mic className="w-4 h-4" />
         </Button>
@@ -163,6 +211,7 @@ const ChatInput = forwardRef<InputFocusHandle, ChatInputProps>(({
           style={{
             background: 'var(--Gradient-primary, linear-gradient(97deg, #8D58FE 5.35%, #6F7BF5 22.4%, #5399ED 50.15%, #43ACE8 77.04%, #15DFDB 94.96%))'
           }}
+          tabIndex={-1}
         >
           <span className="mr-1">Send</span>
           <Send className="w-4 h-4" />
