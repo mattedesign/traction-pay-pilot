@@ -109,12 +109,12 @@ const BrokerDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen flex w-full bg-slate-50">
+    <div className="h-screen overflow-hidden flex w-full bg-slate-50">
       <BrokerNavigationSidebar />
       
       <div className="flex-1 flex flex-col">
         {/* Header */}
-        <div className="bg-white border-b border-slate-200 px-8 py-6">
+        <div className="bg-white border-b border-slate-200 px-8 py-6 flex-shrink-0">
           <div className="flex justify-between items-center">
             <div>
               <h1 className="text-2xl font-bold text-slate-800">Broker Dashboard</h1>
@@ -132,8 +132,8 @@ const BrokerDashboard = () => {
           </div>
         </div>
 
-        {/* Main Content */}
-        <div className="flex-1 px-8 py-6 space-y-6">
+        {/* Main Content - Scrollable */}
+        <div className="flex-1 overflow-auto px-8 py-6 space-y-6">
           {/* Financial Overview */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {financialStats.map((stat, index) => (

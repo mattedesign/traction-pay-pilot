@@ -48,11 +48,11 @@ const BrokerCarriersPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex w-full bg-slate-50">
+    <div className="h-screen overflow-hidden flex w-full bg-slate-50">
       <BrokerNavigationSidebar />
       
       <div className="flex-1 flex flex-col">
-        <div className="bg-white border-b border-slate-200 px-8 py-6">
+        <div className="bg-white border-b border-slate-200 px-8 py-6 flex-shrink-0">
           <div className="flex justify-between items-center">
             <div>
               <h1 className="text-2xl font-bold text-slate-800">Carriers</h1>
@@ -70,7 +70,7 @@ const BrokerCarriersPage = () => {
           </div>
         </div>
 
-        <div className="flex-1 px-8 py-6 space-y-6">
+        <div className="flex-1 overflow-auto px-8 py-6 space-y-6">
           <Card className="bg-white">
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
