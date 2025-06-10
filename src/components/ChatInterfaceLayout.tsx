@@ -91,9 +91,9 @@ const ChatInterfaceLayout = ({
         </div>
       )}
       
-      {/* Content area - only show when focused, with overflow-hidden to constrain scrolling */}
+      {/* Content area - only show when focused, with proper scrolling */}
       {isFocused && (
-        <div className="flex-1 min-h-0 overflow-hidden">
+        <div className="flex-1 min-h-0">
           <ChatContentArea
             isFocused={isFocused}
             showingResults={showingResults}

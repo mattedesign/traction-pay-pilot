@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Truck, FileText, MapPin, DollarSign, Route, CreditCard, ExternalLink } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useRef, useState } from "react";
+import { useRef, useState, useCallback } from "react";
 import NavigationSidebar from "@/components/NavigationSidebar";
 import FunctionalChatInterface from "@/components/FunctionalChatInterface";
 import { useAuth } from "@/hooks/useAuth";
@@ -15,45 +15,40 @@ const Index = () => {
   const [currentAction, setCurrentAction] = useState<string | undefined>(undefined);
   const { profile, signOut } = useAuth();
 
-  const handleChatFocus = (focused: boolean) => {
+  const handleChatFocus = useCallback((focused: boolean) => {
+    console.log('Chat focus changed:', focused);
     setIsChatFocused(focused);
     if (!focused) {
       setCurrentAction(undefined);
     }
-  };
+  }, []);
+
+  const handleActionClick = useCallback((actionTitle: string) => {
+    console.log('Action clicked:', actionTitle);
+    setCurrentAction(actionTitle);
+    setIsChatFocused(true);
+  }, []);
 
   const suggestedActions = [{
     icon: Truck,
     title: "Track a load",
     description: "Monitor load status and location",
-    onClick: () => {
-      setCurrentAction("Track a Load");
-      setIsChatFocused(true);
-    }
+    onClick: () => handleActionClick("Track a Load")
   }, {
     icon: FileText,
     title: "Check payment status", 
     description: "View invoice and payment details",
-    onClick: () => {
-      setCurrentAction("Check Payment Status");
-      setIsChatFocused(true);
-    }
+    onClick: () => handleActionClick("Check Payment Status")
   }, {
     icon: Route,
     title: "Plan optimal route",
     description: "Get best routes for fuel efficiency", 
-    onClick: () => {
-      setCurrentAction("Plan Optimal Route");
-      setIsChatFocused(true);
-    }
+    onClick: () => handleActionClick("Plan Optimal Route")
   }, {
     icon: CreditCard,
     title: "QuickPay Available",
     description: "You have $1,250 available for QuickPay",
-    onClick: () => {
-      setCurrentAction("QuickPay Available");
-      setIsChatFocused(true);
-    }
+    onClick: () => handleActionClick("QuickPay Available")
   }];
 
   return (
@@ -107,7 +102,16 @@ const Index = () => {
                 {/* Suggested Actions styled like the screenshot - simplified white cards */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 w-full max-w-2xl">
                   {suggestedActions.map((action, index) => (
-                    <Card key={index} className="bg-white border border-slate-200 hover:shadow-md transition-all duration-200 cursor-pointer hover:border-slate-300" onClick={action.onClick}>
+                    <Card 
+                      key={index} 
+                      className="bg-white border border-slate-200 hover:shadow-md transition-all duration-200 cursor-pointer hover:border-slate-300" 
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('Card clicked:', action.title);
+                        action.onClick();
+                      }}
+                    >
                       <CardContent className="p-6">
                         <div className="flex items-start space-x-4">
                           <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0">
