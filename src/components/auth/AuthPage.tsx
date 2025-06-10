@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -6,21 +5,15 @@ import { Button } from "@/components/ui/button";
 import { Truck } from "lucide-react";
 import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm";
-
 const AuthPage = () => {
   const [activeTab, setActiveTab] = useState("login");
-
-  return (
-    <div className="min-h-screen flex">
+  return <div className="min-h-screen flex">
       {/* Left Panel - Dark with truck image and messaging */}
       <div className="hidden lg:flex lg:w-1/2 bg-slate-800 relative overflow-hidden">
         {/* Background image */}
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage: "url('/lovable-uploads/3216cb11-a358-4add-92c8-d23aa389334c.png')"
-          }}
-        >
+        <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{
+        backgroundImage: "url('/lovable-uploads/3216cb11-a358-4add-92c8-d23aa389334c.png')"
+      }}>
           {/* Dark overlay */}
           <div className="absolute inset-0 bg-slate-800/70"></div>
         </div>
@@ -37,12 +30,8 @@ const AuthPage = () => {
           
           {/* Main content */}
           <div className="max-w-md">
-            <h1 className="text-4xl font-bold mb-6 leading-tight">
-              Fleets are the bridge that brings us together.
-            </h1>
-            <p className="text-lg text-slate-200 leading-relaxed">
-              We believe that all commercial vehicles deserve easy access to world-class fleet management solutions.
-            </p>
+            <h1 className="text-4xl font-bold mb-6 leading-tight">Giving Traction To Your Payments.</h1>
+            <p className="text-lg text-slate-200 leading-relaxed">We believe carriers and brokers deserve a faster, easier and more intelligent way to running their business.</p>
             
             {/* Pagination dots */}
             <div className="flex space-x-2 mt-8">
@@ -78,10 +67,7 @@ const AuthPage = () => {
                 {activeTab === "login" ? "Login" : "Sign Up"}
               </h2>
               <p className="text-slate-600">
-                {activeTab === "login" 
-                  ? "Welcome back! Please enter your email id and password"
-                  : "Create your account to get started"
-                }
+                {activeTab === "login" ? "Welcome back! Please enter your email id and password" : "Create your account to get started"}
               </p>
             </div>
 
@@ -100,8 +86,6 @@ const AuthPage = () => {
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default AuthPage;
