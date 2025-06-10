@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,6 +16,7 @@ const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,10 +46,33 @@ const LoginForm = () => {
 
       if (data.user) {
         console.log('Login successful for user:', data.user.email);
+        
+        // Fetch user profile to determine user type
+        const { data: profile, error: profileError } = await supabase
+          .from('profiles')
+          .select('user_type')
+          .eq('id', data.user.id)
+          .single();
+
+        if (profileError) {
+          console.error('Error fetching profile:', profileError);
+          setError("Error loading user profile. Please try again.");
+          return;
+        }
+
         toast({
           title: "Welcome back!",
           description: "Successfully signed in to your account.",
         });
+
+        // Redirect based on user type
+        if (profile?.user_type === 'broker') {
+          console.log('Redirecting broker to /broker');
+          navigate('/broker');
+        } else {
+          console.log('Redirecting carrier to /');
+          navigate('/');
+        }
       }
     } catch (err) {
       console.error('Unexpected login error:', err);
