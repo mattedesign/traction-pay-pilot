@@ -17,6 +17,11 @@ import SupportPage from "./pages/SupportPage";
 import NotFound from "./pages/NotFound";
 import RouteOptionsPage from "./pages/RouteOptionsPage";
 import BrokerDashboard from "./pages/BrokerDashboard";
+import BrokerPaymentsPage from "./pages/BrokerPaymentsPage";
+import BrokerInsightsPage from "./pages/BrokerInsightsPage";
+import BrokerCarriersPage from "./pages/BrokerCarriersPage";
+import BrokerReportsPage from "./pages/BrokerReportsPage";
+import BrokerSettingsPage from "./pages/BrokerSettingsPage";
 import AuthPage from "./components/auth/AuthPage";
 import "./App.css";
 
@@ -87,6 +92,31 @@ function App() {
             <Route path="/broker" element={
               <ProtectedRoute requiredUserType="broker">
                 <BrokerDashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/broker/payments" element={
+              <ProtectedRoute requiredUserType="broker">
+                <BrokerPaymentsPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/broker/insights" element={
+              <ProtectedRoute requiredUserType="broker">
+                <BrokerInsightsPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/broker/carriers" element={
+              <ProtectedRoute requiredUserType="broker">
+                <BrokerCarriersPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/broker/reports" element={
+              <ProtectedRoute requiredUserType="broker">
+                <BrokerReportsPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/broker/settings" element={
+              <ProtectedRoute requiredUserType="broker">
+                <BrokerSettingsPage />
               </ProtectedRoute>
             } />
             <Route path="*" element={<NotFound />} />
