@@ -1,5 +1,4 @@
-
-import { useState, useEffect } from "react";
+import { useState, useEffect, useNavigate } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -32,6 +31,7 @@ interface LoadInProgress {
 
 const BrokerLoadsInProgressPage = () => {
   const { profile, signOut } = useAuth();
+  const navigate = useNavigate();
   const [selectedLoad, setSelectedLoad] = useState<LoadInProgress | null>(null);
   const [loads, setLoads] = useState<LoadInProgress[]>([
     {
@@ -117,6 +117,10 @@ const BrokerLoadsInProgressPage = () => {
     return () => clearInterval(interval);
   }, []);
 
+  const handleLoadClick = (loadId: string) => {
+    navigate(`/broker/load/${loadId}`);
+  };
+
   return (
     <div className="h-screen overflow-hidden flex w-full bg-slate-50">
       <BrokerNavigationSidebar />
@@ -169,7 +173,10 @@ const BrokerLoadsInProgressPage = () => {
                           className={`border border-slate-200 rounded-lg p-4 cursor-pointer transition-colors ${
                             selectedLoad?.id === load.id ? 'bg-blue-50 border-blue-300' : 'hover:bg-slate-50'
                           }`}
-                          onClick={() => setSelectedLoad(load)}
+                          onClick={() => {
+                            setSelectedLoad(load);
+                            handleLoadClick(load.id);
+                          }}
                         >
                           <div className="flex justify-between items-start mb-2">
                             <div>
@@ -230,3 +237,5 @@ const BrokerLoadsInProgressPage = () => {
 };
 
 export default BrokerLoadsInProgressPage;
+
+}

@@ -1,4 +1,3 @@
-
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -27,6 +26,7 @@ import BrokerReportsPage from "./pages/BrokerReportsPage";
 import BrokerSettingsPage from "./pages/BrokerSettingsPage";
 import AuthPage from "./components/auth/AuthPage";
 import "./App.css";
+import BrokerLoadDetailPage from "./pages/BrokerLoadDetailPage";
 
 const queryClient = new QueryClient();
 
@@ -110,6 +110,11 @@ function App() {
             <Route path="/broker/loads-in-progress" element={
               <ProtectedRoute requiredUserType="broker">
                 <BrokerLoadsInProgressPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/broker/load/:loadId" element={
+              <ProtectedRoute requiredUserType="broker">
+                <BrokerLoadDetailPage />
               </ProtectedRoute>
             } />
             <Route path="/broker/payments" element={
