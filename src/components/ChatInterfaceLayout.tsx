@@ -105,8 +105,8 @@ const ChatInterfaceLayout = ({
         </div>
       )}
       
-      {/* Chat Input - always at bottom with consistent positioning */}
-      <div className={`shrink-0 transition-all duration-300 ${
+      {/* Chat Input - always at bottom with consistent positioning and proper pointer events */}
+      <div className={`shrink-0 transition-all duration-300 pointer-events-auto z-30 ${
         isFocused ? 'p-4' : 'absolute bottom-0 left-0 right-0 p-4'
       }`}>
         <div className="w-full max-w-4xl mx-auto">

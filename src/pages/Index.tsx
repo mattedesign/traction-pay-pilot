@@ -91,12 +91,12 @@ const Index = () => {
           </div>
         )}
 
-        {/* Stable main content area - always takes remaining space */}
+        {/* Main content area - now with proper pointer events handling */}
         <div className="flex-1 flex flex-col min-h-0 relative">
-          {/* Welcome content - positioned absolutely to not affect layout */}
-          <div className={`absolute inset-0 transition-opacity duration-300 ${
-            isChatFocused ? 'opacity-0 pointer-events-none' : 'opacity-100'
-          }`}>
+          {/* Welcome content - with proper z-index and pointer events */}
+          <div className={`flex-1 transition-opacity duration-300 ${
+            isChatFocused ? 'opacity-0 pointer-events-none' : 'opacity-100 pointer-events-auto'
+          } relative z-10`}>
             <div className="h-full flex items-center justify-center px-8">
               <div className="flex flex-col items-center w-full">
                 {/* Welcome Header */}
@@ -144,8 +144,10 @@ const Index = () => {
             </div>
           </div>
 
-          {/* Chat interface - always present but with stable positioning */}
-          <div className="absolute inset-0 flex flex-col">
+          {/* Chat interface - positioned to not block main content when unfocused */}
+          <div className={`absolute inset-0 flex flex-col transition-all duration-300 ${
+            isChatFocused ? 'z-20 pointer-events-auto' : 'z-0 pointer-events-none'
+          }`}>
             <FunctionalChatInterface 
               onNavigateToLoad={navigate} 
               onFocusChange={handleChatFocus} 
