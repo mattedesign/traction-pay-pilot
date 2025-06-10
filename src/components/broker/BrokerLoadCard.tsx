@@ -1,4 +1,3 @@
-
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -13,30 +12,7 @@ import {
   Navigation
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-
-interface LoadInProgress {
-  id: string;
-  origin: string;
-  destination: string;
-  status: "pickup_scheduled" | "in_transit" | "delivery_scheduled" | "delivered";
-  carrier: string;
-  driver: string;
-  driverPhone: string;
-  currentLocation?: { lat: number; lng: number; city: string };
-  pickupDate: string;
-  deliveryDate: string;
-  rate: string;
-  distance: string;
-  eta: string;
-  lastUpdate: string;
-  quickPayEligible?: boolean;
-  quickPayRate?: string;
-  commodity: string;
-  weight: string;
-  equipment: string;
-  referenceNumber: string;
-  specialInstructions?: string;
-}
+import { LoadInProgress } from "@/types/brokerLoad";
 
 interface BrokerLoadCardProps {
   load: LoadInProgress;

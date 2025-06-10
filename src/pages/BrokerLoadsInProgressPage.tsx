@@ -1,12 +1,12 @@
-
 import { useState, useMemo } from "react";
 import BrokerNavigationSidebar from "@/components/BrokerNavigationSidebar";
 import BrokerLoadsInProgressHeader from "@/components/broker/BrokerLoadsInProgressHeader";
 import BrokerLoadsInProgressFilters from "@/components/broker/BrokerLoadsInProgressFilters";
 import BrokerLoadsInProgressList from "@/components/broker/BrokerLoadsInProgressList";
+import { LoadInProgress } from "@/types/brokerLoad";
 
 // Mock data for loads in progress
-const mockLoadsInProgress = [
+const mockLoadsInProgress: LoadInProgress[] = [
   {
     id: "TL-2024-001",
     origin: "Dallas, TX",
