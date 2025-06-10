@@ -1,7 +1,8 @@
 
 import { Button } from "@/components/ui/button";
-import { Home, DollarSign, BarChart3, Users, FileText, Settings, X } from "lucide-react";
+import { Home, DollarSign, BarChart3, Users, FileText, Settings } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 import NotificationBell from "./NotificationBell";
 
 const brokerNavigationItems = [
@@ -40,10 +41,20 @@ const brokerNavigationItems = [
 const BrokerNavigationSidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { profile } = useAuth();
 
   const handleNavClick = (path: string) => {
     console.log(`Navigating to ${path}`);
     navigate(path);
+  };
+
+  const handleLogoClick = () => {
+    // Navigate to appropriate dashboard based on user type
+    if (profile?.user_type === 'carrier') {
+      navigate('/');
+    } else {
+      navigate('/broker');
+    }
   };
 
   const isActive = (path: string) => {
@@ -55,11 +66,11 @@ const BrokerNavigationSidebar = () => {
 
   return (
     <div className="w-16 bg-slate-800 text-white min-h-screen flex flex-col items-center py-4">
-      {/* Logo */}
-      <div className="mb-8">
+      {/* Logo - clickable to navigate to appropriate dashboard */}
+      <div className="mb-8 cursor-pointer" onClick={handleLogoClick}>
         <img 
           alt="Logo" 
-          className="w-8 h-8 object-contain" 
+          className="w-8 h-8 object-contain hover:opacity-80 transition-opacity" 
           src="/lovable-uploads/b21fd570-2ee4-4af9-8ee7-44980e7d6708.png" 
         />
       </div>

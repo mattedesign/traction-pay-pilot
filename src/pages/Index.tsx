@@ -7,13 +7,14 @@ import { useNavigate } from "react-router-dom";
 import { useRef, useState, useCallback } from "react";
 import NavigationSidebar from "@/components/NavigationSidebar";
 import FunctionalChatInterface from "@/components/FunctionalChatInterface";
+import UserProfileMenu from "@/components/UserProfileMenu";
 import { useAuth } from "@/hooks/useAuth";
 
 const Index = () => {
   const navigate = useNavigate();
   const [isChatFocused, setIsChatFocused] = useState(false);
   const [currentAction, setCurrentAction] = useState<string | undefined>(undefined);
-  const { profile, signOut } = useAuth();
+  const { profile } = useAuth();
 
   const handleChatFocus = useCallback((focused: boolean) => {
     console.log('Index: Chat focus changed to:', focused);
@@ -39,6 +40,10 @@ const Index = () => {
     
     console.log('Index: Action setup complete - currentAction:', actionTitle, 'isChatFocused: true');
   }, [handleChatFocus]);
+
+  const handleLogoClick = () => {
+    navigate('/');
+  };
 
   const suggestedActions = [{
     icon: Truck,
@@ -85,9 +90,7 @@ const Index = () => {
                     <Truck className="w-3 h-3 mr-1" />
                     {profile?.company_name || 'Carrier Account'}
                   </Badge>
-                  <Button variant="outline" onClick={signOut}>
-                    Sign Out
-                  </Button>
+                  <UserProfileMenu />
                 </div>
               </div>
             </div>
@@ -99,7 +102,7 @@ const Index = () => {
                 <div className="text-center mb-8">
                   {/* Logo */}
                   <div className="flex items-center justify-center mb-6 mx-0">
-                    <div className="flex items-center justify-center">
+                    <div className="flex items-center justify-center cursor-pointer" onClick={handleLogoClick}>
                       <img alt="Traction Logo" className="h-11 object-contain" src="/lovable-uploads/2fa0b3cc-e679-429c-be88-4fd0f236e713.png" />
                     </div>
                   </div>

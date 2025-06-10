@@ -1,7 +1,10 @@
+
 import { Button } from "@/components/ui/button";
-import { Home, Truck, FileText, Banknote, Search, HelpCircle, X } from "lucide-react";
+import { Home, Truck, FileText, Banknote, Search, HelpCircle } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 import NotificationBell from "./NotificationBell";
+
 const navigationItems = [{
   icon: Home,
   label: "Home",
@@ -27,31 +30,71 @@ const navigationItems = [{
   label: "Support",
   path: "/support"
 }];
+
 const NavigationSidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { profile } = useAuth();
+
   const handleNavClick = (path: string) => {
     console.log(`Navigating to ${path}`);
     navigate(path);
   };
-  const isActive = (path: string) => {
-    // Check for exact match or if current path starts with the nav path (for load details)
-    if (path === "/") {
-      return location.pathname === "/" || location.pathname.startsWith("/load/");
+
+  const handleLogoClick = () => {
+    // Navigate to appropriate dashboard based on user type
+    if (profile?.user_type === 'broker') {
+      navigate('/broker');
+    } else {
+      navigate('/');
     }
+  };
+
+  const isActive = (path: string) => {
+    // Special handling for home icon - active only on exact home routes
+    if (path === "/") {
+      return location.pathname === "/" || 
+             (profile?.user_type === 'broker' && location.pathname === "/broker");
+    }
+    
+    // Special handling for loads - active for all load-related pages
+    if (path === "/loads") {
+      return location.pathname === "/loads" || 
+             location.pathname.startsWith("/load/") ||
+             location.pathname === "/loads/new";
+    }
+    
+    // Default behavior for other paths
     return location.pathname === path || location.pathname.startsWith(path);
   };
-  return <div className="w-16 bg-slate-800 text-white min-h-screen flex flex-col items-center py-4">
-      {/* Logo - reduced size by 25% from w-10 h-10 to w-8 h-8 */}
-      <div className="mb-8">
-        <img alt="Logo" className="w-8 h-8 object-contain" src="/lovable-uploads/b21fd570-2ee4-4af9-8ee7-44980e7d6708.png" />
+
+  return (
+    <div className="w-16 bg-slate-800 text-white min-h-screen flex flex-col items-center py-4">
+      {/* Logo - clickable to navigate to appropriate dashboard */}
+      <div className="mb-8 cursor-pointer" onClick={handleLogoClick}>
+        <img 
+          alt="Logo" 
+          className="w-8 h-8 object-contain hover:opacity-80 transition-opacity" 
+          src="/lovable-uploads/b21fd570-2ee4-4af9-8ee7-44980e7d6708.png" 
+        />
       </div>
 
       {/* Main navigation items */}
       <div className="space-y-4 flex flex-col items-center">
-        {navigationItems.map(item => <Button key={item.label} variant="ghost" size="icon" onClick={() => handleNavClick(item.path)} className={`w-12 h-12 text-slate-300 hover:text-white hover:bg-slate-700 flex items-center justify-center ${isActive(item.path) ? 'bg-slate-700 text-white' : ''}`} title={item.label}>
+        {navigationItems.map(item => (
+          <Button
+            key={item.label}
+            variant="ghost"
+            size="icon"
+            onClick={() => handleNavClick(item.path)}
+            className={`w-12 h-12 text-slate-300 hover:text-white hover:bg-slate-700 flex items-center justify-center ${
+              isActive(item.path) ? 'bg-slate-700 text-white' : ''
+            }`}
+            title={item.label}
+          >
             <item.icon className="w-6 h-6" />
-          </Button>)}
+          </Button>
+        ))}
       </div>
       
       {/* Push notification bell to bottom */}
@@ -60,6 +103,8 @@ const NavigationSidebar = () => {
           <NotificationBell />
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default NavigationSidebar;
