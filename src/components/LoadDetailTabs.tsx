@@ -16,9 +16,9 @@ interface LoadDetailTabsProps {
 
 const LoadDetailTabs = ({ load, emailThreads, isLoadingEmails }: LoadDetailTabsProps) => {
   return (
-    <div>
-      <Tabs defaultValue="detail" className="flex flex-col">
-        <TabsList className="grid w-full grid-cols-3">
+    <div className="flex flex-col h-full">
+      <Tabs defaultValue="detail" className="flex flex-col h-full">
+        <TabsList className="grid w-full grid-cols-3 flex-shrink-0">
           <TabsTrigger value="detail">Detail</TabsTrigger>
           <TabsTrigger value="documents">Documents</TabsTrigger>
           <TabsTrigger value="intelligence">Intelligence</TabsTrigger>
@@ -26,11 +26,13 @@ const LoadDetailTabs = ({ load, emailThreads, isLoadingEmails }: LoadDetailTabsP
         
         {/* Invoice Request Toast for Ready To Invoice loads */}
         {load.status === "ready_to_invoice" && (
-          <InvoiceRequestToast brokerName={load.broker} />
+          <div className="flex-shrink-0">
+            <InvoiceRequestToast brokerName={load.broker} />
+          </div>
         )}
         
-        <div className="overflow-y-auto space-y-6" style={{ height: 'calc(100vh - 140px)', backgroundColor: '#F5F6FA' }}>
-          <TabsContent value="detail" className="m-0 pt-6">
+        <div className="flex-1 min-h-0 overflow-y-auto space-y-6 pt-6" style={{ backgroundColor: '#F5F6FA' }}>
+          <TabsContent value="detail" className="m-0 h-full">
             {/* Load Acceptance Card for pending loads */}
             {load.status === "pending_acceptance" && (
               <LoadAcceptanceCard load={load} />
@@ -43,7 +45,7 @@ const LoadDetailTabs = ({ load, emailThreads, isLoadingEmails }: LoadDetailTabsP
             />
           </TabsContent>
           
-          <TabsContent value="documents" className="m-0 pt-6">
+          <TabsContent value="documents" className="m-0 h-full">
             {/* Load Acceptance Card for pending loads */}
             {load.status === "pending_acceptance" && (
               <LoadAcceptanceCard load={load} />
@@ -52,7 +54,7 @@ const LoadDetailTabs = ({ load, emailThreads, isLoadingEmails }: LoadDetailTabsP
             <LoadDocumentsContent />
           </TabsContent>
           
-          <TabsContent value="intelligence" className="m-0 pt-6">
+          <TabsContent value="intelligence" className="m-0 h-full">
             {/* Load Acceptance Card for pending loads */}
             {load.status === "pending_acceptance" && (
               <LoadAcceptanceCard load={load} />
