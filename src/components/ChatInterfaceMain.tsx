@@ -1,14 +1,8 @@
 
-import { useCallback } from "react";
-import ChatInput from "./ChatInput";
-import ChatHeader from "./ChatHeader";
-import ChatContentArea from "./ChatContentArea";
-import ChatEscapeHandler from "./ChatEscapeHandler";
 import ChatModeManager from "./ChatModeManager";
-import ChatTitleManager from "./ChatTitleManager";
 import ChatFocusManager from "./ChatFocusManager";
-import ChatDemoHandler from "./ChatDemoHandler";
-import ChatDemoResponseHandler from "./ChatDemoResponseHandler";
+import ChatInterfaceLayout from "./ChatInterfaceLayout";
+import { useChatInterfaceHandlers } from "@/hooks/useChatInterfaceHandlers";
 import { InputFocusHandle } from "@/hooks/useInputFocus";
 import { ChatMessage } from "../hooks/useChatMessages";
 
@@ -53,6 +47,18 @@ const ChatInterfaceMain = ({
   addUserMessage,
   addAIMessage
 }: ChatInterfaceMainProps) => {
+  const { handleSend } = useChatInterfaceHandlers({
+    isInDemoMode,
+    demoStep,
+    message,
+    addUserMessage,
+    addAIMessage,
+    setMessage,
+    setDemoStep,
+    originalHandleSendMessage,
+    onFocusChange
+  });
+
   return (
     <ChatModeManager>
       {({ mode, handleModeChange }) => (
@@ -61,100 +67,29 @@ const ChatInterfaceMain = ({
           isFocused={isFocused} 
           onFocusChange={onFocusChange}
         >
-          {({ handleMessageChange, handleClose }) => {
-            const demoResponseHandler = ChatDemoResponseHandler({
-              isInDemoMode,
-              demoStep,
-              message,
-              addUserMessage,
-              addAIMessage,
-              setMessage,
-              setDemoStep,
-              originalHandleSendMessage
-            });
-
-            const handleSend = async () => {
-              if (onFocusChange) onFocusChange(true);
-              
-              if (isInDemoMode) {
-                await demoResponseHandler.handleDemoResponse();
-              } else {
-                await originalHandleSendMessage();
-              }
-            };
-
-            const finalHandleClose = useCallback(() => {
-              handleClose();
-              setMessage("");
-              setIsInDemoMode(false);
-              setDemoStep(null);
-            }, [handleClose, setMessage, setIsInDemoMode, setDemoStep]);
-
-            const finalHandleMessageChange = useCallback((newMessage: string) => {
-              setMessage(newMessage);
-              handleMessageChange(newMessage);
-            }, [setMessage, handleMessageChange]);
-
-            return (
-              <div className="h-full flex flex-col">
-                <ChatEscapeHandler isFocused={isFocused} onClose={finalHandleClose} />
-                
-                <ChatDemoHandler
-                  currentAction={currentAction}
-                  isFocused={isFocused}
-                  setIsInDemoMode={setIsInDemoMode}
-                  setDemoStep={setDemoStep}
-                  setMessage={setMessage}
-                />
-                
-                {/* Header - only show when focused */}
-                {isFocused && (
-                  <div className="shrink-0">
-                    <ChatTitleManager currentAction={currentAction} mode={mode}>
-                      {(title) => (
-                        <ChatHeader 
-                          isFocused={isFocused}
-                          title={title}
-                          onClose={finalHandleClose}
-                        />
-                      )}
-                    </ChatTitleManager>
-                  </div>
-                )}
-                
-                {/* Content area - only show when focused, with overflow-hidden to constrain scrolling */}
-                {isFocused && (
-                  <div className="flex-1 min-h-0 overflow-hidden">
-                    <ChatContentArea
-                      isFocused={isFocused}
-                      showingResults={showingResults}
-                      loadResults={loadResults}
-                      chatHistory={chatHistory}
-                      isLoading={isLoading}
-                      onLoadSelect={handleLoadSelect}
-                    />
-                  </div>
-                )}
-                
-                {/* Chat Input - always at bottom with consistent positioning */}
-                <div className={`shrink-0 transition-all duration-300 ${
-                  isFocused ? 'p-4' : 'absolute bottom-0 left-0 right-0 p-4'
-                }`}>
-                  <div className="w-full max-w-4xl mx-auto">
-                    <ChatInput
-                      ref={inputRef}
-                      message={message}
-                      onMessageChange={finalHandleMessageChange}
-                      onSendMessage={handleSend}
-                      isLoading={isLoading}
-                      mode={mode}
-                      onModeChange={handleModeChange}
-                    />
-                  </div>
-                </div>
-              </div>
-            );
-          }}
+          {({ handleMessageChange, handleClose }) => (
+            <ChatInterfaceLayout
+              isFocused={isFocused}
+              currentAction={currentAction}
+              inputRef={inputRef}
+              message={message}
+              setMessage={setMessage}
+              isLoading={isLoading}
+              loadResults={loadResults}
+              showingResults={showingResults}
+              handleLoadSelect={handleLoadSelect}
+              chatHistory={chatHistory}
+              isInDemoMode={isInDemoMode}
+              setIsInDemoMode={setIsInDemoMode}
+              demoStep={demoStep}
+              setDemoStep={setDemoStep}
+              mode={mode}
+              handleModeChange={handleModeChange}
+              handleMessageChange={handleMessageChange}
+              handleClose={handleClose}
+              handleSend={handleSend}
+            />
+          )}
         </ChatFocusManager>
       )}
     </ChatModeManager>
