@@ -7,7 +7,6 @@ import { useNavigate } from "react-router-dom";
 import { useRef, useState, useCallback } from "react";
 import NavigationSidebar from "@/components/NavigationSidebar";
 import FunctionalChatInterface from "@/components/FunctionalChatInterface";
-import UserProfileMenu from "@/components/UserProfileMenu";
 import { useAuth } from "@/hooks/useAuth";
 
 const Index = () => {
@@ -90,7 +89,6 @@ const Index = () => {
                     <Truck className="w-3 h-3 mr-1" />
                     {profile?.company_name || 'Carrier Account'}
                   </Badge>
-                  <UserProfileMenu />
                 </div>
               </div>
             </div>

@@ -4,6 +4,7 @@ import { Home, Truck, FileText, Banknote, Search, HelpCircle } from "lucide-reac
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import NotificationBell from "./NotificationBell";
+import UserProfileMenu from "./UserProfileMenu";
 
 const navigationItems = [{
   icon: Home,
@@ -97,10 +98,13 @@ const NavigationSidebar = () => {
         ))}
       </div>
       
-      {/* Push notification bell to bottom */}
-      <div className="mt-auto">
+      {/* Push notification bell and user menu to bottom */}
+      <div className="mt-auto flex flex-col items-center space-y-2">
         <div className="p-2">
           <NotificationBell />
+        </div>
+        <div className="p-2">
+          <UserProfileMenu />
         </div>
       </div>
     </div>

@@ -1,13 +1,16 @@
+
 import { useNavigate } from "react-router-dom";
 import NavigationSidebar from "@/components/NavigationSidebar";
 import InvoicesSidebar from "@/components/InvoicesSidebar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { FileText, Download, Eye, Plus, TrendingUp, Clock, AlertCircle } from "lucide-react";
+import { FileText, Download, Eye, Plus, TrendingUp, Clock, AlertCircle, Truck } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 const InvoicesPage = () => {
   const navigate = useNavigate();
+  const { profile } = useAuth();
 
   const recentInvoices = [
     { id: "INV-2024-001", load: "TMS-001", amount: "$2,450.00", status: "pending", date: "2024-06-08" },
@@ -40,10 +43,16 @@ const InvoicesPage = () => {
               <h1 className="text-3xl font-bold text-slate-900 mb-2">Invoice Overview</h1>
               <p className="text-slate-600">Track and manage your invoice payments</p>
             </div>
-            <Button className="flex items-center space-x-2" onClick={handleCreateInvoice}>
-              <Plus className="w-4 h-4" />
-              <span>Create Invoice</span>
-            </Button>
+            <div className="flex items-center space-x-4">
+              <Badge variant="outline" className="text-sm">
+                <Truck className="w-3 h-3 mr-1" />
+                {profile?.company_name || 'Carrier Account'}
+              </Badge>
+              <Button className="flex items-center space-x-2" onClick={handleCreateInvoice}>
+                <Plus className="w-4 h-4" />
+                <span>Create Invoice</span>
+              </Button>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">

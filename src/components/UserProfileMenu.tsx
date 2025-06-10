@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { User, Settings, HelpCircle, LogOut, ChevronDown } from "lucide-react";
+import { User, Settings, HelpCircle, LogOut, ChevronUp } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -43,31 +43,22 @@ const UserProfileMenu = () => {
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="flex items-center space-x-3 px-3 py-2 h-auto">
+        <Button 
+          variant="ghost" 
+          size="icon"
+          className="w-10 h-10 text-slate-300 hover:text-white hover:bg-slate-700 relative"
+          title="User Menu"
+        >
           {/* Avatar */}
-          <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm font-medium">
+          <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs font-medium">
             {getInitials(profile?.first_name, profile?.last_name)}
           </div>
-          
-          {/* User Info */}
-          <div className="flex flex-col items-start min-w-0">
-            <div className="text-sm font-medium text-slate-800 truncate">
-              {profile?.first_name && profile?.last_name 
-                ? `${profile.first_name} ${profile.last_name}`
-                : profile?.email || "User"
-              }
-            </div>
-            <div className="text-xs text-slate-600 truncate">
-              {profile?.company_name || "Carrier Account"}
-            </div>
-          </div>
-          
-          {/* Chevron */}
-          <ChevronDown className="w-4 h-4 text-slate-500" />
+          {/* Small chevron indicator */}
+          <ChevronUp className={`w-2 h-2 text-slate-400 absolute -bottom-0.5 -right-0.5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
         </Button>
       </DropdownMenuTrigger>
       
-      <DropdownMenuContent align="end" className="w-64">
+      <DropdownMenuContent align="center" side="right" className="w-64" sideOffset={8}>
         <DropdownMenuLabel className="pb-2">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-medium">

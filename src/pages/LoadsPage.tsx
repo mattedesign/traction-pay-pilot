@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import NavigationSidebar from "@/components/NavigationSidebar";
 import LoadsSidebar from "@/components/LoadsSidebar";
 import EmailThreadDisplay from "@/components/EmailThreadDisplay";
-import UserProfileMenu from "@/components/UserProfileMenu";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -39,7 +38,7 @@ const LoadsPage = () => {
       <LoadsSidebar />
       
       <div className="flex-1 flex flex-col h-screen overflow-hidden">
-        {/* Header with user profile menu */}
+        {/* Header */}
         <div className="bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold text-slate-900 mb-2">Load Management</h1>
@@ -50,7 +49,6 @@ const LoadsPage = () => {
               <Truck className="w-3 h-3 mr-1" />
               {profile?.company_name || 'Carrier Account'}
             </Badge>
-            <UserProfileMenu />
           </div>
         </div>
 
