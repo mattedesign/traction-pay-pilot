@@ -2,6 +2,8 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
+import { AuthProvider } from "@/hooks/useAuth";
+import ProtectedRoute from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 import LoadsPage from "./pages/LoadsPage";
 import NewLoadPage from "./pages/NewLoadPage";
@@ -12,9 +14,10 @@ import CreateInvoicePage from "./pages/CreateInvoicePage";
 import BankingPage from "./pages/BankingPage";
 import SearchPage from "./pages/SearchPage";
 import SupportPage from "./pages/SupportPage";
-import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import RouteOptionsPage from "./pages/RouteOptionsPage";
+import BrokerDashboard from "./pages/BrokerDashboard";
+import AuthPage from "./components/auth/AuthPage";
 import "./App.css";
 
 const queryClient = new QueryClient();
@@ -22,26 +25,89 @@ const queryClient = new QueryClient();
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Router>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/loads" element={<LoadsPage />} />
-          <Route path="/loads/new" element={<NewLoadPage />} />
-          <Route path="/load/:loadId" element={<LoadDetail />} />
-          <Route path="/invoices" element={<InvoicesPage />} />
-          <Route path="/invoices/new" element={<CreateInvoicePage />} />
-          <Route path="/invoice/:invoiceId" element={<InvoiceDetailPage />} />
-          <Route path="/banking" element={<BankingPage />} />
-          <Route path="/search" element={<SearchPage />} />
-          <Route path="/support" element={<SupportPage />} />
-          <Route path="/route-options" element={<RouteOptionsPage />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Router>
+      <AuthProvider>
+        <Router>
+          <Routes>
+            <Route path="/auth" element={<AuthPage />} />
+            <Route path="/" element={
+              <ProtectedRoute>
+                <DashboardRouter />
+              </ProtectedRoute>
+            } />
+            <Route path="/loads" element={
+              <ProtectedRoute requiredUserType="carrier">
+                <LoadsPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/loads/new" element={
+              <ProtectedRoute requiredUserType="carrier">
+                <NewLoadPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/load/:loadId" element={
+              <ProtectedRoute>
+                <LoadDetail />
+              </ProtectedRoute>
+            } />
+            <Route path="/invoices" element={
+              <ProtectedRoute requiredUserType="carrier">
+                <InvoicesPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/invoices/new" element={
+              <ProtectedRoute requiredUserType="carrier">
+                <CreateInvoicePage />
+              </ProtectedRoute>
+            } />
+            <Route path="/invoice/:invoiceId" element={
+              <ProtectedRoute>
+                <InvoiceDetailPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/banking" element={
+              <ProtectedRoute>
+                <BankingPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/search" element={
+              <ProtectedRoute>
+                <SearchPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/support" element={
+              <ProtectedRoute>
+                <SupportPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/route-options" element={
+              <ProtectedRoute requiredUserType="carrier">
+                <RouteOptionsPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/broker" element={
+              <ProtectedRoute requiredUserType="broker">
+                <BrokerDashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Router>
+      </AuthProvider>
       <Toaster />
     </QueryClientProvider>
   );
 }
+
+// Component to route users to their appropriate dashboard
+const DashboardRouter = () => {
+  const { profile } = useAuth();
+  
+  if (profile?.user_type === 'broker') {
+    return <BrokerDashboard />;
+  }
+  
+  // Default to carrier dashboard (existing Index page)
+  return <Index />;
+};
 
 export default App;

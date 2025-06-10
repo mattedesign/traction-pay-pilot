@@ -1,16 +1,19 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Truck, FileText, MapPin, DollarSign, Route, CreditCard, ExternalLink } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useRef, useState } from "react";
 import NavigationSidebar from "@/components/NavigationSidebar";
 import FunctionalChatInterface from "@/components/FunctionalChatInterface";
+import { useAuth } from "@/hooks/useAuth";
 
 const Index = () => {
   const navigate = useNavigate();
   const [isChatFocused, setIsChatFocused] = useState(false);
   const [currentAction, setCurrentAction] = useState<string | undefined>(undefined);
+  const { profile, signOut } = useAuth();
 
   const handleChatFocus = (focused: boolean) => {
     setIsChatFocused(focused);
@@ -59,6 +62,27 @@ const Index = () => {
       
       {/* Main content area with full viewport height and flex column */}
       <div className="flex-1 flex flex-col h-screen overflow-hidden">
+        {/* Header */}
+        {!isChatFocused && (
+          <div className="bg-white border-b border-slate-200 px-8 py-4 shrink-0">
+            <div className="flex justify-between items-center">
+              <div>
+                <h1 className="text-xl font-semibold text-slate-800">Carrier Dashboard</h1>
+                <p className="text-slate-600">Welcome back, {profile?.first_name}!</p>
+              </div>
+              <div className="flex items-center space-x-4">
+                <Badge variant="outline" className="text-sm">
+                  <Truck className="w-3 h-3 mr-1" />
+                  {profile?.company_name || 'Carrier Account'}
+                </Badge>
+                <Button variant="outline" onClick={signOut}>
+                  Sign Out
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Content area that fills remaining space when chat not focused */}
         <div className="flex-1 flex flex-col min-h-0">
           {/* Welcome content - hidden when chat is focused */}
