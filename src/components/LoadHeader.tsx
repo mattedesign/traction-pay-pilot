@@ -1,6 +1,8 @@
 
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Package, Clock } from "lucide-react";
+import { MapPin, Package, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 import { Load } from "@/types/load";
 import { LoadStatusService } from "@/services/loadStatusService";
 
@@ -9,6 +11,12 @@ interface LoadHeaderProps {
 }
 
 const LoadHeader = ({ loadData }: LoadHeaderProps) => {
+  const navigate = useNavigate();
+
+  const handleClose = () => {
+    navigate("/loads");
+  };
+
   // Special handling for TMS-001 to show "Delivered" badge
   const getDisplayStatus = () => {
     if (loadData.id === "TMS-001") {
@@ -35,9 +43,20 @@ const LoadHeader = ({ loadData }: LoadHeaderProps) => {
           <h1 className="text-2xl font-bold text-slate-900">Load #{loadData.id}</h1>
           <p className="text-slate-600">{loadData.broker}</p>
         </div>
-        <Badge variant="outline" className={statusClass}>
-          {statusText}
-        </Badge>
+        <div className="flex items-center gap-3">
+          <Badge variant="outline" className={statusClass}>
+            {statusText}
+          </Badge>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleClose}
+            className="w-8 h-8 text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+            title="Close"
+          >
+            <X className="w-4 h-4" />
+          </Button>
+        </div>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">

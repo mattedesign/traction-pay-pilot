@@ -44,15 +44,12 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
   return (
     <div className="flex flex-col h-full" style={{ backgroundColor: '#F5F6FA' }}>
       {/* Header */}
-      <div className="border-b border-slate-200 bg-white px-6 py-4">
+      <div className="border-b border-slate-200 bg-white px-6 py-4 flex-shrink-0">
         <LoadHeader loadData={load} />
       </div>
       
-      {/* Vertical gap between header and tabs */}
-      <div className="h-4"></div>
-      
-      {/* Fixed Tabs Container with consistent padding */}
-      <div className="border-b border-slate-200 px-6 sticky top-0 z-10">
+      {/* Tabs Container */}
+      <div className="flex-1 min-h-0 px-6 pt-4">
         <LoadDetailTabs 
           load={load}
           emailThreads={emailThreads}
