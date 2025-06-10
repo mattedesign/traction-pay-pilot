@@ -38,14 +38,26 @@ export const useChatInterfaceHandlers = ({
   });
 
   const handleSend = useCallback(async () => {
-    if (onFocusChange) onFocusChange(true);
+    console.log('ChatInterfaceHandlers: handleSend called with:', {
+      isInDemoMode,
+      demoStep,
+      message,
+      hasOnFocusChange: !!onFocusChange
+    });
+    
+    if (onFocusChange) {
+      console.log('ChatInterfaceHandlers: Calling onFocusChange(true)');
+      onFocusChange(true);
+    }
     
     if (isInDemoMode) {
+      console.log('ChatInterfaceHandlers: Handling demo response');
       await demoResponseHandler.handleDemoResponse();
     } else {
+      console.log('ChatInterfaceHandlers: Handling original message');
       await originalHandleSendMessage();
     }
-  }, [onFocusChange, isInDemoMode, demoResponseHandler, originalHandleSendMessage]);
+  }, [onFocusChange, isInDemoMode, demoResponseHandler, originalHandleSendMessage, demoStep, message]);
 
   return {
     handleSend

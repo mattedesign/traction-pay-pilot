@@ -16,18 +16,29 @@ const Index = () => {
   const { profile, signOut } = useAuth();
 
   const handleChatFocus = useCallback((focused: boolean) => {
-    console.log('Chat focus changed:', focused);
+    console.log('Index: Chat focus changed to:', focused);
     setIsChatFocused(focused);
     if (!focused) {
+      console.log('Index: Clearing current action due to unfocus');
       setCurrentAction(undefined);
     }
   }, []);
 
   const handleActionClick = useCallback((actionTitle: string) => {
-    console.log('Action clicked:', actionTitle);
+    console.log('Index: Action clicked:', actionTitle);
+    console.log('Index: Setting current action and focusing chat');
+    
+    // Set action first
     setCurrentAction(actionTitle);
+    
+    // Force focus immediately 
     setIsChatFocused(true);
-  }, []);
+    
+    // Call focus handler to ensure propagation
+    handleChatFocus(true);
+    
+    console.log('Index: Action setup complete - currentAction:', actionTitle, 'isChatFocused: true');
+  }, [handleChatFocus]);
 
   const suggestedActions = [{
     icon: Truck,
@@ -50,6 +61,8 @@ const Index = () => {
     description: "You have $1,250 available for QuickPay",
     onClick: () => handleActionClick("QuickPay Available")
   }];
+
+  console.log('Index: Render - isChatFocused:', isChatFocused, 'currentAction:', currentAction);
 
   return (
     <div className="min-h-screen flex w-full bg-slate-50">
@@ -108,11 +121,8 @@ const Index = () => {
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        console.log('Card clicked - calling action for:', action.title);
-                        // Use setTimeout to ensure the click is processed after any other handlers
-                        setTimeout(() => {
-                          action.onClick();
-                        }, 0);
+                        console.log('Index: Card click handler - calling action for:', action.title);
+                        action.onClick();
                       }}
                     >
                       <CardContent className="p-6">

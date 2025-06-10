@@ -28,6 +28,13 @@ const ChatInterfaceContainer = ({
   const { chatHistory, addUserMessage, addAIMessage } = useChatMessages();
   const { currentSuggestions } = useSuggestedQuestions();
 
+  console.log('ChatInterfaceContainer: Render with props:', {
+    isFocused,
+    currentAction,
+    isInDemoMode,
+    demoStep
+  });
+
   const systemPrompt = getChatSystemPrompt();
 
   const {
@@ -52,8 +59,10 @@ const ChatInterfaceContainer = ({
     }
   });
 
-  // Stable focus handler that doesn't change on every render
+  // Enhanced focus handler with debug logging
   const focusInput = useCallback(() => {
+    console.log('ChatInterfaceContainer: focusInput called, isFocused:', isFocused);
+    
     // Clear any pending focus timeout
     if (focusTimeoutRef.current) {
       clearTimeout(focusTimeoutRef.current);
@@ -61,14 +70,17 @@ const ChatInterfaceContainer = ({
 
     // Delay focus to ensure component is stable
     focusTimeoutRef.current = setTimeout(() => {
+      console.log('ChatInterfaceContainer: Attempting to focus input, inputRef.current:', !!inputRef.current);
       if (inputRef.current && isFocused) {
         inputRef.current.focus();
+        console.log('ChatInterfaceContainer: Input focused successfully');
       }
     }, 100);
   }, [isFocused]);
 
   // Auto-focus input when chat becomes focused
   useEffect(() => {
+    console.log('ChatInterfaceContainer: Focus effect triggered, isFocused:', isFocused);
     if (isFocused) {
       focusInput();
     }
@@ -82,6 +94,7 @@ const ChatInterfaceContainer = ({
 
   // Show setup if not initialized
   if (!isInitialized) {
+    console.log('ChatInterfaceContainer: Showing setup (not initialized)');
     return (
       <ChatInterfaceSetup
         currentAction={currentAction}
@@ -95,6 +108,8 @@ const ChatInterfaceContainer = ({
       />
     );
   }
+
+  console.log('ChatInterfaceContainer: Rendering main interface');
 
   return (
     <ChatInterfaceMain

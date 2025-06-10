@@ -9,6 +9,11 @@ interface FunctionalChatInterfaceProps {
 }
 
 const FunctionalChatInterface = (props: FunctionalChatInterfaceProps) => {
+  console.log('FunctionalChatInterface: Render with props:', {
+    isFocused: props.isFocused,
+    currentAction: props.currentAction
+  });
+  
   return <ChatInterfaceContainer {...props} />;
 };
 
