@@ -16,7 +16,7 @@ interface ChatHistoryProps {
 
 const ChatHistory = ({ messages, isLoading }: ChatHistoryProps) => {
   return (
-    <div className="max-h-96 overflow-y-auto space-y-3">
+    <div className="space-y-3">
       {messages.map((msg, index) => (
         <ChatMessage
           key={index}
