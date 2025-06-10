@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect, useCallback } from "react";
 import ChatInput from "./ChatInput";
 import ChatSetup from "./ChatSetup";
@@ -182,9 +181,9 @@ const FunctionalChatInterface = ({
                   </div>
                 )}
                 
-                {/* Content area - only show when focused */}
+                {/* Content area - only show when focused, with overflow-hidden to constrain scrolling */}
                 {isFocused && (
-                  <div className="flex-1 min-h-0">
+                  <div className="flex-1 min-h-0 overflow-hidden">
                     <ChatContentArea
                       isFocused={isFocused}
                       showingResults={showingResults}
