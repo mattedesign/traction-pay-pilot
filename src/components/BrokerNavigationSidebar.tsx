@@ -1,6 +1,5 @@
-
 import { Button } from "@/components/ui/button";
-import { Home, DollarSign, BarChart3, Users, FileText, Settings } from "lucide-react";
+import { Home, DollarSign, BarChart3, Users, FileText, Settings, Truck } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import NotificationBell from "./NotificationBell";
@@ -11,6 +10,11 @@ const brokerNavigationItems = [
     icon: Home,
     label: "Dashboard",
     path: "/broker"
+  },
+  {
+    icon: Truck,
+    label: "Loads in Progress",
+    path: "/broker/loads-in-progress"
   },
   {
     icon: DollarSign,
