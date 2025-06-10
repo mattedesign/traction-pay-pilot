@@ -8,7 +8,6 @@ import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "
 import { Eye, EyeOff, Truck, MapPin, Route } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useToast } from "@/hooks/use-toast";
-import LoginIllustration from "@/components/LoginIllustration";
 
 interface LoginFormData {
   email: string;
@@ -40,54 +39,82 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center p-4">
-      <div className="w-full max-w-6xl grid lg:grid-cols-2 gap-8 items-center">
-        {/* Illustration Side */}
-        <div className="hidden lg:flex flex-col items-center justify-center space-y-6 p-8">
-          <LoginIllustration />
-          <div className="text-center space-y-3">
-            <h1 className="text-3xl font-bold text-slate-800">Welcome to TractionPay</h1>
-            <p className="text-lg text-slate-600 max-w-md">
+    <div className="min-h-screen flex">
+      {/* Left Panel - Dark with truck image */}
+      <div className="hidden lg:flex lg:w-1/2 bg-slate-900 relative overflow-hidden">
+        {/* Background image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: "url('/lovable-uploads/9c7f43ac-d9db-486b-bb6a-fc72efae0f39.png')"
+          }}
+        >
+          {/* Dark overlay */}
+          <div className="absolute inset-0 bg-slate-900/60"></div>
+        </div>
+        
+        {/* Content overlay */}
+        <div className="relative z-10 flex flex-col justify-center items-start p-12 text-white">
+          {/* Logo */}
+          <div className="mb-8">
+            <img 
+              alt="TractionPay Logo" 
+              className="w-12 h-12 object-contain" 
+              src="/lovable-uploads/b21fd570-2ee4-4af9-8ee7-44980e7d6708.png" 
+            />
+          </div>
+          
+          {/* Main content */}
+          <div className="max-w-md">
+            <h1 className="text-4xl font-bold mb-4 leading-tight">
+              Welcome to TractionPay
+            </h1>
+            <p className="text-xl text-slate-200 mb-8 leading-relaxed">
               Your trusted partner for faster payments, smarter routes, and better cash flow management.
             </p>
-            <div className="flex items-center justify-center space-x-6 pt-4">
-              <div className="flex items-center space-x-2 text-slate-500">
-                <div className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center">
+            
+            {/* Feature highlights */}
+            <div className="space-y-4">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
                   <Truck className="w-4 h-4" />
                 </div>
-                <span className="text-sm font-medium">Smart Logistics</span>
+                <span className="text-slate-200 font-medium">Smart Logistics Solutions</span>
               </div>
-              <div className="flex items-center space-x-2 text-slate-500">
-                <div className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
                   <Route className="w-4 h-4" />
                 </div>
-                <span className="text-sm font-medium">Route Optimization</span>
+                <span className="text-slate-200 font-medium">Optimized Route Planning</span>
               </div>
-              <div className="flex items-center space-x-2 text-slate-500">
-                <div className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
                   <MapPin className="w-4 h-4" />
                 </div>
-                <span className="text-sm font-medium">Real-time Tracking</span>
+                <span className="text-slate-200 font-medium">Real-time Load Tracking</span>
               </div>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Login Form Side */}
-        <div className="flex items-center justify-center">
-          <Card className="w-full max-w-md shadow-xl border-0 bg-white">
+      {/* Right Panel - Login Form */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white">
+        <div className="w-full max-w-md">
+          <Card className="shadow-lg border border-slate-200 bg-white">
             <CardHeader className="text-center space-y-3 pb-6">
-              <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto">
+              {/* Mobile logo - only shown on small screens */}
+              <div className="lg:hidden w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto">
                 <Truck className="w-8 h-8 text-slate-600" />
               </div>
-              <CardTitle className="text-2xl font-bold text-slate-800">Sign In</CardTitle>
-              <CardDescription className="text-slate-600">
+              <CardTitle className="text-3xl font-bold text-slate-800">Sign In</CardTitle>
+              <CardDescription className="text-slate-600 text-base">
                 Access your dashboard to manage loads and payments
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="px-8 pb-8">
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                   <FormField
                     control={form.control}
                     name="email"
@@ -100,13 +127,13 @@ const Login = () => {
                     }}
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-slate-700 font-medium">Email Address</FormLabel>
+                        <FormLabel className="text-slate-700 font-medium text-sm">Email Address</FormLabel>
                         <FormControl>
                           <Input
                             {...field}
                             type="email"
                             placeholder="your@email.com"
-                            className="h-11 border-slate-200 focus:border-slate-400 focus:ring-slate-400"
+                            className="h-12 border-slate-200 focus:border-slate-400 focus:ring-slate-400 text-base"
                           />
                         </FormControl>
                         <FormMessage />
@@ -126,26 +153,26 @@ const Login = () => {
                     }}
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-slate-700 font-medium">Password</FormLabel>
+                        <FormLabel className="text-slate-700 font-medium text-sm">Password</FormLabel>
                         <FormControl>
                           <div className="relative">
                             <Input
                               {...field}
                               type={showPassword ? "text" : "password"}
                               placeholder="Enter your password"
-                              className="h-11 border-slate-200 focus:border-slate-400 focus:ring-slate-400 pr-10"
+                              className="h-12 border-slate-200 focus:border-slate-400 focus:ring-slate-400 pr-12 text-base"
                             />
                             <Button
                               type="button"
                               variant="ghost"
                               size="sm"
-                              className="absolute right-0 top-0 h-11 px-3 hover:bg-transparent text-slate-500 hover:text-slate-700"
+                              className="absolute right-0 top-0 h-12 px-3 hover:bg-transparent text-slate-500 hover:text-slate-700"
                               onClick={() => setShowPassword(!showPassword)}
                             >
                               {showPassword ? (
-                                <EyeOff className="w-4 h-4" />
+                                <EyeOff className="w-5 h-5" />
                               ) : (
-                                <Eye className="w-4 h-4" />
+                                <Eye className="w-5 h-5" />
                               )}
                             </Button>
                           </div>
@@ -155,22 +182,22 @@ const Login = () => {
                     )}
                   />
 
-                  <div className="flex items-center justify-between pt-2">
-                    <Button variant="ghost" size="sm" className="text-slate-600 hover:text-slate-800 px-0">
+                  <div className="flex items-center justify-end">
+                    <Button variant="ghost" size="sm" className="text-slate-600 hover:text-slate-800 px-0 text-sm">
                       Forgot password?
                     </Button>
                   </div>
 
-                  <Button type="submit" className="w-full h-11 bg-slate-800 hover:bg-slate-900 text-white font-medium mt-6">
+                  <Button type="submit" className="w-full h-12 bg-slate-800 hover:bg-slate-900 text-white font-medium text-base">
                     Sign In
                   </Button>
                 </form>
               </Form>
 
-              <div className="mt-6 text-center">
+              <div className="mt-8 text-center">
                 <p className="text-sm text-slate-600">
                   Don't have an account?{" "}
-                  <Button variant="ghost" size="sm" className="text-slate-800 hover:text-slate-900 px-1 font-medium">
+                  <Button variant="ghost" size="sm" className="text-slate-800 hover:text-slate-900 px-1 font-medium text-sm">
                     Contact your broker
                   </Button>
                 </p>
