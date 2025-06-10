@@ -5,7 +5,10 @@ import FinancialServices from "./FinancialServices";
 import LoadChatSection from "./LoadChatSection";
 import PaymentChatSection from "./PaymentChatSection";
 import DeliveredLoadIntelligence from "./DeliveredLoadIntelligence";
+import EldTrackingCard from "./EldTrackingCard";
+import EldSharing from "./EldSharing";
 import { Load } from "@/types/load";
+import { EldDataService } from "@/services/eldDataService";
 
 interface LoadIntelligenceContentProps {
   load: Load;
@@ -14,6 +17,7 @@ interface LoadIntelligenceContentProps {
 const LoadIntelligenceContent = ({ load }: LoadIntelligenceContentProps) => {
   // Check if this is a delivered load that should show fuel analysis
   const isDeliveredLoad = load.status === "delivered" || load.status === "ready_to_invoice";
+  const isEldEnabled = EldDataService.isEldEnabled(load.id);
 
   if (isDeliveredLoad) {
     return <DeliveredLoadIntelligence load={load} />;
@@ -29,6 +33,12 @@ const LoadIntelligenceContent = ({ load }: LoadIntelligenceContentProps) => {
 
   return (
     <div className="space-y-6">
+      {/* ELD Tracking Card - Shows live tracking if enabled */}
+      {isEldEnabled && <EldTrackingCard loadId={load.id} />}
+      
+      {/* ELD Sharing Card - Shows for non-ELD enabled loads */}
+      {!isEldEnabled && <EldSharing />}
+      
       {/* Smart Features Overview */}
       <SmartFeaturesCards extractedData={extractedData} />
       
