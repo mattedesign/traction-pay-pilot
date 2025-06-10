@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
 import { Truck } from "lucide-react";
 import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm";
@@ -10,35 +11,94 @@ const AuthPage = () => {
   const [activeTab, setActiveTab] = useState("login");
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        <Card className="shadow-xl border-0 bg-white">
-          <CardHeader className="text-center space-y-3 pb-6">
-            <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto">
-              <Truck className="w-8 h-8 text-slate-600" />
+    <div className="min-h-screen flex">
+      {/* Left Panel - Dark with truck image and messaging */}
+      <div className="hidden lg:flex lg:w-1/2 bg-slate-800 relative overflow-hidden">
+        {/* Background image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: "url('/lovable-uploads/3216cb11-a358-4add-92c8-d23aa389334c.png')"
+          }}
+        >
+          {/* Dark overlay */}
+          <div className="absolute inset-0 bg-slate-800/70"></div>
+        </div>
+        
+        {/* Content overlay */}
+        <div className="relative z-10 flex flex-col justify-between p-12 text-white">
+          {/* Top section with logo */}
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
+              <Truck className="w-5 h-5 text-slate-800" />
             </div>
-            <CardTitle className="text-2xl font-bold text-slate-800">
-              Welcome to TractionPay
-            </CardTitle>
-            <CardDescription className="text-slate-600">
-              Access your dashboard to manage loads and payments
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
+            <span className="text-xl font-bold">TractionPay</span>
+          </div>
+          
+          {/* Main content */}
+          <div className="max-w-md">
+            <h1 className="text-4xl font-bold mb-6 leading-tight">
+              Fleets are the bridge that brings us together.
+            </h1>
+            <p className="text-lg text-slate-200 leading-relaxed">
+              We believe that all commercial vehicles deserve easy access to world-class fleet management solutions.
+            </p>
+            
+            {/* Pagination dots */}
+            <div className="flex space-x-2 mt-8">
+              <div className="w-8 h-1 bg-white rounded-full"></div>
+              <div className="w-2 h-1 bg-white/40 rounded-full"></div>
+              <div className="w-2 h-1 bg-white/40 rounded-full"></div>
+            </div>
+          </div>
+
+          {/* Language selector placeholder */}
+          <div className="flex justify-end">
+            <Button variant="ghost" className="text-white hover:bg-white/10 px-0">
+              English
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {/* Right Panel - Login Form */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white">
+        <div className="w-full max-w-md">
+          {/* Mobile logo - only shown on small screens */}
+          <div className="lg:hidden flex items-center justify-center space-x-3 mb-8">
+            <div className="w-8 h-8 bg-slate-800 rounded-lg flex items-center justify-center">
+              <Truck className="w-5 h-5 text-white" />
+            </div>
+            <span className="text-xl font-bold text-slate-800">TractionPay</span>
+          </div>
+
+          <div className="space-y-6">
+            <div className="text-center lg:text-left">
+              <h2 className="text-3xl font-bold text-slate-800 mb-2">
+                {activeTab === "login" ? "Login" : "Sign Up"}
+              </h2>
+              <p className="text-slate-600">
+                {activeTab === "login" 
+                  ? "Welcome back! Please enter your email id and password"
+                  : "Create your account to get started"
+                }
+              </p>
+            </div>
+
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
+              <TabsList className="grid w-full grid-cols-2 mb-6">
                 <TabsTrigger value="login">Sign In</TabsTrigger>
                 <TabsTrigger value="signup">Sign Up</TabsTrigger>
               </TabsList>
-              <TabsContent value="login" className="mt-6">
+              <TabsContent value="login">
                 <LoginForm />
               </TabsContent>
-              <TabsContent value="signup" className="mt-6">
+              <TabsContent value="signup">
                 <SignupForm />
               </TabsContent>
             </Tabs>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     </div>
   );

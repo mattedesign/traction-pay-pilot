@@ -58,7 +58,7 @@ const LoginForm = () => {
   };
 
   return (
-    <form onSubmit={handleLogin} className="space-y-4">
+    <form onSubmit={handleLogin} className="space-y-6">
       {error && (
         <Alert variant="destructive">
           <AlertDescription>{error}</AlertDescription>
@@ -66,59 +66,59 @@ const LoginForm = () => {
       )}
 
       <div className="space-y-2">
-        <Label htmlFor="email" className="text-slate-700 font-medium">
-          Email Address
+        <Label htmlFor="email" className="text-slate-700 font-medium text-sm">
+          Email ID
         </Label>
         <Input
           id="email"
           type="email"
-          placeholder="your@email.com"
+          placeholder="guru.pihlano@abcdef.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="h-11 border-slate-200 focus:border-slate-400 focus:ring-slate-400"
+          className="h-12 border-slate-200 focus:border-slate-400 focus:ring-slate-400 text-base"
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="password" className="text-slate-700 font-medium">
+        <Label htmlFor="password" className="text-slate-700 font-medium text-sm">
           Password
         </Label>
         <div className="relative">
           <Input
             id="password"
             type={showPassword ? "text" : "password"}
-            placeholder="Enter your password"
+            placeholder="••••••••"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            className="h-11 border-slate-200 focus:border-slate-400 focus:ring-slate-400 pr-10"
+            className="h-12 border-slate-200 focus:border-slate-400 focus:ring-slate-400 pr-12 text-base"
           />
           <Button
             type="button"
             variant="ghost"
             size="sm"
-            className="absolute right-0 top-0 h-11 px-3 hover:bg-transparent text-slate-500 hover:text-slate-700"
+            className="absolute right-0 top-0 h-12 px-3 hover:bg-transparent text-slate-400 hover:text-slate-600"
             onClick={() => setShowPassword(!showPassword)}
           >
-            {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
           </Button>
         </div>
+      </div>
+
+      <div className="flex justify-end">
+        <Button variant="ghost" size="sm" className="text-slate-500 hover:text-slate-700 px-0 text-sm">
+          Forgot Password?
+        </Button>
       </div>
 
       <Button
         type="submit"
         disabled={isLoading}
-        className="w-full h-11 bg-slate-800 hover:bg-slate-900 text-white font-medium mt-6"
+        className="w-full h-12 bg-slate-800 hover:bg-slate-900 text-white font-medium text-base rounded-lg"
       >
-        {isLoading ? "Signing In..." : "Sign In"}
+        {isLoading ? "Logging in..." : "Log In"}
       </Button>
-
-      <div className="text-center pt-2">
-        <Button variant="ghost" size="sm" className="text-slate-600 hover:text-slate-800 px-0">
-          Forgot password?
-        </Button>
-      </div>
     </form>
   );
 };
