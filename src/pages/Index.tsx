@@ -108,8 +108,11 @@ const Index = () => {
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        console.log('Card clicked:', action.title);
-                        action.onClick();
+                        console.log('Card clicked - calling action for:', action.title);
+                        // Use setTimeout to ensure the click is processed after any other handlers
+                        setTimeout(() => {
+                          action.onClick();
+                        }, 0);
                       }}
                     >
                       <CardContent className="p-6">
