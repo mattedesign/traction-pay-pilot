@@ -76,51 +76,59 @@ const ChatInterfaceLayout = ({
         setMessage={setMessage}
       />
       
-      {/* Header - only show when focused */}
-      {isFocused && (
-        <div className="shrink-0">
-          <ChatTitleManager currentAction={currentAction} mode={mode}>
-            {(title) => (
-              <ChatHeader 
-                isFocused={isFocused}
-                title={title}
-                onClose={finalHandleClose}
+      {/* Render different layouts based on focus state */}
+      {isFocused ? (
+        /* Focused layout - full screen with header and content */
+        <>
+          <div className="shrink-0">
+            <ChatTitleManager currentAction={currentAction} mode={mode}>
+              {(title) => (
+                <ChatHeader 
+                  isFocused={isFocused}
+                  title={title}
+                  onClose={finalHandleClose}
+                />
+              )}
+            </ChatTitleManager>
+          </div>
+          
+          <div className="flex-1 min-h-0">
+            <ChatContentArea
+              isFocused={isFocused}
+              showingResults={showingResults}
+              loadResults={loadResults}
+              chatHistory={chatHistory}
+              isLoading={isLoading}
+              onLoadSelect={handleLoadSelect}
+            />
+          </div>
+          
+          <div className="shrink-0 p-4">
+            <div className="w-full max-w-4xl mx-auto">
+              <ChatInput
+                ref={inputRef}
+                message={message}
+                onMessageChange={finalHandleMessageChange}
+                onSendMessage={handleSend}
+                isLoading={isLoading}
+                mode={mode}
+                onModeChange={handleModeChange}
               />
-            )}
-          </ChatTitleManager>
-        </div>
+            </div>
+          </div>
+        </>
+      ) : (
+        /* Unfocused layout - just the input */
+        <ChatInput
+          ref={inputRef}
+          message={message}
+          onMessageChange={finalHandleMessageChange}
+          onSendMessage={handleSend}
+          isLoading={isLoading}
+          mode={mode}
+          onModeChange={handleModeChange}
+        />
       )}
-      
-      {/* Content area - only show when focused, with proper scrolling */}
-      {isFocused && (
-        <div className="flex-1 min-h-0">
-          <ChatContentArea
-            isFocused={isFocused}
-            showingResults={showingResults}
-            loadResults={loadResults}
-            chatHistory={chatHistory}
-            isLoading={isLoading}
-            onLoadSelect={handleLoadSelect}
-          />
-        </div>
-      )}
-      
-      {/* Chat Input - always at bottom with consistent positioning and proper pointer events */}
-      <div className={`shrink-0 transition-all duration-300 pointer-events-auto z-30 ${
-        isFocused ? 'p-4' : 'absolute bottom-0 left-0 right-0 p-4'
-      }`}>
-        <div className="w-full max-w-4xl mx-auto">
-          <ChatInput
-            ref={inputRef}
-            message={message}
-            onMessageChange={finalHandleMessageChange}
-            onSendMessage={handleSend}
-            isLoading={isLoading}
-            mode={mode}
-            onModeChange={handleModeChange}
-          />
-        </div>
-      </div>
     </div>
   );
 };

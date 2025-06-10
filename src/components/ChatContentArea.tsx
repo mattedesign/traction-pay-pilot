@@ -23,7 +23,7 @@ const ChatContentArea = ({
   if (!isFocused) return null;
 
   return (
-    <div className="h-full overflow-y-auto bg-slate-50 w-full">
+    <div className="h-full overflow-y-auto bg-slate-50">
       <div className="max-w-4xl mx-auto">
         {/* Show search results if available */}
         {showingResults && loadResults.length > 0 && (

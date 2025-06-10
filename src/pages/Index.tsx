@@ -68,40 +68,36 @@ const Index = () => {
     <div className="min-h-screen flex w-full bg-slate-50">
       <NavigationSidebar />
       
-      {/* Main content area with stable layout */}
+      {/* Main content area with conditional rendering */}
       <div className="flex-1 flex flex-col h-screen overflow-hidden">
-        {/* Header - conditionally rendered but doesn't affect layout */}
-        {!isChatFocused && (
-          <div className="bg-white border-b border-slate-200 px-8 py-4 shrink-0">
-            <div className="flex justify-between items-center">
-              <div>
-                <h1 className="text-xl font-semibold text-slate-800">Carrier Dashboard</h1>
-                <p className="text-slate-600">Welcome back, {profile?.first_name}!</p>
-              </div>
-              <div className="flex items-center space-x-4">
-                <Badge variant="outline" className="text-sm">
-                  <Truck className="w-3 h-3 mr-1" />
-                  {profile?.company_name || 'Carrier Account'}
-                </Badge>
-                <Button variant="outline" onClick={signOut}>
-                  Sign Out
-                </Button>
+        {/* Conditional rendering based on chat focus */}
+        {!isChatFocused ? (
+          <>
+            {/* Header */}
+            <div className="bg-white border-b border-slate-200 px-8 py-4 shrink-0">
+              <div className="flex justify-between items-center">
+                <div>
+                  <h1 className="text-xl font-semibold text-slate-800">Carrier Dashboard</h1>
+                  <p className="text-slate-600">Welcome back, {profile?.first_name}!</p>
+                </div>
+                <div className="flex items-center space-x-4">
+                  <Badge variant="outline" className="text-sm">
+                    <Truck className="w-3 h-3 mr-1" />
+                    {profile?.company_name || 'Carrier Account'}
+                  </Badge>
+                  <Button variant="outline" onClick={signOut}>
+                    Sign Out
+                  </Button>
+                </div>
               </div>
             </div>
-          </div>
-        )}
 
-        {/* Main content area - now with proper pointer events handling */}
-        <div className="flex-1 flex flex-col min-h-0 relative">
-          {/* Welcome content - with proper z-index and pointer events */}
-          <div className={`flex-1 transition-opacity duration-300 ${
-            isChatFocused ? 'opacity-0 pointer-events-none' : 'opacity-100 pointer-events-auto'
-          } relative z-10`}>
-            <div className="h-full flex items-center justify-center px-8">
+            {/* Welcome content */}
+            <div className="flex-1 flex items-center justify-center px-8 overflow-y-auto">
               <div className="flex flex-col items-center w-full">
                 {/* Welcome Header */}
                 <div className="text-center mb-8">
-                  {/* Logo only - 30% smaller (from h-16 to h-11) */}
+                  {/* Logo */}
                   <div className="flex items-center justify-center mb-6 mx-0">
                     <div className="flex items-center justify-center">
                       <img alt="Traction Logo" className="h-11 object-contain" src="/lovable-uploads/2fa0b3cc-e679-429c-be88-4fd0f236e713.png" />
@@ -112,7 +108,7 @@ const Index = () => {
                   </p>
                 </div>
 
-                {/* Suggested Actions styled like the screenshot - simplified white cards */}
+                {/* Suggested Actions */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 w-full max-w-2xl">
                   {suggestedActions.map((action, index) => (
                     <Card 
@@ -142,20 +138,28 @@ const Index = () => {
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* Chat interface - positioned to not block main content when unfocused */}
-          <div className={`absolute inset-0 flex flex-col transition-all duration-300 ${
-            isChatFocused ? 'z-20 pointer-events-auto' : 'z-0 pointer-events-none'
-          }`}>
-            <FunctionalChatInterface 
-              onNavigateToLoad={navigate} 
-              onFocusChange={handleChatFocus} 
-              isFocused={isChatFocused}
-              currentAction={currentAction}
-            />
-          </div>
-        </div>
+            {/* Chat input at bottom */}
+            <div className="shrink-0 p-4">
+              <div className="w-full max-w-4xl mx-auto">
+                <FunctionalChatInterface 
+                  onNavigateToLoad={navigate} 
+                  onFocusChange={handleChatFocus} 
+                  isFocused={isChatFocused}
+                  currentAction={currentAction}
+                />
+              </div>
+            </div>
+          </>
+        ) : (
+          /* Full-screen chat interface when focused */
+          <FunctionalChatInterface 
+            onNavigateToLoad={navigate} 
+            onFocusChange={handleChatFocus} 
+            isFocused={isChatFocused}
+            currentAction={currentAction}
+          />
+        )}
       </div>
     </div>
   );
