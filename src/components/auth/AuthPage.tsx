@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -5,15 +6,18 @@ import { Button } from "@/components/ui/button";
 import { Truck } from "lucide-react";
 import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm";
+
 const AuthPage = () => {
   const [activeTab, setActiveTab] = useState("login");
-  return <div className="min-h-screen flex">
+
+  return (
+    <div className="min-h-screen flex">
       {/* Left Panel - Dark with truck image and messaging */}
       <div className="hidden lg:flex lg:w-1/2 bg-slate-800 relative overflow-hidden">
         {/* Background image */}
         <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{
-        backgroundImage: "url('/lovable-uploads/3216cb11-a358-4add-92c8-d23aa389334c.png')"
-      }}>
+          backgroundImage: "url('/lovable-uploads/3216cb11-a358-4add-92c8-d23aa389334c.png')"
+        }}>
           {/* Dark overlay */}
           <div className="absolute inset-0 bg-slate-800/70"></div>
         </div>
@@ -21,11 +25,12 @@ const AuthPage = () => {
         {/* Content overlay */}
         <div className="relative z-10 flex flex-col justify-between p-12 text-white">
           {/* Top section with logo */}
-          <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
-              <Truck className="w-5 h-5 text-slate-800" />
-            </div>
-            <span className="text-xl font-bold">TractionPay</span>
+          <div className="flex items-center">
+            <img 
+              src="/lovable-uploads/b21fd570-2ee4-4af9-8ee7-44980e7d6708.png" 
+              alt="TractionPay Logo" 
+              className="h-8 w-auto object-contain"
+            />
           </div>
           
           {/* Main content */}
@@ -54,11 +59,12 @@ const AuthPage = () => {
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white">
         <div className="w-full max-w-md">
           {/* Mobile logo - only shown on small screens */}
-          <div className="lg:hidden flex items-center justify-center space-x-3 mb-8">
-            <div className="w-8 h-8 bg-slate-800 rounded-lg flex items-center justify-center">
-              <Truck className="w-5 h-5 text-white" />
-            </div>
-            <span className="text-xl font-bold text-slate-800">TractionPay</span>
+          <div className="lg:hidden flex items-center justify-center mb-8">
+            <img 
+              src="/lovable-uploads/b21fd570-2ee4-4af9-8ee7-44980e7d6708.png" 
+              alt="TractionPay Logo" 
+              className="h-8 w-auto object-contain"
+            />
           </div>
 
           <div className="space-y-6">
@@ -86,6 +92,8 @@ const AuthPage = () => {
           </div>
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default AuthPage;
