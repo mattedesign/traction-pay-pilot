@@ -47,7 +47,7 @@ export const useChatMessageHandler = ({
       if (routingResult.queryType === 'button_response') {
         console.log('Handling button response without generating new questions...');
         
-        const enhancedSystemPrompt = systemPrompt + `
+        const enhancedSystemMessage = `${systemPrompt}
         
 **BUTTON RESPONSE CONTEXT**
 The user just provided a button response (${sanitizedMessage}). This is a direct answer to a previous question.
@@ -55,12 +55,19 @@ DO NOT ask follow-up questions. Instead, provide helpful information or take the
 If they said "yes", proceed with the suggested action. If they said "no", offer alternative assistance.
 Keep your response concise and actionable.`;
 
-        const messages = [...chatHistory, userMessage].map(msg => ({
-          role: msg.type === "user" ? "user" as const : "assistant" as const,
+        const messages = [
+          { role: "system" as const, content: enhancedSystemMessage },
+          ...chatHistory.map(msg => ({
+            role: msg.type === "user" ? "user" as const : "assistant" as const,
+            content: sanitizeInput(msg.content)
+          })),
+          userMessage
+        ].map(msg => ({
+          role: msg.role,
           content: sanitizeInput(msg.content)
         }));
 
-        const response = await sendMessage(messages, enhancedSystemPrompt);
+        const response = await sendMessage(messages);
         
         // Process response but suppress any new interactive questions
         const processedResponse = InteractiveResponseService.processResponse(response);
@@ -105,7 +112,7 @@ Click "View Load Details" above for more information or ask me specific question
         );
 
         // Enhanced system prompt to prevent repetitive questions
-        const enhancedSystemPrompt = systemPrompt + smartContext.systemPromptAddition + `
+        const enhancedSystemMessage = `${systemPrompt}${smartContext.systemPromptAddition}
 
 **QUESTION MANAGEMENT RULES**
 1. Before asking any yes/no question, consider if the user has already provided enough information
@@ -115,13 +122,20 @@ Click "View Load Details" above for more information or ask me specific question
 5. Do not ask if they want to see something they specifically requested`;
 
         // Step 5: Send to Claude for AI response
-        const messages = [...chatHistory, { ...userMessage, content: smartContext.enhancedUserMessage }].map(msg => ({
-          role: msg.type === "user" ? "user" as const : "assistant" as const,
+        const messages = [
+          { role: "system" as const, content: enhancedSystemMessage },
+          ...chatHistory.map(msg => ({
+            role: msg.type === "user" ? "user" as const : "assistant" as const,
+            content: sanitizeInput(msg.content)
+          })),
+          { ...userMessage, content: smartContext.enhancedUserMessage }
+        ].map(msg => ({
+          role: msg.role,
           content: sanitizeInput(msg.content)
         }));
 
         console.log('Sending to Claude with enhanced context and question management...');
-        const response = await sendMessage(messages, enhancedSystemPrompt);
+        const response = await sendMessage(messages);
         
         // Process response for interactive elements
         const processedResponse = InteractiveResponseService.processResponse(response);
