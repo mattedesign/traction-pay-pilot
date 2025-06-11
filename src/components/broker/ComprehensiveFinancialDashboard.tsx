@@ -12,15 +12,19 @@ import {
   BarChart3,
   PieChart,
   Calendar,
-  Target
+  Target,
+  ArrowRight
 } from "lucide-react";
 import { LoadInProgress } from "@/types/brokerLoad";
+import { useNavigate } from "react-router-dom";
 
 interface ComprehensiveFinancialDashboardProps {
   loads: LoadInProgress[];
 }
 
 const ComprehensiveFinancialDashboard = ({ loads }: ComprehensiveFinancialDashboardProps) => {
+  const navigate = useNavigate();
+
   // Calculate financial metrics
   const totalRevenue = loads.reduce((sum, load) => {
     return sum + parseFloat(load.rate.replace('$', '').replace(',', ''));
@@ -50,7 +54,8 @@ const ComprehensiveFinancialDashboard = ({ loads }: ComprehensiveFinancialDashbo
       icon: DollarSign,
       color: "text-green-600",
       bgColor: "bg-green-50",
-      description: "Total value of all active loads"
+      description: "Total value of all active loads",
+      route: "/broker/analytics/revenue"
     },
     {
       title: "Avg Profit Margin",
@@ -60,7 +65,8 @@ const ComprehensiveFinancialDashboard = ({ loads }: ComprehensiveFinancialDashbo
       icon: TrendingUp,
       color: "text-blue-600",
       bgColor: "bg-blue-50",
-      description: "Average profit margin across loads"
+      description: "Average profit margin across loads",
+      route: "/broker/analytics/profit-margin"
     },
     {
       title: "QuickPay Adoption",
@@ -70,7 +76,8 @@ const ComprehensiveFinancialDashboard = ({ loads }: ComprehensiveFinancialDashbo
       icon: Clock,
       color: "text-purple-600",
       bgColor: "bg-purple-50",
-      description: "Percentage of loads using QuickPay"
+      description: "Percentage of loads using QuickPay",
+      route: "/broker/analytics/quickpay"
     },
     {
       title: "Avg Load Value",
@@ -80,7 +87,8 @@ const ComprehensiveFinancialDashboard = ({ loads }: ComprehensiveFinancialDashbo
       icon: Target,
       color: "text-orange-600",
       bgColor: "bg-orange-50",
-      description: "Average revenue per load"
+      description: "Average revenue per load",
+      route: "/broker/analytics/load-value"
     }
   ];
 
@@ -116,12 +124,63 @@ const ComprehensiveFinancialDashboard = ({ loads }: ComprehensiveFinancialDashbo
     }
   ];
 
+  const handleMetricClick = (route: string) => {
+    navigate(route);
+  };
+
   return (
     <div className="space-y-6">
-      {/* Revenue Metrics Grid */}
+      {/* QuickPay Revenue Optimization - Moved to top */}
+      <Card className="bg-white">
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2">
+            <CreditCard className="w-5 h-5" />
+            <span>QuickPay Revenue Optimization</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="text-center p-4 bg-purple-50 rounded-lg">
+              <div className="text-2xl font-bold text-purple-900">${quickPayRevenue.toLocaleString()}</div>
+              <div className="text-sm text-purple-700">Available for QuickPay</div>
+              <div className="text-xs text-purple-600 mt-1">{quickPayEligibleLoads.length} eligible loads</div>
+            </div>
+            
+            <div className="text-center p-4 bg-blue-50 rounded-lg">
+              <div className="text-2xl font-bold text-blue-900">{Math.round(quickPayAdoptionRate)}%</div>
+              <div className="text-sm text-blue-700">Adoption Rate</div>
+              <div className="text-xs text-blue-600 mt-1">vs 65% industry avg</div>
+            </div>
+
+            <div className="text-center p-4 bg-green-50 rounded-lg">
+              <div className="text-2xl font-bold text-green-900">$2,847</div>
+              <div className="text-sm text-green-700">Potential Monthly Savings</div>
+              <div className="text-xs text-green-600 mt-1">from improved cash flow</div>
+            </div>
+          </div>
+
+          <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+            <div className="flex items-start space-x-3">
+              <AlertTriangle className="w-5 h-5 text-amber-600 mt-0.5" />
+              <div>
+                <div className="font-medium text-amber-900">Revenue Optimization Tip</div>
+                <div className="text-sm text-amber-800 mt-1">
+                  Increasing QuickPay adoption to 80% could improve cash flow by $4,200/month and reduce collection time by 15 days.
+                </div>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Revenue Metrics Grid - Enhanced with clickable cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {revenueMetrics.map((metric, index) => (
-          <Card key={index} className="bg-white hover:shadow-md transition-shadow">
+          <Card 
+            key={index} 
+            className="bg-white hover:shadow-lg transition-all duration-300 cursor-pointer group border-2 hover:border-blue-200"
+            onClick={() => handleMetricClick(metric.route)}
+          >
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div className="flex-1">
@@ -136,8 +195,12 @@ const ComprehensiveFinancialDashboard = ({ loads }: ComprehensiveFinancialDashbo
                     {metric.change}
                   </p>
                   <p className="text-xs text-slate-500 mt-1">{metric.description}</p>
+                  <div className="flex items-center text-xs text-blue-600 mt-2 group-hover:text-blue-800">
+                    <span>View details</span>
+                    <ArrowRight className="w-3 h-3 ml-1 transform group-hover:translate-x-1 transition-transform" />
+                  </div>
                 </div>
-                <div className={`w-12 h-12 rounded-lg ${metric.bgColor} flex items-center justify-center flex-shrink-0`}>
+                <div className={`w-12 h-12 rounded-lg ${metric.bgColor} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform`}>
                   <metric.icon className={`w-6 h-6 ${metric.color}`} />
                 </div>
               </div>
@@ -259,49 +322,6 @@ const ComprehensiveFinancialDashboard = ({ loads }: ComprehensiveFinancialDashbo
           </CardContent>
         </Card>
       </div>
-
-      {/* QuickPay Optimization */}
-      <Card className="bg-white">
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <CreditCard className="w-5 h-5" />
-            <span>QuickPay Revenue Optimization</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="text-center p-4 bg-purple-50 rounded-lg">
-              <div className="text-2xl font-bold text-purple-900">${quickPayRevenue.toLocaleString()}</div>
-              <div className="text-sm text-purple-700">Available for QuickPay</div>
-              <div className="text-xs text-purple-600 mt-1">{quickPayEligibleLoads.length} eligible loads</div>
-            </div>
-            
-            <div className="text-center p-4 bg-blue-50 rounded-lg">
-              <div className="text-2xl font-bold text-blue-900">{Math.round(quickPayAdoptionRate)}%</div>
-              <div className="text-sm text-blue-700">Adoption Rate</div>
-              <div className="text-xs text-blue-600 mt-1">vs 65% industry avg</div>
-            </div>
-
-            <div className="text-center p-4 bg-green-50 rounded-lg">
-              <div className="text-2xl font-bold text-green-900">$2,847</div>
-              <div className="text-sm text-green-700">Potential Monthly Savings</div>
-              <div className="text-xs text-green-600 mt-1">from improved cash flow</div>
-            </div>
-          </div>
-
-          <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
-            <div className="flex items-start space-x-3">
-              <AlertTriangle className="w-5 h-5 text-amber-600 mt-0.5" />
-              <div>
-                <div className="font-medium text-amber-900">Revenue Optimization Tip</div>
-                <div className="text-sm text-amber-800 mt-1">
-                  Increasing QuickPay adoption to 80% could improve cash flow by $4,200/month and reduce collection time by 15 days.
-                </div>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 };

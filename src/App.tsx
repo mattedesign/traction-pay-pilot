@@ -1,3 +1,4 @@
+
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -24,6 +25,10 @@ import BrokerInsightsPage from "./pages/BrokerInsightsPage";
 import BrokerCarriersPage from "./pages/BrokerCarriersPage";
 import BrokerReportsPage from "./pages/BrokerReportsPage";
 import BrokerSettingsPage from "./pages/BrokerSettingsPage";
+import BrokerRevenueAnalyticsPage from "./pages/BrokerRevenueAnalyticsPage";
+import BrokerProfitMarginAnalyticsPage from "./pages/BrokerProfitMarginAnalyticsPage";
+import BrokerQuickPayAnalyticsPage from "./pages/BrokerQuickPayAnalyticsPage";
+import BrokerLoadValueAnalyticsPage from "./pages/BrokerLoadValueAnalyticsPage";
 import AuthPage from "./components/auth/AuthPage";
 import "./App.css";
 import BrokerLoadDetailPage from "./pages/BrokerLoadDetailPage";
@@ -140,6 +145,26 @@ function App() {
             <Route path="/broker/settings" element={
               <ProtectedRoute requiredUserType="broker">
                 <BrokerSettingsPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/broker/analytics/revenue" element={
+              <ProtectedRoute requiredUserType="broker">
+                <BrokerRevenueAnalyticsPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/broker/analytics/profit-margin" element={
+              <ProtectedRoute requiredUserType="broker">
+                <BrokerProfitMarginAnalyticsPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/broker/analytics/quickpay" element={
+              <ProtectedRoute requiredUserType="broker">
+                <BrokerQuickPayAnalyticsPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/broker/analytics/load-value" element={
+              <ProtectedRoute requiredUserType="broker">
+                <BrokerLoadValueAnalyticsPage />
               </ProtectedRoute>
             } />
             <Route path="*" element={<NotFound />} />
