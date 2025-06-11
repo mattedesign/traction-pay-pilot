@@ -10,10 +10,14 @@ import {
 } from "@/components/ui/popover";
 import NotificationPanel from "./NotificationPanel";
 import { NotificationService } from "@/services/notificationService";
+import { useAuth } from "@/hooks/useAuth";
 
 const NotificationBell = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const unreadCount = NotificationService.getUnreadCount();
+  const { profile } = useAuth();
+  const userType = profile?.user_type;
+  
+  const unreadCount = NotificationService.getUnreadCount(userType);
   const hasNotifications = unreadCount > 0;
 
   const handleOpenChange = (open: boolean) => {
@@ -21,7 +25,7 @@ const NotificationBell = () => {
     if (open) {
       // Mark notifications as read when panel is opened
       setTimeout(() => {
-        NotificationService.markAllAsRead();
+        NotificationService.markAllAsRead(userType);
       }, 1000);
     }
   };
@@ -52,7 +56,7 @@ const NotificationBell = () => {
         align="end"
         sideOffset={8}
       >
-        <NotificationPanel />
+        <NotificationPanel userType={userType} />
       </PopoverContent>
     </Popover>
   );

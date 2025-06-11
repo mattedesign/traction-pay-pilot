@@ -1,3 +1,4 @@
+
 export interface Load {
   id: string;
   broker: string;
@@ -70,10 +71,11 @@ export interface DiscrepancyResolutionSuggestions {
 export interface LoadNotification {
   id: string;
   loadId: string;
-  type: "new_load" | "load_update" | "payment_ready";
+  type: "new_load" | "load_update" | "payment_ready" | "carrier_assigned" | "paperwork_submitted" | "quickpay_request";
   title: string;
   message: string;
   timestamp: Date;
   read: boolean;
   actionUrl?: string;
+  userType: "carrier" | "broker" | "both";
 }

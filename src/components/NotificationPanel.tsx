@@ -1,26 +1,39 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { Bell, Check, Truck, DollarSign, AlertCircle } from "lucide-react";
+import { Bell, Check, Truck, DollarSign, AlertCircle, FileCheck, User, Clock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { NotificationService } from "@/services/notificationService";
 import { LoadNotification } from "@/types/load";
 
-const NotificationPanel = () => {
+interface NotificationPanelProps {
+  userType?: "carrier" | "broker";
+}
+
+const NotificationPanel = ({ userType }: NotificationPanelProps) => {
   const navigate = useNavigate();
-  const [notifications] = useState(NotificationService.getAllNotifications());
+  const [notifications, setNotifications] = useState<LoadNotification[]>([]);
+  
+  useEffect(() => {
+    // Get notifications based on user type
+    setNotifications(NotificationService.getAllNotifications(userType));
+  }, [userType]);
 
   const handleNotificationClick = (notification: LoadNotification) => {
     NotificationService.markAsRead(notification.id);
     if (notification.actionUrl) {
       navigate(notification.actionUrl);
     }
+    // Update the notifications list to reflect the read status
+    setNotifications(NotificationService.getAllNotifications(userType));
   };
 
   const handleMarkAllRead = () => {
-    NotificationService.markAllAsRead();
+    NotificationService.markAllAsRead(userType);
+    // Update the notifications list to reflect all being read
+    setNotifications(NotificationService.getAllNotifications(userType));
   };
 
   const getNotificationIcon = (type: string) => {
@@ -31,6 +44,12 @@ const NotificationPanel = () => {
         return <DollarSign className="w-4 h-4 text-green-600" />;
       case "load_update":
         return <AlertCircle className="w-4 h-4 text-orange-600" />;
+      case "carrier_assigned":
+        return <User className="w-4 h-4 text-purple-600" />;
+      case "paperwork_submitted":
+        return <FileCheck className="w-4 h-4 text-blue-600" />;
+      case "quickpay_request":
+        return <Clock className="w-4 h-4 text-amber-600" />;
       default:
         return <Bell className="w-4 h-4 text-slate-600" />;
     }
