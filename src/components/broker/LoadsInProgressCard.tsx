@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Truck, MapPin, Users, Clock } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface LoadInProgress {
   id: string;
@@ -16,6 +17,8 @@ interface LoadInProgress {
 }
 
 const LoadsInProgressCard = () => {
+  const navigate = useNavigate();
+  
   const loadsInProgress: LoadInProgress[] = [
     {
       id: "BL-2024-001",
@@ -58,6 +61,14 @@ const LoadsInProgressCard = () => {
     }
   };
 
+  const handleLoadClick = (loadId: string) => {
+    navigate(`/broker/load/${loadId}`);
+  };
+
+  const handleViewAllLoads = () => {
+    navigate("/broker/loads-in-progress");
+  };
+
   return (
     <Card className="bg-white">
       <CardHeader>
@@ -68,7 +79,11 @@ const LoadsInProgressCard = () => {
       </CardHeader>
       <CardContent className="space-y-4">
         {loadsInProgress.map((load) => (
-          <div key={load.id} className="border border-slate-200 rounded-lg p-4 hover:bg-slate-50 transition-colors">
+          <div 
+            key={load.id} 
+            className="border border-slate-200 rounded-lg p-4 hover:bg-slate-50 transition-colors cursor-pointer hover:shadow-md"
+            onClick={() => handleLoadClick(load.id)}
+          >
             <div className="flex justify-between items-start mb-2">
               <div>
                 <h3 className="font-semibold text-slate-900">{load.id}</h3>
@@ -96,7 +111,7 @@ const LoadsInProgressCard = () => {
           </div>
         ))}
         
-        <Button variant="outline" className="w-full">
+        <Button variant="outline" className="w-full" onClick={handleViewAllLoads}>
           View All Loads
         </Button>
       </CardContent>
