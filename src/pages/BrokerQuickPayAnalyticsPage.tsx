@@ -27,6 +27,13 @@ const BrokerQuickPayAnalyticsPage = () => {
     { month: "Jun", adoption: 82, savings: 3120 }
   ];
 
+  const getAdoptionBadgeClass = (adoption: number) => {
+    if (adoption > 90) return 'bg-green-100 text-green-800';
+    if (adoption > 75) return 'bg-blue-100 text-blue-800';
+    if (adoption > 60) return 'bg-orange-100 text-orange-800';
+    return 'bg-red-100 text-red-800';
+  };
+
   return (
     <div className="h-screen overflow-hidden flex w-full bg-slate-50">
       <BrokerNavigationSidebar />
@@ -139,12 +146,7 @@ const BrokerQuickPayAnalyticsPage = () => {
                       </div>
                     </div>
                     <div className="text-right">
-                      <Badge className={`${
-                        carrier.adoption > 90 ? 'bg-green-100 text-green-800' :
-                        carrier.adoption > 75 ? 'bg-blue-100 text-blue-800' :
-                        carrier.adoption > 60 ? 'bg-orange-100 text-orange-800' :
-                        'bg-red-100 text-red-800'
-                      }`}>
+                      <Badge className={getAdoptionBadgeClass(carrier.adoption)}>
                         {carrier.adoption}%
                       </Badge>
                     </div>
@@ -216,13 +218,13 @@ const BrokerQuickPayAnalyticsPage = () => {
                 <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg">
                   <h4 className="font-semibold text-amber-900">Low Adoption Carriers</h4>
                   <p className="text-sm text-amber-800 mt-2">
-                    Target carriers with <60% adoption. Incentive programs could increase overall adoption to 90%+.
+                    Target carriers with &lt;60% adoption. Incentive programs could increase overall adoption to 90%+.
                   </p>
                 </div>
                 <div className="p-4 bg-purple-50 border border-purple-200 rounded-lg">
                   <h4 className="font-semibold text-purple-900">Payment Time Optimization</h4>
                   <p className="text-sm text-purple-800 mt-2">
-                    Carriers with >6 hour payment times may need process improvements or additional training.
+                    Carriers with &gt;6 hour payment times may need process improvements or additional training.
                   </p>
                 </div>
                 <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
