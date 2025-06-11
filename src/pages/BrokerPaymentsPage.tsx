@@ -2,17 +2,40 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { DollarSign, CreditCard, TrendingUp, Download, Send } from "lucide-react";
+import { DollarSign, CreditCard, TrendingUp, Download, Send, ChevronRight } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 import BrokerNavigationSidebar from "@/components/BrokerNavigationSidebar";
 
 const BrokerPaymentsPage = () => {
   const { profile, signOut } = useAuth();
+  const navigate = useNavigate();
 
   const paymentStats = [
-    { label: "Outstanding Invoices", value: "$89,450", icon: DollarSign, color: "text-red-600" },
-    { label: "This Month Paid", value: "$245,680", icon: TrendingUp, color: "text-green-600" },
-    { label: "Available Credit", value: "$250,000", icon: CreditCard, color: "text-blue-600" },
+    { 
+      label: "Outstanding Invoices", 
+      value: "$89,450", 
+      icon: DollarSign, 
+      color: "text-red-600",
+      clickable: true,
+      route: "/broker/payments/outstanding"
+    },
+    { 
+      label: "This Month Paid", 
+      value: "$245,680", 
+      icon: TrendingUp, 
+      color: "text-green-600",
+      clickable: true,
+      route: "/broker/payments/paid"
+    },
+    { 
+      label: "Available Credit", 
+      value: "$250,000", 
+      icon: CreditCard, 
+      color: "text-blue-600",
+      clickable: true,
+      route: "/broker/payments/credit"
+    },
   ];
 
   const recentPayments = [
@@ -28,6 +51,10 @@ const BrokerPaymentsPage = () => {
       case "Processing": return "bg-blue-100 text-blue-800";
       default: return "bg-gray-100 text-gray-800";
     }
+  };
+
+  const handleStatClick = (route: string) => {
+    navigate(route);
   };
 
   return (
@@ -50,14 +77,25 @@ const BrokerPaymentsPage = () => {
         <div className="flex-1 overflow-auto px-8 py-6 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {paymentStats.map((stat, index) => (
-              <Card key={index} className="bg-white">
+              <Card 
+                key={index} 
+                className={`bg-white transition-all duration-200 ${
+                  stat.clickable ? 'hover:shadow-lg cursor-pointer hover:scale-105' : ''
+                }`}
+                onClick={() => stat.clickable && handleStatClick(stat.route)}
+              >
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium text-slate-600">{stat.label}</p>
                       <p className="text-2xl font-bold text-slate-900">{stat.value}</p>
                     </div>
-                    <stat.icon className={`w-8 h-8 ${stat.color}`} />
+                    <div className="flex items-center space-x-2">
+                      <stat.icon className={`w-8 h-8 ${stat.color}`} />
+                      {stat.clickable && (
+                        <ChevronRight className="w-5 h-5 text-slate-400" />
+                      )}
+                    </div>
                   </div>
                 </CardContent>
               </Card>
