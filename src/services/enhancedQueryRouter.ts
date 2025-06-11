@@ -1,11 +1,10 @@
-
 import { LoadSearchService } from './loadSearchService';
 import { QueryRoutingResult, QueryAnalysisContext } from './queryRouter/types';
 import { QueryPatternMatcher } from './queryRouter/queryPatternMatcher';
 import { QueryTypeAnalyzers } from './queryRouter/queryTypeAnalyzers';
 import { ButtonResponseHandler } from './queryRouter/buttonResponseHandler';
 
-export { QueryRoutingResult } from './queryRouter/types';
+export type { QueryRoutingResult } from './queryRouter/types';
 
 export class EnhancedQueryRouter {
   static analyzeQuery(query: string, currentLoadId?: string): QueryRoutingResult {
