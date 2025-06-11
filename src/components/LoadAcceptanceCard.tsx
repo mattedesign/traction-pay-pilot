@@ -30,7 +30,8 @@ const LoadAcceptanceCard = ({ load }: LoadAcceptanceCardProps) => {
           title: "Load Accepted",
           message: `Load #${load.id} has been accepted and is ready for pickup`,
           read: false,
-          actionUrl: `/load/${load.id}`
+          actionUrl: `/load/${load.id}`,
+          userType: "carrier" // Add the required userType property
         });
         
         toast({
