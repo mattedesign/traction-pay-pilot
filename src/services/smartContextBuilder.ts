@@ -2,6 +2,7 @@
 import { LoadSearchResult } from './loadSearchService';
 import { QueryRoutingResult } from './enhancedQueryRouter';
 import { LoadDataService } from './loadDataService';
+import { ChatStateManager } from './chatStateManager';
 
 export interface SmartContext {
   systemPromptAddition: string;
@@ -18,6 +19,8 @@ export class SmartContextBuilder {
     currentLoadId?: string
   ): Promise<SmartContext> {
     
+    console.log('SmartContextBuilder: Building context for query type:', routingResult.queryType);
+    
     switch (routingResult.queryType) {
       case 'specific_load':
         return await this.buildSpecificLoadContext(originalMessage, routingResult);
@@ -27,6 +30,9 @@ export class SmartContextBuilder {
       
       case 'general_trucking':
         return this.buildGeneralTruckingContext(originalMessage);
+      
+      case 'button_response':
+        return this.buildButtonResponseContext(originalMessage);
       
       default:
         return this.buildNoContext(originalMessage);
@@ -76,7 +82,11 @@ ${loadContext.relatedData.communications.length > 0 ?
 **Status Description:**
 ${this.getStatusDescription(loadContext.loadDetails.status)}
 
-**IMPORTANT:** Always reference this specific load data when answering. Use the actual load ID (#${loadId}), broker name, amounts, and status in your response.`;
+**RESPONSE GUIDELINES:**
+- Provide specific, actionable information based on the load data
+- Reference actual load details (ID #${loadId}, broker: ${loadContext.loadDetails.broker}, amount: ${loadContext.loadDetails.amount})
+- If the user asks for information you have, provide it directly without asking permission
+- Only ask clarifying questions if you genuinely need more information to help them`;
 
     const enhancedUserMessage = `[LOAD #${loadId} QUERY] ${originalMessage}`;
 
@@ -109,10 +119,10 @@ ${results.map((result, index) => `
 `).join('\n')}
 
 **RESPONSE GUIDELINES:**
+- Present the matching loads clearly and organized
 - If user asks about a specific aspect, compare across all matching loads
-- If multiple loads are relevant, present them in a organized way
 - Help user identify which load they might be looking for
-- Suggest specific actions based on the query type`;
+- Provide specific information without asking unnecessary questions`;
 
     const enhancedUserMessage = `[SEARCH RESULTS: ${results.length} loads] ${originalMessage}`;
 
@@ -137,7 +147,13 @@ The user has a general trucking/logistics question. Provide expert advice using 
 - Safety recommendations
 - Professional communication
 
-Draw from your knowledge of DOT regulations, HOS rules, freight operations, and industry standards.`;
+Draw from your knowledge of DOT regulations, HOS rules, freight operations, and industry standards.
+
+**RESPONSE GUIDELINES:**
+- Provide direct, helpful answers
+- Use specific examples when possible
+- Be concise but thorough
+- Avoid asking unnecessary follow-up questions unless clarification is truly needed`;
 
     return {
       systemPromptAddition,
@@ -146,17 +162,44 @@ Draw from your knowledge of DOT regulations, HOS rules, freight operations, and 
     };
   }
 
+  private static buildButtonResponseContext(originalMessage: string): SmartContext {
+    const questionState = ChatStateManager.getQuestionState();
+    
+    const systemPromptAddition = `
+**BUTTON RESPONSE PROCESSING**
+
+The user just provided a response (${originalMessage}) to a previous question.
+${questionState.context ? `Previous question context: ${questionState.context}` : ''}
+
+**RESPONSE GUIDELINES:**
+- This is a direct answer to a previous question
+- DO NOT ask new questions unless absolutely necessary
+- Provide helpful information or take appropriate action based on their response
+- If they said "yes", proceed with the suggested action
+- If they said "no", offer alternative assistance
+- Keep response concise and actionable`;
+
+    return {
+      systemPromptAddition,
+      enhancedUserMessage: `[BUTTON RESPONSE] ${originalMessage}`,
+      contextType: 'no_context'
+    };
+  }
+
   private static buildNoContext(originalMessage: string): SmartContext {
     const systemPromptAddition = `
 **GENERAL ASSISTANCE MODE**
 
-The user's query didn't match any specific loads. Provide helpful guidance and suggest ways they can:
+The user's query didn't match any specific loads or context. Provide helpful guidance and suggest ways they can:
 
 - Search for specific loads using load IDs or broker names
 - Ask about general trucking topics
 - Get help with routing, payments, or compliance questions
 
-Be helpful and guide them toward more specific questions if possible.`;
+**RESPONSE GUIDELINES:**
+- Be helpful and guide them toward more specific questions if possible
+- Provide direct assistance when you can
+- Avoid asking questions unless truly necessary for clarification`;
 
     return {
       systemPromptAddition,

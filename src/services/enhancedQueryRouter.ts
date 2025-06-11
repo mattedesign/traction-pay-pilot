@@ -1,7 +1,8 @@
 import { LoadSearchService, LoadSearchResult } from './loadSearchService';
+import { ChatStateManager } from './chatStateManager';
 
 export interface QueryRoutingResult {
-  queryType: 'specific_load' | 'load_search' | 'general_trucking' | 'no_context';
+  queryType: 'specific_load' | 'load_search' | 'general_trucking' | 'no_context' | 'button_response';
   confidence: number;
   loadResults?: LoadSearchResult[];
   specificLoadId?: string;
@@ -13,6 +14,32 @@ export interface QueryRoutingResult {
 export class EnhancedQueryRouter {
   static analyzeQuery(query: string, currentLoadId?: string): QueryRoutingResult {
     const queryLower = query.toLowerCase().trim();
+
+    console.log('EnhancedQueryRouter: Analyzing query:', { 
+      query: query.substring(0, 50) + '...',
+      currentLoadId,
+      questionState: ChatStateManager.getQuestionState()
+    });
+
+    // Check if this is a button response (yes/no answers)
+    if (this.isButtonResponse(query)) {
+      console.log('EnhancedQueryRouter: Detected button response, tracking in state manager');
+      const questionState = ChatStateManager.getQuestionState();
+      if (questionState.lastQuestionId) {
+        ChatStateManager.trackButtonResponse(
+          questionState.lastQuestionId,
+          questionState.context || '',
+          query
+        );
+      }
+      
+      return {
+        queryType: 'button_response',
+        confidence: 90,
+        suggestedActions: ['Process button response', 'Continue conversation'],
+        requiresAI: true
+      };
+    }
 
     // Extract potential load IDs from query
     const loadIdMatches = this.extractLoadIds(query);
@@ -32,7 +59,7 @@ export class EnhancedQueryRouter {
           specificLoadId: loadIdMatches[0],
           loadResults: [{ load: specificLoad, relevanceScore: 100, matchedFields: ['loadId'], matchReason: 'Direct ID match' }],
           suggestedActions: this.getLoadSpecificActions(specificLoad, query),
-          requiresAI: this.shouldUseAI(query) // Only use AI if the query needs analysis
+          requiresAI: this.shouldUseAI(query)
         };
       }
     }
@@ -61,7 +88,7 @@ export class EnhancedQueryRouter {
         confidence: Math.min(85, highRelevanceLoads[0].relevanceScore),
         loadResults: highRelevanceLoads.slice(0, 5), // Limit to top 5 results
         suggestedActions: this.getSearchActions(highRelevanceLoads, query),
-        requiresAI: !isPureSearch && highRelevanceLoads.length === 1 // Only use AI for complex analysis, not pure search
+        requiresAI: !isPureSearch && highRelevanceLoads.length === 1
       };
     }
 
@@ -82,6 +109,19 @@ export class EnhancedQueryRouter {
       suggestedActions: ['Provide general help', 'Suggest load search'],
       requiresAI: true
     };
+  }
+
+  private static isButtonResponse(query: string): boolean {
+    const queryLower = query.toLowerCase().trim();
+    const buttonResponses = [
+      'yes', 'no', 'yeah', 'nah', 'sure', 'ok', 'okay',
+      'yes please', 'no thanks', 'sounds good', 'not now',
+      'that works', 'not interested', 'go ahead', 'skip it'
+    ];
+    
+    // Check if the query is a simple button-like response
+    return buttonResponses.includes(queryLower) || 
+           (queryLower.length <= 10 && buttonResponses.some(resp => queryLower.includes(resp)));
   }
 
   private static isPureSearchQuery(query: string): boolean {

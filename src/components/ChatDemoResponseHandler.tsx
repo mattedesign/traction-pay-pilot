@@ -1,5 +1,6 @@
 
 import { ChatMessage } from "../hooks/useChatMessages";
+import { ChatStateManager } from "../services/chatStateManager";
 
 interface ChatDemoResponseHandlerProps {
   isInDemoMode: boolean;
@@ -27,8 +28,13 @@ const ChatDemoResponseHandler = ({
       return await originalHandleSendMessage();
     }
 
+    console.log('ChatDemoResponseHandler: Handling demo response for step:', demoStep);
+
     const userMessage = addUserMessage(message);
     setMessage("");
+
+    // Clear any existing question state when in demo mode
+    ChatStateManager.clearQuestionState();
 
     // Simulate loading delay
     await new Promise(resolve => setTimeout(resolve, 1500));
@@ -53,7 +59,7 @@ const ChatDemoResponseHandler = ({
 
 **Estimated Arrival:** Tomorrow at 1:30 PM (30 minutes ahead of schedule)
 
-Would you like me to take you to the detailed load page for Load #1234 to see more information, documents, and communications?`);
+I can see you're making excellent progress. The load is on schedule and moving smoothly toward Dallas.`);
         break;
 
       case "check-payment":
@@ -79,7 +85,7 @@ Would you like me to take you to the detailed load page for Load #1234 to see mo
 - 📧 **Payment Reminder:** Send automated follow-up to broker
 - 📞 **Contact Info:** Accounts Payable: (555) 123-4567
 
-Would you like me to help you set up QuickPay for this load or send a payment reminder?`);
+Your payment is processing normally and should arrive by the due date.`);
         break;
 
       case "plan-route-initial":
@@ -127,14 +133,13 @@ Please let me know which option, or if you have a specific load number in mind!`
 🥈 **I-40 E Route:** +47 miles, but scenic option
 🥉 **I-80 E Route:** Northern route, good in winter
 
-Would you like me to show you the detailed route visualization and truck stop recommendations?`);
+This route will save you time and fuel costs while ensuring your cargo arrives safely.`);
         } else {
           addAIMessage(`Please specify the load number you'd like to plan a route for, or let me know if this is for a new load!`);
         }
         break;
 
       case "quickpay":
-        // First response - available loads
         addAIMessage(`**QuickPay Available Loads**
 
 You currently have **3 loads** eligible for QuickPay:
@@ -153,26 +158,9 @@ You currently have **3 loads** eligible for QuickPay:
 
 **Total Available:** $8,245.00  
 **Total QuickPay Value:** $7,420.50  
-**Total Fees:** $824.50`);
+**Total Fees:** $824.50
 
-        // Second response after a brief delay
-        setTimeout(() => {
-          addAIMessage(`**QuickPay Selection**
-
-Which loads would you like to elect for QuickPay? You can:
-
-🔸 Select individual loads by number  
-🔸 Choose "All available loads"  
-🔸 Select multiple loads (e.g., "#9012 and #8834")  
-
-**Benefits of QuickPay:**
-✅ Get paid within 24 hours  
-✅ Improve cash flow  
-✅ No credit checks required  
-✅ Automated processing  
-
-Just let me know which loads you'd like to process!`);
-        }, 2000);
+These loads are ready for QuickPay processing. You can select individual loads or process all at once for immediate cash flow improvement.`);
         break;
 
       default:

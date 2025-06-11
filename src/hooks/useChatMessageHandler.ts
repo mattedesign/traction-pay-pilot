@@ -5,6 +5,8 @@ import { useToast } from "@/hooks/use-toast";
 import { ChatMessage, InteractiveButton } from "./useChatMessages";
 import { EnhancedQueryRouter } from "@/services/enhancedQueryRouter";
 import { SmartContextBuilder } from "@/services/smartContextBuilder";
+import { InteractiveResponseService } from "@/services/interactiveResponseService";
+import { ChatStateManager } from "@/services/chatStateManager";
 import { sanitizeInput, clearAPIKey } from "@/utils/security";
 
 interface UseChatMessageHandlerProps {
@@ -29,7 +31,7 @@ export const useChatMessageHandler = ({
     const userMessage = addUserMessage(sanitizedMessage);
 
     try {
-      console.log('Processing with unified chat system...');
+      console.log('Processing with enhanced chat system...');
       
       // Step 1: Analyze query and route appropriately
       const routingResult = EnhancedQueryRouter.analyzeQuery(sanitizedMessage, currentLoadId);
@@ -41,7 +43,33 @@ export const useChatMessageHandler = ({
         requiresAI: routingResult.requiresAI
       });
 
-      // Step 2: Handle pure search results without AI
+      // Step 2: Handle button responses without asking new questions
+      if (routingResult.queryType === 'button_response') {
+        console.log('Handling button response without generating new questions...');
+        
+        const enhancedSystemPrompt = systemPrompt + `
+        
+**BUTTON RESPONSE CONTEXT**
+The user just provided a button response (${sanitizedMessage}). This is a direct answer to a previous question.
+DO NOT ask follow-up questions. Instead, provide helpful information or take the appropriate action based on their response.
+If they said "yes", proceed with the suggested action. If they said "no", offer alternative assistance.
+Keep your response concise and actionable.`;
+
+        const messages = [...chatHistory, userMessage].map(msg => ({
+          role: msg.type === "user" ? "user" as const : "assistant" as const,
+          content: sanitizeInput(msg.content)
+        }));
+
+        const response = await sendMessage(messages, enhancedSystemPrompt);
+        
+        // Process response but suppress any new interactive questions
+        const processedResponse = InteractiveResponseService.processResponse(response);
+        addAIMessage(processedResponse.mainContent);
+        
+        return routingResult;
+      }
+
+      // Step 3: Handle pure search results without AI
       if (!routingResult.requiresAI && routingResult.loadResults && routingResult.loadResults.length > 0) {
         console.log('Handling pure search results without AI...');
         
@@ -68,7 +96,7 @@ Click "View Load Details" above for more information or ask me specific question
         }
       }
 
-      // Step 3: Build smart context for AI (only if AI is needed)
+      // Step 4: Build smart context for AI (only if AI is needed)
       if (routingResult.requiresAI) {
         const smartContext = await SmartContextBuilder.buildContext(
           sanitizedMessage,
@@ -76,16 +104,39 @@ Click "View Load Details" above for more information or ask me specific question
           currentLoadId
         );
 
-        // Step 4: Send to Claude for AI response
+        // Enhanced system prompt to prevent repetitive questions
+        const enhancedSystemPrompt = systemPrompt + smartContext.systemPromptAddition + `
+
+**QUESTION MANAGEMENT RULES**
+1. Before asking any yes/no question, consider if the user has already provided enough information
+2. If the user is asking for specific information, provide it directly without asking permission
+3. Only ask questions when you genuinely need clarification to help them
+4. If you must ask a question, ask only ONE question per response
+5. Do not ask if they want to see something they specifically requested`;
+
+        // Step 5: Send to Claude for AI response
         const messages = [...chatHistory, { ...userMessage, content: smartContext.enhancedUserMessage }].map(msg => ({
           role: msg.type === "user" ? "user" as const : "assistant" as const,
           content: sanitizeInput(msg.content)
         }));
 
-        console.log('Sending to Claude with enhanced context...');
-        const response = await sendMessage(messages);
+        console.log('Sending to Claude with enhanced context and question management...');
+        const response = await sendMessage(messages, enhancedSystemPrompt);
         
-        addAIMessage(response);
+        // Process response for interactive elements
+        const processedResponse = InteractiveResponseService.processResponse(response);
+        
+        if (processedResponse.interactiveButtons) {
+          addAIMessage(processedResponse.mainContent, processedResponse.interactiveButtons);
+          if (processedResponse.questionContent) {
+            // Add the question as a separate message to make it clear
+            setTimeout(() => {
+              addAIMessage(processedResponse.questionContent!);
+            }, 100);
+          }
+        } else {
+          addAIMessage(processedResponse.mainContent);
+        }
         
         // Show context notification
         if (smartContext.contextType === 'specific_load' && smartContext.loadData) {

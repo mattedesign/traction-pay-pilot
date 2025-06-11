@@ -1,5 +1,6 @@
 
 import { InteractiveButton } from "../hooks/useChatMessages";
+import { ChatStateManager } from "./chatStateManager";
 
 export interface ProcessedResponse {
   mainContent: string;
@@ -9,6 +10,8 @@ export interface ProcessedResponse {
 
 export class InteractiveResponseService {
   static processResponse(aiResponse: string): ProcessedResponse {
+    console.log('InteractiveResponseService: Processing response for interactive elements');
+    
     // Look for yes/no questions in the response
     const yesNoPatterns = [
       /would you like to (.*?)\?/gi,
@@ -33,7 +36,15 @@ export class InteractiveResponseService {
 
     // If no interactive question found, return original response
     if (!foundQuestion) {
+      ChatStateManager.clearQuestionState();
       return { mainContent: aiResponse };
+    }
+
+    // Check if we should suppress this question due to recent activity
+    if (ChatStateManager.shouldSuppressQuestion(foundQuestion)) {
+      console.log('InteractiveResponseService: Suppressing repetitive question');
+      ChatStateManager.clearQuestionState();
+      return { mainContent: aiResponse.replace(foundQuestion, '').trim() || aiResponse };
     }
 
     // Extract the main content (everything except the question)
@@ -41,6 +52,12 @@ export class InteractiveResponseService {
     
     // Generate appropriate buttons based on the question context
     const buttons = this.generateButtonsForQuestion(foundQuestion, questionMatch);
+    
+    // Set question state to track this pending question
+    const questionId = `q_${Date.now()}`;
+    ChatStateManager.setQuestionState(questionId, true, foundQuestion);
+
+    console.log('InteractiveResponseService: Created interactive question with buttons');
 
     return {
       mainContent,
