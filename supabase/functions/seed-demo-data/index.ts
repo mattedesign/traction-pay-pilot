@@ -74,15 +74,27 @@ Deno.serve(async (req) => {
     for (const demoUser of demoUsers) {
       console.log(`Creating demo user: ${demoUser.email}`);
       
-      // First, check if user already exists
-      const { data: existingUser } = await supabaseAdmin.auth.admin.getUserByEmail(demoUser.email);
+      // First, check if user already exists by listing users and filtering by email
+      const { data: existingUsers, error: listError } = await supabaseAdmin.auth.admin.listUsers();
       
-      if (existingUser.user) {
+      if (listError) {
+        console.error(`Error listing users:`, listError);
+        results.push({
+          email: demoUser.email,
+          status: 'error',
+          error: listError.message
+        });
+        continue;
+      }
+
+      const existingUser = existingUsers.users.find(user => user.email === demoUser.email);
+      
+      if (existingUser) {
         console.log(`User ${demoUser.email} already exists, skipping...`);
         results.push({
           email: demoUser.email,
           status: 'already_exists',
-          user_id: existingUser.user.id
+          user_id: existingUser.id
         });
         continue;
       }
@@ -125,7 +137,7 @@ Deno.serve(async (req) => {
       
       // The profile will be automatically created by the database trigger
       // Let's wait a moment and then verify it was created
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
       // Verify profile was created
       const { data: profile, error: profileError } = await supabaseAdmin
