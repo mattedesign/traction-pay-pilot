@@ -39,7 +39,7 @@ Deno.serve(async (req) => {
     const demoUsers: DemoUser[] = [
       {
         email: 'carrier.demo@tractionpay.com',
-        password: 'Demo123!',
+        password: 'NewDemo123!',
         user_type: 'carrier',
         first_name: 'Mike',
         last_name: 'Rodriguez',
@@ -49,7 +49,7 @@ Deno.serve(async (req) => {
       },
       {
         email: 'broker.demo@tractionpay.com',
-        password: 'Demo123!',
+        password: 'NewDemo123!',
         user_type: 'broker',
         first_name: 'Sarah',
         last_name: 'Johnson',
@@ -59,7 +59,7 @@ Deno.serve(async (req) => {
       },
       {
         email: 'newcarrier.demo@tractionpay.com',
-        password: 'Demo123!',
+        password: 'NewDemo123!',
         user_type: 'carrier',
         first_name: 'Alex',
         last_name: 'Thompson',
@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
     const results = [];
 
     for (const demoUser of demoUsers) {
-      console.log(`Creating demo user: ${demoUser.email}`);
+      console.log(`Processing demo user: ${demoUser.email}`);
       
       // First, check if user already exists by listing users and filtering by email
       const { data: existingUsers, error: listError } = await supabaseAdmin.auth.admin.listUsers();
@@ -90,16 +90,43 @@ Deno.serve(async (req) => {
       const existingUser = existingUsers.users.find(user => user.email === demoUser.email);
       
       if (existingUser) {
-        console.log(`User ${demoUser.email} already exists, skipping...`);
+        console.log(`User ${demoUser.email} already exists, updating password...`);
+        
+        // Update the existing user's password and metadata
+        const { data: updateData, error: updateError } = await supabaseAdmin.auth.admin.updateUserById(
+          existingUser.id,
+          {
+            password: demoUser.password,
+            user_metadata: {
+              first_name: demoUser.first_name,
+              last_name: demoUser.last_name,
+              user_type: demoUser.user_type,
+              company_name: demoUser.company_name,
+              phone: demoUser.phone
+            }
+          }
+        );
+
+        if (updateError) {
+          console.error(`Error updating user ${demoUser.email}:`, updateError);
+          results.push({
+            email: demoUser.email,
+            status: 'error',
+            error: updateError.message
+          });
+          continue;
+        }
+
+        console.log(`Successfully updated user: ${demoUser.email}`);
         results.push({
           email: demoUser.email,
-          status: 'already_exists',
+          status: 'password_updated',
           user_id: existingUser.id
         });
         continue;
       }
 
-      // Create the user with admin API
+      // Create the user with admin API if they don't exist
       const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
         email: demoUser.email,
         password: demoUser.password,
@@ -168,7 +195,7 @@ Deno.serve(async (req) => {
     return new Response(
       JSON.stringify({
         success: true,
-        message: 'Demo data seeding completed',
+        message: 'Demo data seeding/updating completed',
         results: results
       }),
       {

@@ -4,13 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Database, Users, AlertCircle, CheckCircle, Loader2 } from "lucide-react";
+import { Database, Users, AlertCircle, CheckCircle, Loader2, Key } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
 interface SeedResult {
   email: string;
-  status: 'success' | 'already_exists' | 'error' | 'user_created_profile_missing';
+  status: 'success' | 'already_exists' | 'password_updated' | 'error' | 'user_created_profile_missing';
   user_id?: string;
   profile_id?: string;
   error?: string;
@@ -51,10 +51,11 @@ const DemoDataSeeder = () => {
         setResults(data.results || []);
         const successCount = data.results?.filter((r: SeedResult) => r.status === 'success').length || 0;
         const existingCount = data.results?.filter((r: SeedResult) => r.status === 'already_exists').length || 0;
+        const updatedCount = data.results?.filter((r: SeedResult) => r.status === 'password_updated').length || 0;
         
         toast({
-          title: "Demo Data Seeded",
-          description: `${successCount} users created, ${existingCount} already existed`
+          title: "Demo Data Updated",
+          description: `${successCount} users created, ${existingCount} already existed, ${updatedCount} passwords updated`
         });
       } else {
         setError(data?.error || 'Unknown error occurred');
@@ -83,6 +84,8 @@ const DemoDataSeeder = () => {
     switch (status) {
       case 'success':
         return <CheckCircle className="w-4 h-4 text-green-600" />;
+      case 'password_updated':
+        return <Key className="w-4 h-4 text-blue-600" />;
       case 'already_exists':
         return <CheckCircle className="w-4 h-4 text-blue-600" />;
       case 'error':
@@ -97,6 +100,8 @@ const DemoDataSeeder = () => {
     switch (status) {
       case 'success':
         return 'bg-green-100 text-green-800';
+      case 'password_updated':
+        return 'bg-blue-100 text-blue-800';
       case 'already_exists':
         return 'bg-blue-100 text-blue-800';
       case 'error':
@@ -115,12 +120,12 @@ const DemoDataSeeder = () => {
           <span>Demo Data Seeder</span>
         </CardTitle>
         <p className="text-sm text-slate-600">
-          Create demo accounts for testing the application features
+          Create or update demo accounts for testing the application features
         </p>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="space-y-4">
-          <h4 className="font-medium">Demo Accounts to be Created:</h4>
+          <h4 className="font-medium">Demo Accounts to be Created/Updated:</h4>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between items-center p-2 bg-slate-50 rounded">
               <span>carrier.demo@tractionpay.com</span>
@@ -145,12 +150,12 @@ const DemoDataSeeder = () => {
           {isSeeding ? (
             <>
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              Seeding Demo Data...
+              Processing Demo Accounts...
             </>
           ) : (
             <>
               <Users className="w-4 h-4 mr-2" />
-              Create Demo Accounts
+              Create/Update Demo Accounts
             </>
           )}
         </Button>
@@ -184,8 +189,9 @@ const DemoDataSeeder = () => {
         )}
 
         <div className="text-xs text-slate-500 space-y-1">
-          <p><strong>Password for all demo accounts:</strong> Demo123!</p>
+          <p><strong>New password for all demo accounts:</strong> NewDemo123!</p>
           <p>Demo accounts will be automatically confirmed and ready to use.</p>
+          <p>Existing accounts will have their passwords updated to the new password.</p>
         </div>
       </CardContent>
     </Card>
