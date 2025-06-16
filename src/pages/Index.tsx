@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import NavigationSidebar from "@/components/NavigationSidebar";
@@ -26,19 +25,51 @@ const Index = () => {
   const [currentAction, setCurrentAction] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    // Simulate fetching carrier profile - replace with actual API call
+    // Fetch carrier profile based on the actual user's email and profile
     const fetchCarrierProfile = async () => {
       setIsLoading(true);
       
-      // Mock data - replace with actual API call
-      const mockProfile: CarrierProfile = {
-        companySize: 'small', // Will be determined by onboarding or fleet size
-        fleetSize: 3,
-        userRoles: ['owner-operator'],
-        primaryUser: 'owner-operator',
-        businessCoachingLevel: 'basic',
-        onboardingCompleted: false
-      };
+      if (!profile) {
+        setIsLoading(false);
+        return;
+      }
+
+      console.log('Fetching carrier profile for user:', profile.email);
+
+      // Determine onboarding status based on user email
+      let mockProfile: CarrierProfile;
+
+      if (profile.email === 'newcarrier.demo@tractionpay.com') {
+        // New carrier demo - needs onboarding
+        mockProfile = {
+          companySize: 'small',
+          fleetSize: 2,
+          userRoles: ['owner-operator'],
+          primaryUser: 'owner-operator',
+          businessCoachingLevel: 'basic',
+          onboardingCompleted: false
+        };
+      } else if (profile.email === 'carrier.demo@tractionpay.com') {
+        // Existing carrier demo - already onboarded
+        mockProfile = {
+          companySize: 'small',
+          fleetSize: 5,
+          userRoles: ['owner-operator'],
+          primaryUser: 'owner-operator',
+          businessCoachingLevel: 'basic',
+          onboardingCompleted: true
+        };
+      } else {
+        // Default for other users - assume they need onboarding
+        mockProfile = {
+          companySize: 'small',
+          fleetSize: 3,
+          userRoles: ['owner-operator'],
+          primaryUser: 'owner-operator',
+          businessCoachingLevel: 'basic',
+          onboardingCompleted: false
+        };
+      }
 
       // Determine company size based on fleet size
       if (mockProfile.fleetSize >= 50) {
@@ -48,12 +79,13 @@ const Index = () => {
         mockProfile.businessCoachingLevel = 'advanced';
       }
 
+      console.log('Setting carrier profile:', mockProfile);
       setCarrierProfile(mockProfile);
       setIsLoading(false);
     };
 
     fetchCarrierProfile();
-  }, []);
+  }, [profile]);
 
   const handleCarrierSetup = (setupProfile: CarrierProfile) => {
     setCarrierProfile({
@@ -82,6 +114,7 @@ const Index = () => {
 
   // Show carrier setup if not completed onboarding
   if (!carrierProfile?.onboardingCompleted) {
+    console.log('Showing onboarding for user:', profile?.email, 'onboardingCompleted:', carrierProfile?.onboardingCompleted);
     return (
       <div className="min-h-screen flex w-full bg-slate-50">
         <NavigationSidebar />
@@ -91,6 +124,8 @@ const Index = () => {
       </div>
     );
   }
+
+  console.log('Showing dashboard for user:', profile?.email, 'carrierProfile:', carrierProfile);
 
   // Render appropriate dashboard based on carrier size
   return (
