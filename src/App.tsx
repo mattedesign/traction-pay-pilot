@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
+import AdaptiveDashboardPage from "./pages/AdaptiveDashboardPage";
 import LoadsPage from "./pages/LoadsPage";
 import NewLoadPage from "./pages/NewLoadPage";
 import LoadDetail from "./pages/LoadDetail";
@@ -48,6 +49,11 @@ function App() {
             <Route path="/" element={
               <ProtectedRoute>
                 <DashboardRouter />
+              </ProtectedRoute>
+            } />
+            <Route path="/adaptive" element={
+              <ProtectedRoute requiredUserType="carrier">
+                <AdaptiveDashboardPage />
               </ProtectedRoute>
             } />
             <Route path="/loads" element={
@@ -128,6 +134,21 @@ function App() {
             <Route path="/broker/payments" element={
               <ProtectedRoute requiredUserType="broker">
                 <BrokerPaymentsPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/broker/payments/outstanding" element={
+              <ProtectedRoute requiredUserType="broker">
+                <BrokerOutstandingInvoicesPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/broker/payments/paid" element={
+              <ProtectedRoute requiredUserType="broker">
+                <BrokerPaidInvoicesPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/broker/payments/credit" element={
+              <ProtectedRoute requiredUserType="broker">
+                <BrokerCreditDashboardPage />
               </ProtectedRoute>
             } />
             <Route path="/broker/insights" element={
