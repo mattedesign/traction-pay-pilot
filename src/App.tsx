@@ -5,7 +5,6 @@ import { Toaster } from "@/components/ui/toaster";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
-import AdaptiveDashboardPage from "./pages/AdaptiveDashboardPage";
 import LoadsPage from "./pages/LoadsPage";
 import NewLoadPage from "./pages/NewLoadPage";
 import LoadDetail from "./pages/LoadDetail";
@@ -49,11 +48,6 @@ function App() {
             <Route path="/" element={
               <ProtectedRoute>
                 <DashboardRouter />
-              </ProtectedRoute>
-            } />
-            <Route path="/adaptive" element={
-              <ProtectedRoute requiredUserType="carrier">
-                <AdaptiveDashboardPage />
               </ProtectedRoute>
             } />
             <Route path="/loads" element={
@@ -208,7 +202,7 @@ const DashboardRouter = () => {
     return <BrokerDashboard />;
   }
   
-  // Default to carrier dashboard (existing Index page)
+  // Default to carrier dashboard with adaptive experience
   return <Index />;
 };
 

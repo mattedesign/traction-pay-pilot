@@ -14,10 +14,13 @@ import {
   Clock,
   MapPin
 } from "lucide-react";
-import { CarrierProfile } from "@/pages/AdaptiveDashboardPage";
+import { CarrierProfile } from "@/pages/Index";
 import MorningRoutineWidget from "@/components/business-coach/MorningRoutineWidget";
 import AIBusinessCoach from "@/components/business-coach/AIBusinessCoach";
 import SavingsOpportunityDetector from "@/components/savings/SavingsOpportunityDetector";
+import ContextualCoachingWidget from "@/components/business-coach/ContextualCoachingWidget";
+import { UserContext } from "@/services/contextualBusinessCoach";
+import { useEffect, useState } from "react";
 
 interface SmallCarrierDashboardProps {
   carrierProfile: CarrierProfile;
@@ -25,6 +28,15 @@ interface SmallCarrierDashboardProps {
 }
 
 const SmallCarrierDashboard = ({ carrierProfile, userProfile }: SmallCarrierDashboardProps) => {
+  const [userContext, setUserContext] = useState<UserContext>({
+    currentPage: 'dashboard',
+    recentActions: [],
+    recentPerformance: {
+      onTimeDeliveries: 0.96,
+      averageMargin: 22.5
+    }
+  });
+
   // Mock data for demonstration
   const activeLoads = [
     {
@@ -52,6 +64,20 @@ const SmallCarrierDashboard = ({ carrierProfile, userProfile }: SmallCarrierDash
     profitMargin: 0.20,
     fuelEfficiency: 6.8,
     onTimePerformance: 0.95
+  };
+
+  useEffect(() => {
+    // Update user context with current activity
+    setUserContext(prev => ({
+      ...prev,
+      activeLoads,
+      pendingInvoices: [{ id: 'INV-001', amount: 2450 }]
+    }));
+  }, []);
+
+  const handleCoachingAction = (action: string) => {
+    console.log('Coaching action triggered:', action);
+    // This could trigger the chat interface or specific actions
   };
 
   const coachingAlerts = [
@@ -129,39 +155,12 @@ const SmallCarrierDashboard = ({ carrierProfile, userProfile }: SmallCarrierDash
           coachingAlerts={coachingAlerts.length}
         />
 
-        {/* AI Business Coach Alerts */}
-        <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <Lightbulb className="w-6 h-6 text-blue-600" />
-              <span>Business Coach Insights</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {coachingAlerts.map((alert, index) => {
-                const IconComponent = getAlertIcon(alert.type);
-                return (
-                  <div 
-                    key={index}
-                    className={`p-4 rounded-lg flex items-start space-x-3 ${getAlertColor(alert.priority)}`}
-                  >
-                    <IconComponent className="w-5 h-5 mt-1 flex-shrink-0" />
-                    <div className="flex-1">
-                      <h4 className="font-semibold">{alert.title}</h4>
-                      <p className="text-sm mt-1">{alert.description}</p>
-                      {alert.potentialSavings > 0 && (
-                        <Badge className="mt-2 bg-green-100 text-green-800">
-                          Save ${alert.potentialSavings}
-                        </Badge>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </CardContent>
-        </Card>
+        {/* Contextual Business Coach Widget */}
+        <ContextualCoachingWidget 
+          carrierProfile={carrierProfile}
+          userContext={userContext}
+          onActionClick={handleCoachingAction}
+        />
 
         {/* Load Overview - Simplified */}
         <Card className="bg-white">

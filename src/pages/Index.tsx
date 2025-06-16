@@ -1,143 +1,116 @@
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Truck, FileText, MapPin, DollarSign, Route, CreditCard, ExternalLink } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { useRef, useState, useCallback } from "react";
-import NavigationSidebar from "@/components/NavigationSidebar";
-import FunctionalChatInterface from "@/components/FunctionalChatInterface";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import NavigationSidebar from "@/components/NavigationSidebar";
+import SmallCarrierDashboard from "@/components/adaptive/SmallCarrierDashboard";
+import LargeCarrierDashboard from "@/components/adaptive/LargeCarrierDashboard";
+import CarrierSizeDetector from "@/components/adaptive/CarrierSizeDetector";
+import FunctionalChatInterface from "@/components/FunctionalChatInterface";
+import { useNavigate } from "react-router-dom";
+
+export interface CarrierProfile {
+  companySize: 'small' | 'large';
+  fleetSize: number;
+  userRoles: string[];
+  primaryUser: 'owner-operator' | 'dispatcher' | 'fleet-manager' | 'executive';
+  businessCoachingLevel: 'basic' | 'advanced' | 'enterprise';
+  onboardingCompleted: boolean;
+}
 
 const Index = () => {
   const navigate = useNavigate();
+  const { profile } = useAuth();
+  const [carrierProfile, setCarrierProfile] = useState<CarrierProfile | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [isChatFocused, setIsChatFocused] = useState(false);
   const [currentAction, setCurrentAction] = useState<string | undefined>(undefined);
-  const { profile } = useAuth();
 
-  const handleChatFocus = useCallback((focused: boolean) => {
-    console.log('Index: Chat focus changed to:', focused);
-    setIsChatFocused(focused);
-    if (!focused) {
-      console.log('Index: Clearing current action due to unfocus');
-      setCurrentAction(undefined);
-    }
+  useEffect(() => {
+    // Simulate fetching carrier profile - replace with actual API call
+    const fetchCarrierProfile = async () => {
+      setIsLoading(true);
+      
+      // Mock data - replace with actual API call
+      const mockProfile: CarrierProfile = {
+        companySize: 'small', // Will be determined by onboarding or fleet size
+        fleetSize: 3,
+        userRoles: ['owner-operator'],
+        primaryUser: 'owner-operator',
+        businessCoachingLevel: 'basic',
+        onboardingCompleted: false
+      };
+
+      // Determine company size based on fleet size
+      if (mockProfile.fleetSize >= 50) {
+        mockProfile.companySize = 'large';
+        mockProfile.businessCoachingLevel = 'enterprise';
+      } else if (mockProfile.fleetSize >= 20) {
+        mockProfile.businessCoachingLevel = 'advanced';
+      }
+
+      setCarrierProfile(mockProfile);
+      setIsLoading(false);
+    };
+
+    fetchCarrierProfile();
   }, []);
 
-  const handleActionClick = useCallback((actionTitle: string) => {
-    console.log('Index: Action clicked:', actionTitle);
-    console.log('Index: Setting current action and focusing chat');
-    
-    // Set action first
-    setCurrentAction(actionTitle);
-    
-    // Force focus immediately 
-    setIsChatFocused(true);
-    
-    // Call focus handler to ensure propagation
-    handleChatFocus(true);
-    
-    console.log('Index: Action setup complete - currentAction:', actionTitle, 'isChatFocused: true');
-  }, [handleChatFocus]);
-
-  const handleLogoClick = () => {
-    navigate('/');
+  const handleCarrierSetup = (setupProfile: CarrierProfile) => {
+    setCarrierProfile({
+      ...setupProfile,
+      onboardingCompleted: true
+    });
   };
 
-  const suggestedActions = [{
-    icon: Truck,
-    title: "Track a load",
-    description: "Monitor load status and location",
-    onClick: () => handleActionClick("Track a Load")
-  }, {
-    icon: FileText,
-    title: "Check payment status", 
-    description: "View invoice and payment details",
-    onClick: () => handleActionClick("Check Payment Status")
-  }, {
-    icon: Route,
-    title: "Plan optimal route",
-    description: "Get best routes for fuel efficiency", 
-    onClick: () => handleActionClick("Plan Optimal Route")
-  }, {
-    icon: CreditCard,
-    title: "QuickPay Available",
-    description: "You have $1,250 available for QuickPay",
-    onClick: () => handleActionClick("QuickPay Available")
-  }];
+  const handleChatFocus = (focused: boolean) => {
+    setIsChatFocused(focused);
+    if (!focused) {
+      setCurrentAction(undefined);
+    }
+  };
 
-  console.log('Index: Render - isChatFocused:', isChatFocused, 'currentAction:', currentAction);
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex w-full bg-slate-50">
+        <NavigationSidebar />
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-slate-600">Loading adaptive dashboard...</div>
+        </div>
+      </div>
+    );
+  }
 
+  // Show carrier setup if not completed onboarding
+  if (!carrierProfile?.onboardingCompleted) {
+    return (
+      <div className="min-h-screen flex w-full bg-slate-50">
+        <NavigationSidebar />
+        <div className="flex-1">
+          <CarrierSizeDetector onSetupComplete={handleCarrierSetup} />
+        </div>
+      </div>
+    );
+  }
+
+  // Render appropriate dashboard based on carrier size
   return (
     <div className="min-h-screen flex w-full bg-slate-50">
       <NavigationSidebar />
-      
-      {/* Main content area with conditional rendering */}
       <div className="flex-1 flex flex-col h-screen overflow-hidden">
-        {/* Conditional rendering based on chat focus */}
         {!isChatFocused ? (
           <>
-            {/* Header */}
-            <div className="bg-white border-b border-slate-200 px-8 py-4 shrink-0">
-              <div className="flex justify-between items-center">
-                <div>
-                  <h1 className="text-xl font-semibold text-slate-800">Carrier Dashboard</h1>
-                  <p className="text-slate-600">Welcome back, {profile?.first_name}!</p>
-                </div>
-                <div className="flex items-center space-x-4">
-                  <Badge variant="outline" className="text-sm">
-                    <Truck className="w-3 h-3 mr-1" />
-                    {profile?.company_name || 'Carrier Account'}
-                  </Badge>
-                </div>
-              </div>
-            </div>
-
-            {/* Welcome content */}
-            <div className="flex-1 flex items-center justify-center px-8 overflow-y-auto">
-              <div className="flex flex-col items-center w-full">
-                {/* Welcome Header */}
-                <div className="text-center mb-8">
-                  {/* Logo */}
-                  <div className="flex items-center justify-center mb-6 mx-0">
-                    <div className="flex items-center justify-center cursor-pointer" onClick={handleLogoClick}>
-                      <img alt="Traction Logo" className="h-11 object-contain" src="/lovable-uploads/2fa0b3cc-e679-429c-be88-4fd0f236e713.png" />
-                    </div>
-                  </div>
-                  <p className="text-xl text-slate-600 max-w-lg mx-auto">
-                    Less Friction, More Traction For Carriers
-                  </p>
-                </div>
-
-                {/* Suggested Actions */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 w-full max-w-2xl">
-                  {suggestedActions.map((action, index) => (
-                    <Card 
-                      key={index} 
-                      className="bg-white border border-slate-200 hover:shadow-md transition-all duration-200 cursor-pointer hover:border-slate-300" 
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        console.log('Index: Card click handler - calling action for:', action.title);
-                        action.onClick();
-                      }}
-                    >
-                      <CardContent className="p-6">
-                        <div className="flex items-start space-x-4">
-                          <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0">
-                            <action.icon className="w-5 h-5 text-slate-600" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <h3 className="font-medium text-slate-900 mb-1">{action.title}</h3>
-                            <p className="text-sm text-slate-600 leading-relaxed">{action.description}</p>
-                          </div>
-                          <ExternalLink className="w-4 h-4 text-slate-400 flex-shrink-0 mt-1" />
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </div>
+            <div className="flex-1 overflow-auto">
+              {carrierProfile.companySize === 'small' ? (
+                <SmallCarrierDashboard 
+                  carrierProfile={carrierProfile}
+                  userProfile={profile}
+                />
+              ) : (
+                <LargeCarrierDashboard 
+                  carrierProfile={carrierProfile}
+                  userProfile={profile}
+                />
+              )}
             </div>
 
             {/* Chat input at bottom */}
