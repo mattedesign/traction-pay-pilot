@@ -17,12 +17,15 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
   const [isLoadingEmails, setIsLoadingEmails] = useState(true);
   const [load, setLoad] = useState(loadData);
 
-  useEffect(() => {
-    // Refresh load data from repository
+  const refreshLoadData = () => {
     const refreshedLoad = LoadRepository.getLoadById(loadData.id);
     if (refreshedLoad) {
       setLoad(refreshedLoad);
     }
+  };
+
+  useEffect(() => {
+    refreshLoadData();
   }, [loadData.id]);
 
   useEffect(() => {
@@ -54,6 +57,7 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
           load={load}
           emailThreads={emailThreads}
           isLoadingEmails={isLoadingEmails}
+          onLoadUpdate={refreshLoadData}
         />
       </div>
       

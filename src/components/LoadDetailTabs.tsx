@@ -12,9 +12,10 @@ interface LoadDetailTabsProps {
   load: Load;
   emailThreads: EmailThread[];
   isLoadingEmails: boolean;
+  onLoadUpdate?: () => void;
 }
 
-const LoadDetailTabs = ({ load, emailThreads, isLoadingEmails }: LoadDetailTabsProps) => {
+const LoadDetailTabs = ({ load, emailThreads, isLoadingEmails, onLoadUpdate }: LoadDetailTabsProps) => {
   return (
     <div className="flex flex-col h-full">
       <Tabs defaultValue="detail" className="flex flex-col h-full">
@@ -35,7 +36,7 @@ const LoadDetailTabs = ({ load, emailThreads, isLoadingEmails }: LoadDetailTabsP
           <TabsContent value="detail" className="m-0 h-full">
             {/* Load Acceptance Card for pending loads */}
             {load.status === "pending_acceptance" && (
-              <LoadAcceptanceCard load={load} />
+              <LoadAcceptanceCard load={load} onLoadUpdate={onLoadUpdate} />
             )}
             
             <LoadDetailContent 
@@ -48,7 +49,7 @@ const LoadDetailTabs = ({ load, emailThreads, isLoadingEmails }: LoadDetailTabsP
           <TabsContent value="documents" className="m-0 h-full">
             {/* Load Acceptance Card for pending loads */}
             {load.status === "pending_acceptance" && (
-              <LoadAcceptanceCard load={load} />
+              <LoadAcceptanceCard load={load} onLoadUpdate={onLoadUpdate} />
             )}
             
             <LoadDocumentsContent />
@@ -57,7 +58,7 @@ const LoadDetailTabs = ({ load, emailThreads, isLoadingEmails }: LoadDetailTabsP
           <TabsContent value="intelligence" className="m-0 h-full">
             {/* Load Acceptance Card for pending loads */}
             {load.status === "pending_acceptance" && (
-              <LoadAcceptanceCard load={load} />
+              <LoadAcceptanceCard load={load} onLoadUpdate={onLoadUpdate} />
             )}
             
             <LoadIntelligenceContent load={load} />

@@ -11,9 +11,10 @@ import LoadAcceptanceActions from "./LoadAcceptanceActions";
 
 interface LoadAcceptanceCardProps {
   load: Load;
+  onLoadUpdate?: () => void;
 }
 
-const LoadAcceptanceCard = ({ load }: LoadAcceptanceCardProps) => {
+const LoadAcceptanceCard = ({ load, onLoadUpdate }: LoadAcceptanceCardProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isAccepting, setIsAccepting] = useState(false);
@@ -40,10 +41,13 @@ const LoadAcceptanceCard = ({ load }: LoadAcceptanceCardProps) => {
           description: `Load #${load.id} has been accepted successfully`,
         });
         
+        // Call the callback to refresh load data
+        if (onLoadUpdate) {
+          onLoadUpdate();
+        }
+        
         // Hide the alert immediately
         setIsHidden(true);
-        
-        navigate(`/load/${load.id}`);
       }
     } catch (error) {
       toast({
