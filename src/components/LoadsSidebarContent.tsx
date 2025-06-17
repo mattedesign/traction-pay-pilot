@@ -10,12 +10,6 @@ interface LoadsSidebarContentProps {
 }
 
 const LoadsSidebarContent = ({ loads, getAvatarIcon, onLoadSelect, selectedLoadId }: LoadsSidebarContentProps) => {
-  const handleLoadClick = (load: Load) => {
-    if (onLoadSelect) {
-      onLoadSelect(load);
-    }
-  };
-
   return (
     <div className="flex-1 overflow-y-auto">
       <div className="p-4">
@@ -24,8 +18,6 @@ const LoadsSidebarContent = ({ loads, getAvatarIcon, onLoadSelect, selectedLoadI
             <LoadItem 
               load={load} 
               avatarIcon={getAvatarIcon(load.broker)}
-              onClick={() => handleLoadClick(load)}
-              isSelected={selectedLoadId === load.id}
             />
           </div>
         ))}
