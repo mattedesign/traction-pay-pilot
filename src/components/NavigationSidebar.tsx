@@ -75,31 +75,53 @@ const NavigationSidebar = () => {
 
   return (
     <>
-      {/* Mobile Header */}
-      <div className="md:hidden bg-slate-800 text-white px-4 py-3 flex items-center justify-between">
-        <div className="cursor-pointer" onClick={handleLogoClick}>
-          <img 
-            alt="Logo" 
-            className="w-8 h-8 object-contain hover:opacity-80 transition-opacity" 
-            src="/lovable-uploads/b21fd570-2ee4-4af9-8ee7-44980e7d6708.png" 
-          />
-        </div>
-        
-        <div className="flex items-center space-x-3">
-          <NotificationBell />
-          <UserProfileMenu />
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="text-white hover:bg-slate-700"
-          >
-            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </Button>
+      {/* Mobile Header - Full width horizontal navigation */}
+      <div className="md:hidden w-full bg-slate-800 text-white">
+        <div className="flex items-center justify-between px-4 py-3">
+          <div className="flex items-center space-x-4">
+            <div className="cursor-pointer" onClick={handleLogoClick}>
+              <img 
+                alt="Logo" 
+                className="w-8 h-8 object-contain hover:opacity-80 transition-opacity" 
+                src="/lovable-uploads/b21fd570-2ee4-4af9-8ee7-44980e7d6708.png" 
+              />
+            </div>
+            
+            {/* Mobile navigation items - horizontal */}
+            <div className="flex items-center space-x-1">
+              {navigationItems.slice(0, 4).map(item => (
+                <Button
+                  key={item.label}
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => handleNavClick(item.path)}
+                  className={`w-10 h-10 text-slate-300 hover:text-white hover:bg-slate-700 ${
+                    isActive(item.path) ? 'bg-slate-700 text-white' : ''
+                  }`}
+                  title={item.label}
+                >
+                  <item.icon className="w-5 h-5" />
+                </Button>
+              ))}
+            </div>
+          </div>
+          
+          <div className="flex items-center space-x-2">
+            <NotificationBell />
+            <UserProfileMenu />
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="text-white hover:bg-slate-700 w-10 h-10"
+            >
+              {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </Button>
+          </div>
         </div>
       </div>
 
-      {/* Mobile Menu Overlay */}
+      {/* Mobile Menu Overlay - for additional items */}
       {isMobileMenuOpen && (
         <div className="md:hidden fixed inset-0 z-50 bg-black bg-opacity-50" onClick={() => setIsMobileMenuOpen(false)}>
           <div className="bg-slate-800 text-white w-64 h-full p-4" onClick={e => e.stopPropagation()}>
@@ -121,7 +143,7 @@ const NavigationSidebar = () => {
               </Button>
             </div>
 
-            {/* Mobile navigation items */}
+            {/* All navigation items in overlay */}
             <div className="space-y-2">
               {navigationItems.map(item => (
                 <Button
