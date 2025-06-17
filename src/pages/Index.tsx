@@ -50,7 +50,7 @@ const Index = () => {
           onboardingCompleted: false
         };
       } else if (profile.email === 'carrier.demo@tractionpay.com') {
-        // Existing carrier demo - already onboarded
+        // Existing carrier demo - already onboarded, goes directly to dashboard
         mockProfile = {
           companySize: 'small',
           fleetSize: 5,
