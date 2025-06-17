@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import NavigationSidebar from "@/components/NavigationSidebar";
@@ -5,6 +6,7 @@ import SmallCarrierDashboard from "@/components/adaptive/SmallCarrierDashboard";
 import LargeCarrierDashboard from "@/components/adaptive/LargeCarrierDashboard";
 import CarrierSizeDetector from "@/components/adaptive/CarrierSizeDetector";
 import FunctionalChatInterface from "@/components/FunctionalChatInterface";
+import FactorDashboard from "@/components/FactorDashboard";
 import { useNavigate } from "react-router-dom";
 
 export interface CarrierProfile {
@@ -35,6 +37,14 @@ const Index = () => {
       }
 
       console.log('Fetching carrier profile for user:', profile.email);
+
+      // Check if this is the factor demo user
+      if (profile.email === 'factor.demo@tractionpay.com') {
+        // Factor demo user gets their own special dashboard
+        console.log('Factor demo user detected, showing special dashboard');
+        setIsLoading(false);
+        return;
+      }
 
       // Determine onboarding status based on user email
       let mockProfile: CarrierProfile;
@@ -110,6 +120,12 @@ const Index = () => {
         </div>
       </div>
     );
+  }
+
+  // Show factor dashboard for factor demo user
+  if (profile?.email === 'factor.demo@tractionpay.com') {
+    console.log('Rendering factor dashboard for:', profile.email);
+    return <FactorDashboard />;
   }
 
   // Show carrier setup if not completed onboarding

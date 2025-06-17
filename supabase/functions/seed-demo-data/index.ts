@@ -1,4 +1,3 @@
-
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const corsHeaders = {
@@ -66,6 +65,16 @@ Deno.serve(async (req) => {
         company_name: 'Thompson Transport',
         phone: '555-0789',
         onboarding_completed: false
+      },
+      {
+        email: 'factor.demo@tractionpay.com',
+        password: 'NewDemo123!',
+        user_type: 'carrier',
+        first_name: 'David',
+        last_name: 'Martinez',
+        company_name: 'Martinez Factoring Solutions',
+        phone: '555-0321',
+        onboarding_completed: true
       }
     ];
 

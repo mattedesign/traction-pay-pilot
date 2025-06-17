@@ -139,6 +139,10 @@ const DemoDataSeeder = () => {
               <span>newcarrier.demo@tractionpay.com</span>
               <Badge className="bg-orange-100 text-orange-800">Carrier (New - Needs Onboarding)</Badge>
             </div>
+            <div className="flex justify-between items-center p-2 bg-slate-50 rounded">
+              <span>factor.demo@tractionpay.com</span>
+              <Badge className="bg-purple-100 text-purple-800">Factor (Special Dashboard)</Badge>
+            </div>
           </div>
         </div>
 
