@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 
 const NewLoadSummaryCard = () => {
   return (
-    <Card className="border-blue-200 bg-blue-50">
+    <Card className="border-slate-200 bg-slate-50">
       <CardContent className="p-4">
         <h3 className="text-lg font-medium text-slate-900 mb-4">Summary</h3>
         <div className="space-y-2">

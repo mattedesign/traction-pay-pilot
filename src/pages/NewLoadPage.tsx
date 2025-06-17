@@ -149,7 +149,7 @@ const NewLoadPage = () => {
             <Button variant="outline" onClick={handleClose}>
               Cancel
             </Button>
-            <Button onClick={handleSubmit} className="bg-blue-600 hover:bg-blue-700">
+            <Button onClick={handleSubmit} className="bg-slate-600 hover:bg-slate-700">
               Review
             </Button>
           </div>

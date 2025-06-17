@@ -13,7 +13,7 @@ const NewLoadTabsSection = ({ activeTab, onTabChange }: NewLoadTabsSectionProps)
         <button
           className={`px-6 py-3 text-sm font-medium border-b-2 ${
             activeTab === 'documents' 
-              ? 'border-blue-600 text-blue-600' 
+              ? 'border-slate-600 text-slate-600' 
               : 'border-transparent text-slate-500 hover:text-slate-700'
           }`}
           onClick={() => onTabChange('documents')}
@@ -24,7 +24,7 @@ const NewLoadTabsSection = ({ activeTab, onTabChange }: NewLoadTabsSectionProps)
         <button
           className={`px-6 py-3 text-sm font-medium border-b-2 ${
             activeTab === 'accessorials' 
-              ? 'border-blue-600 text-blue-600' 
+              ? 'border-slate-600 text-slate-600' 
               : 'border-transparent text-slate-500 hover:text-slate-700'
           }`}
           onClick={() => onTabChange('accessorials')}

@@ -89,24 +89,57 @@
 @layer base {
   * {
     @apply border-border;
+    border-color: hsl(var(--border));
   }
 
   body {
     @apply bg-background text-foreground;
+    background-color: white !important;
+    color: hsl(var(--foreground));
   }
 
   html {
     @apply bg-white;
+    background-color: white !important;
   }
 
   /* Ensure proper mobile viewport handling */
   html, body {
     min-height: 100vh;
-    background-color: white;
+    background-color: white !important;
   }
 
   /* Fix mobile browser UI coloring */
   meta[name="theme-color"] {
     content: "#ffffff";
+  }
+
+  /* Override any yellow/bright colors in selects and dropdowns */
+  select, 
+  [role="combobox"],
+  [role="listbox"],
+  [data-radix-select-trigger],
+  [data-radix-select-content] {
+    background-color: white !important;
+    border-color: hsl(var(--border)) !important;
+  }
+
+  /* Ensure dropdowns have proper styling */
+  [data-radix-select-content] {
+    background-color: white !important;
+    border: 1px solid hsl(var(--border)) !important;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1) !important;
+    z-index: 50 !important;
+  }
+
+  [data-radix-select-item] {
+    background-color: white !important;
+    color: hsl(var(--foreground)) !important;
+  }
+
+  [data-radix-select-item]:hover,
+  [data-radix-select-item][data-highlighted] {
+    background-color: hsl(var(--muted)) !important;
+    color: hsl(var(--foreground)) !important;
   }
 }

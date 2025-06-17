@@ -38,7 +38,7 @@ const NewLoadDocumentPanel = ({
                 </div>
                 <h3 className="text-lg font-medium text-slate-900 mb-2">Add A Rate Con</h3>
                 <p className="text-slate-600 mb-6">We'll fill out the load details for you</p>
-                <Button onClick={onFileUpload} className="bg-blue-600 hover:bg-blue-700">
+                <Button onClick={onFileUpload} className="bg-slate-600 hover:bg-slate-700">
                   <Upload className="w-4 h-4 mr-2" />
                   Upload
                 </Button>
@@ -59,7 +59,7 @@ const NewLoadDocumentPanel = ({
                 </div>
                 
                 {uploadedDocs.map((doc, index) => (
-                  <Card key={index} className="border-2 border-blue-200">
+                  <Card key={index} className="border-2 border-slate-200">
                     <CardContent className="p-4">
                       <div className="flex items-start space-x-3">
                         <div className="flex-shrink-0 w-16 h-20 bg-white border rounded overflow-hidden">
