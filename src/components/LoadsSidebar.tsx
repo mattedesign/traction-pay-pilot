@@ -12,9 +12,11 @@ import LoadsSidebarContent from "./LoadsSidebarContent";
 interface LoadsSidebarProps {
   isOpen?: boolean;
   onClose?: () => void;
+  onLoadSelect?: (load: Load) => void;
+  selectedLoadId?: string;
 }
 
-const LoadsSidebar = ({ isOpen = true, onClose }: LoadsSidebarProps) => {
+const LoadsSidebar = ({ isOpen = true, onClose, onLoadSelect, selectedLoadId }: LoadsSidebarProps) => {
   const navigate = useNavigate();
   const [loads, setLoads] = useState<Load[]>([]);
   const [emailThreads, setEmailThreads] = useState<Map<string, EmailThread[]>>(new Map());
@@ -108,7 +110,12 @@ const LoadsSidebar = ({ isOpen = true, onClose }: LoadsSidebarProps) => {
             </div>
             
             <LoadsSidebarHeader onNewLoad={handleNewLoad} />
-            <LoadsSidebarContent loads={loads} getAvatarIcon={getAvatarIcon} />
+            <LoadsSidebarContent 
+              loads={loads} 
+              getAvatarIcon={getAvatarIcon} 
+              onLoadSelect={onLoadSelect}
+              selectedLoadId={selectedLoadId}
+            />
           </div>
         </div>
       )}
@@ -116,7 +123,12 @@ const LoadsSidebar = ({ isOpen = true, onClose }: LoadsSidebarProps) => {
       {/* Desktop Sidebar */}
       <div className="hidden md:block w-80 bg-white text-slate-900 h-screen flex-col shadow-sm border-r border-slate-200">
         <LoadsSidebarHeader onNewLoad={handleNewLoad} />
-        <LoadsSidebarContent loads={loads} getAvatarIcon={getAvatarIcon} />
+        <LoadsSidebarContent 
+          loads={loads} 
+          getAvatarIcon={getAvatarIcon} 
+          onLoadSelect={onLoadSelect}
+          selectedLoadId={selectedLoadId}
+        />
       </div>
     </>
   );

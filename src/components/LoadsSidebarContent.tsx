@@ -1,43 +1,35 @@
 
 import { Load } from "@/types/load";
-import { LucideIcon } from "lucide-react";
-import LoadsGroupSection from "./LoadsGroupSection";
+import LoadItem from "./LoadItem";
 
 interface LoadsSidebarContentProps {
   loads: Load[];
-  getAvatarIcon: (brokerName: string) => { icon: LucideIcon; color: string };
+  getAvatarIcon: (brokerName: string) => { icon: any; color: string };
+  onLoadSelect?: (load: Load) => void;
+  selectedLoadId?: string;
 }
 
-const LoadsSidebarContent = ({ loads, getAvatarIcon }: LoadsSidebarContentProps) => {
-  // Group loads by status
-  const pendingAcceptanceLoads = loads.filter(load => load.status === "pending_acceptance");
-  const activeLoads = loads.filter(load => load.status === "pending_pickup" || load.status === "in_transit" || load.status === "ready_to_invoice");
-  const completedLoads = loads.filter(load => load.status === "delivered");
+const LoadsSidebarContent = ({ loads, getAvatarIcon, onLoadSelect, selectedLoadId }: LoadsSidebarContentProps) => {
+  const handleLoadClick = (load: Load) => {
+    if (onLoadSelect) {
+      onLoadSelect(load);
+    }
+  };
 
   return (
     <div className="flex-1 overflow-y-auto">
-      {/* Pending Acceptance Section */}
-      <LoadsGroupSection
-        title="Awaiting Acceptance"
-        loads={pendingAcceptanceLoads}
-        isActive={true}
-        getAvatarIcon={getAvatarIcon}
-      />
-
-      {/* Active Loads Section */}
-      <LoadsGroupSection
-        title="Active"
-        loads={activeLoads}
-        isActive={true}
-        getAvatarIcon={getAvatarIcon}
-      />
-
-      {/* Completed Loads Section */}
-      <LoadsGroupSection
-        title="Completed"
-        loads={completedLoads}
-        getAvatarIcon={getAvatarIcon}
-      />
+      <div className="p-4">
+        {loads.map((load) => (
+          <div key={load.id} className="mb-3">
+            <LoadItem 
+              load={load} 
+              getAvatarIcon={getAvatarIcon}
+              onClick={() => handleLoadClick(load)}
+              isSelected={selectedLoadId === load.id}
+            />
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
