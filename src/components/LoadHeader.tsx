@@ -17,24 +17,8 @@ const LoadHeader = ({ loadData }: LoadHeaderProps) => {
     navigate("/loads");
   };
 
-  // Special handling for TMS-001 to show "Delivered" badge
-  const getDisplayStatus = () => {
-    if (loadData.id === "TMS-001") {
-      return "delivered";
-    }
-    return loadData.status;
-  };
-
-  const getStatusBadgeText = () => {
-    if (loadData.id === "TMS-001") {
-      return "DELIVERED";
-    }
-    return LoadStatusService.getStatusLabel(loadData.status);
-  };
-
-  const displayStatus = getDisplayStatus();
-  const statusText = getStatusBadgeText();
-  const statusClass = LoadStatusService.getStatusBadgeClass(displayStatus as Load["status"]);
+  const statusText = LoadStatusService.getStatusLabel(loadData.status);
+  const statusClass = LoadStatusService.getStatusBadgeClass(loadData.status);
 
   return (
     <div>
