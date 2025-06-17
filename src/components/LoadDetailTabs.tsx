@@ -27,41 +27,47 @@ const LoadDetailTabs = ({ load, emailThreads, isLoadingEmails, onLoadUpdate }: L
         
         {/* Invoice Request Toast for Ready To Invoice loads */}
         {load.status === "ready_to_invoice" && (
-          <div className="flex-shrink-0">
+          <div className="flex-shrink-0 mt-4">
             <InvoiceRequestToast brokerName={load.broker} />
           </div>
         )}
         
-        <div className="flex-1 min-h-0 overflow-y-auto space-y-6 pt-6" style={{ backgroundColor: '#F5F6FA' }}>
-          <TabsContent value="detail" className="m-0 h-full">
-            {/* Load Acceptance Card for pending loads */}
-            {load.status === "pending_acceptance" && (
-              <LoadAcceptanceCard load={load} onLoadUpdate={onLoadUpdate} />
-            )}
-            
-            <LoadDetailContent 
-              load={load}
-              emailThreads={emailThreads}
-              isLoadingEmails={isLoadingEmails}
-            />
+        <div className="flex-1 overflow-hidden">
+          <TabsContent value="detail" className="h-full m-0">
+            <div className="h-full overflow-y-auto space-y-6 pt-6 pb-6" style={{ backgroundColor: '#F5F6FA' }}>
+              {/* Load Acceptance Card for pending loads */}
+              {load.status === "pending_acceptance" && (
+                <LoadAcceptanceCard load={load} onLoadUpdate={onLoadUpdate} />
+              )}
+              
+              <LoadDetailContent 
+                load={load}
+                emailThreads={emailThreads}
+                isLoadingEmails={isLoadingEmails}
+              />
+            </div>
           </TabsContent>
           
-          <TabsContent value="documents" className="m-0 h-full">
-            {/* Load Acceptance Card for pending loads */}
-            {load.status === "pending_acceptance" && (
-              <LoadAcceptanceCard load={load} onLoadUpdate={onLoadUpdate} />
-            )}
-            
-            <LoadDocumentsContent />
+          <TabsContent value="documents" className="h-full m-0">
+            <div className="h-full overflow-y-auto space-y-6 pt-6 pb-6" style={{ backgroundColor: '#F5F6FA' }}>
+              {/* Load Acceptance Card for pending loads */}
+              {load.status === "pending_acceptance" && (
+                <LoadAcceptanceCard load={load} onLoadUpdate={onLoadUpdate} />
+              )}
+              
+              <LoadDocumentsContent />
+            </div>
           </TabsContent>
           
-          <TabsContent value="intelligence" className="m-0 h-full">
-            {/* Load Acceptance Card for pending loads */}
-            {load.status === "pending_acceptance" && (
-              <LoadAcceptanceCard load={load} onLoadUpdate={onLoadUpdate} />
-            )}
-            
-            <LoadIntelligenceContent load={load} />
+          <TabsContent value="intelligence" className="h-full m-0">
+            <div className="h-full overflow-y-auto space-y-6 pt-6 pb-6" style={{ backgroundColor: '#F5F6FA' }}>
+              {/* Load Acceptance Card for pending loads */}
+              {load.status === "pending_acceptance" && (
+                <LoadAcceptanceCard load={load} onLoadUpdate={onLoadUpdate} />
+              )}
+              
+              <LoadIntelligenceContent load={load} />
+            </div>
           </TabsContent>
         </div>
       </Tabs>
