@@ -129,16 +129,18 @@ const NewLoadPage = () => {
             onFileUpload={handleFileUpload}
           />
 
-          {/* Right Panel - Load Details */}
-          <div className="w-1/2 bg-white">
-            <div className="p-6 space-y-6">
-              <NewLoadFormData 
-                formData={formData}
-                onInputChange={handleInputChange}
-              />
+          {/* Right Panel - Load Details - Added proper scrolling */}
+          <div className="w-1/2 bg-white flex flex-col overflow-hidden">
+            <div className="flex-1 overflow-y-auto">
+              <div className="p-6 space-y-6">
+                <NewLoadFormData 
+                  formData={formData}
+                  onInputChange={handleInputChange}
+                />
 
-              {/* Summary Section */}
-              <NewLoadSummaryCard />
+                {/* Summary Section */}
+                <NewLoadSummaryCard />
+              </div>
             </div>
           </div>
         </div>
