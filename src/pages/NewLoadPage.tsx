@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NavigationSidebar from "@/components/NavigationSidebar";
@@ -157,12 +156,8 @@ const NewLoadPage = () => {
                   {uploadedDocs.length === 0 ? (
                     /* Empty State */
                     <div className="text-center py-12">
-                      <div className="w-32 h-32 mx-auto mb-6">
-                        <img 
-                          src="/lovable-uploads/ad7b3d1c-33b6-4157-9f06-f48286cb588c.png" 
-                          alt="Upload illustration"
-                          className="w-full h-full object-contain"
-                        />
+                      <div className="w-16 h-16 mx-auto mb-6 bg-slate-100 rounded-lg flex items-center justify-center">
+                        <FileText className="w-8 h-8 text-slate-400" />
                       </div>
                       <h3 className="text-lg font-medium text-slate-900 mb-2">Add A Rate Con</h3>
                       <p className="text-slate-600 mb-6">We'll fill out the load details for you</p>
