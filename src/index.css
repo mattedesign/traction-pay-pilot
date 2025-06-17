@@ -94,4 +94,19 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  html {
+    @apply bg-white;
+  }
+
+  /* Ensure proper mobile viewport handling */
+  html, body {
+    min-height: 100vh;
+    background-color: white;
+  }
+
+  /* Fix mobile browser UI coloring */
+  meta[name="theme-color"] {
+    content: "#ffffff";
+  }
 }
