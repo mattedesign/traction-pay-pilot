@@ -4,16 +4,28 @@ import NavigationSidebar from "@/components/NavigationSidebar";
 import SmartInsightsDashboard from "@/components/insights/SmartInsightsDashboard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Brain, TrendingUp, Users, DollarSign } from "lucide-react";
+import { LoadService } from "@/services/loadService";
+import { FactoringService } from "@/services/factoringService";
 
 const FactorDashboard = () => {
   const { profile } = useAuth();
 
-  // Mock carrier data for the factor demo user
-  const mockCarrierData = {
-    monthlyRevenue: 48500,
-    factoringRate: 2.5,
-    loadCount: 22,
-    onTimeRate: 96,
+  // Get real load data and calculate factoring insights
+  const allLoads = LoadService.getAllLoads();
+  const factoringInsights = FactoringService.generateFactoringInsights(allLoads);
+  const factoredLoads = FactoringService.getFactoredLoads(allLoads);
+  
+  // Calculate real carrier data from factored loads
+  const factoredRevenue = factoredLoads.reduce((total, load) => {
+    const amount = parseFloat(load.amount.replace('$', '').replace(',', ''));
+    return total + amount;
+  }, 0);
+
+  const realCarrierData = {
+    monthlyRevenue: factoredRevenue,
+    factoringRate: factoringInsights.averageFactoringRate,
+    loadCount: factoringInsights.factoredCount,
+    onTimeRate: 96, // Mock performance data - in real app would come from actual metrics
     fuelEfficiency: 6.8
   };
 
@@ -107,7 +119,7 @@ const FactorDashboard = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <SmartInsightsDashboard carrierData={mockCarrierData} />
+              <SmartInsightsDashboard carrierData={realCarrierData} />
             </CardContent>
           </Card>
 
@@ -115,17 +127,17 @@ const FactorDashboard = () => {
           <Card className="bg-blue-50 border-blue-200">
             <CardContent className="p-6">
               <h3 className="text-lg font-semibold text-blue-900 mb-2">
-                🚀 Traction Pay Intelligence Demo
+                🚀 Traction Pay Intelligence - Factoring Focus
               </h3>
               <p className="text-blue-800">
-                This dashboard demonstrates our AI-powered factoring intelligence platform. 
-                Real implementations provide personalized insights based on your actual 
-                carrier data, load history, and performance metrics.
+                This dashboard provides AI-powered insights specifically for your factored loads. 
+                The intelligence system analyzes {factoringInsights.factoredCount} factored loads out of {allLoads.length} total loads 
+                to provide personalized recommendations for cost optimization and business growth.
               </p>
               <div className="mt-4 text-sm text-blue-700">
-                <strong>Key Features:</strong> Real-time cost analysis, personalized AI coaching, 
-                load profitability intelligence, performance benchmarking, and smart alerts 
-                for cost savings opportunities.
+                <strong>Factoring Intelligence Features:</strong> Real-time cost analysis, factoring rate optimization, 
+                load profitability insights for factored shipments, performance benchmarking, and smart alerts 
+                for factoring cost savings opportunities.
               </div>
             </CardContent>
           </Card>

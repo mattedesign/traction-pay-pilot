@@ -9,6 +9,11 @@ export interface Load {
   pickupTime: string;
   deliveryTime?: string; // Add optional deliveryTime property
   distance: string;
+  factoring?: {
+    isFactored: boolean;
+    rate?: number;
+    company?: string;
+  };
   rateConfirmation?: {
     originalRate: string;
     commodity: string;

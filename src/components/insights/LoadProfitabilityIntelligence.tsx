@@ -3,6 +3,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { TrendingUp, TrendingDown, AlertCircle, Star } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { LoadService } from "@/services/loadService";
+import { FactoringService } from "@/services/factoringService";
 
 interface LoadProfitabilityIntelligenceProps {
   carrierData: {
@@ -13,57 +15,39 @@ interface LoadProfitabilityIntelligenceProps {
 }
 
 const LoadProfitabilityIntelligence = ({ carrierData }: LoadProfitabilityIntelligenceProps) => {
-  // Mock load profitability data
-  const loads = [
-    {
-      id: "1234",
-      customer: "FastShip Logistics",
-      route: "Atlanta, GA → Miami, FL",
-      grossRevenue: 2850,
-      factoringFee: 57,
-      fuelCost: 485,
-      opportunityCost: 200,
-      netProfit: 2108,
-      profitMargin: 73.9,
-      rating: "excellent"
-    },
-    {
-      id: "5678", 
-      customer: "Quick Freight Co",
-      route: "Dallas, TX → Houston, TX",
-      grossRevenue: 1200,
-      factoringFee: 24,
-      fuelCost: 180,
-      opportunityCost: 150,
-      netProfit: 846,
-      profitMargin: 70.5,
-      rating: "good"
-    },
-    {
-      id: "9012",
-      customer: "Bargain Shipping",
-      route: "Phoenix, AZ → Los Angeles, CA", 
-      grossRevenue: 980,
-      factoringFee: 19.6,
-      fuelCost: 165,
-      opportunityCost: 180,
-      netProfit: 615.4,
-      profitMargin: 62.8,
-      rating: "fair"
-    },
-    {
-      id: "3456",
-      customer: "LowRate Express",
-      route: "Chicago, IL → Detroit, MI",
-      grossRevenue: 750,
-      factoringFee: 15,
-      fuelCost: 120,
-      opportunityCost: 200,
-      netProfit: 415,
-      profitMargin: 55.3,
-      rating: "poor"
-    }
-  ];
+  // Get real factored loads data
+  const allLoads = LoadService.getAllLoads();
+  const factoredLoads = FactoringService.getFactoredLoads(allLoads);
+  
+  // Transform factored loads into profitability analysis
+  const loads = factoredLoads.slice(0, 4).map(load => {
+    const grossRevenue = parseFloat(load.amount.replace('$', '').replace(',', ''));
+    const factoringFee = FactoringService.calculateFactoringCost(load);
+    const fuelCost = load.fuelCost ? parseFloat(load.fuelCost.replace('$', '').replace(',', '')) : grossRevenue * 0.15; // Estimate if not provided
+    const opportunityCost = 150; // Base opportunity cost
+    const netProfit = grossRevenue - factoringFee - fuelCost - opportunityCost;
+    const profitMargin = (netProfit / grossRevenue) * 100;
+    
+    let rating = 'poor';
+    if (profitMargin >= 70) rating = 'excellent';
+    else if (profitMargin >= 60) rating = 'good';
+    else if (profitMargin >= 50) rating = 'fair';
+    
+    return {
+      id: load.id,
+      customer: load.broker,
+      route: `${load.origin} → ${load.destination}`,
+      grossRevenue,
+      factoringFee,
+      fuelCost,
+      opportunityCost,
+      netProfit,
+      profitMargin,
+      rating,
+      isFactored: true,
+      factoringRate: FactoringService.getFactoringRate(load)
+    };
+  });
   
   const getRatingColor = (rating: string) => {
     switch (rating) {
@@ -85,6 +69,14 @@ const LoadProfitabilityIntelligence = ({ carrierData }: LoadProfitabilityIntelli
     }
   };
   
+  if (loads.length === 0) {
+    return (
+      <div className="text-center py-8">
+        <p className="text-slate-600">No factored loads available for profitability analysis.</p>
+      </div>
+    );
+  }
+  
   const avgProfitMargin = loads.reduce((sum, load) => sum + load.profitMargin, 0) / loads.length;
   const highMarginLoads = loads.filter(load => load.profitMargin > avgProfitMargin);
   const lowMarginLoads = loads.filter(load => load.profitMargin <= 60);
@@ -97,6 +89,7 @@ const LoadProfitabilityIntelligence = ({ carrierData }: LoadProfitabilityIntelli
           <CardContent className="p-4 text-center">
             <div className="text-2xl font-bold text-green-900">{avgProfitMargin.toFixed(1)}%</div>
             <div className="text-sm text-green-700">Average Profit Margin</div>
+            <div className="text-xs text-green-600">Factored Loads Only</div>
           </CardContent>
         </Card>
         
@@ -104,6 +97,7 @@ const LoadProfitabilityIntelligence = ({ carrierData }: LoadProfitabilityIntelli
           <CardContent className="p-4 text-center">
             <div className="text-2xl font-bold text-blue-900">{highMarginLoads.length}</div>
             <div className="text-sm text-blue-700">High-Margin Customers</div>
+            <div className="text-xs text-blue-600">Above Average</div>
           </CardContent>
         </Card>
         
@@ -111,13 +105,14 @@ const LoadProfitabilityIntelligence = ({ carrierData }: LoadProfitabilityIntelli
           <CardContent className="p-4 text-center">
             <div className="text-2xl font-bold text-red-900">{lowMarginLoads.length}</div>
             <div className="text-sm text-red-700">Low-Margin Routes</div>
+            <div className="text-xs text-red-600">Needs Attention</div>
           </CardContent>
         </Card>
       </div>
       
       {/* Load Analysis */}
       <div className="space-y-4">
-        <h4 className="font-semibold text-slate-900">Recent Load Profitability</h4>
+        <h4 className="font-semibold text-slate-900">Recent Factored Load Profitability</h4>
         
         {loads.map((load) => (
           <Card key={load.id} className="bg-white">
@@ -126,6 +121,7 @@ const LoadProfitabilityIntelligence = ({ carrierData }: LoadProfitabilityIntelli
                 <div>
                   <div className="font-medium text-slate-900">Load #{load.id} - {load.customer}</div>
                   <div className="text-sm text-slate-600">{load.route}</div>
+                  <div className="text-xs text-blue-600">Factoring Rate: {load.factoringRate}%</div>
                 </div>
                 <Badge className={getRatingColor(load.rating)}>
                   {getRatingIcon(load.rating)}
@@ -140,15 +136,15 @@ const LoadProfitabilityIntelligence = ({ carrierData }: LoadProfitabilityIntelli
                 </div>
                 <div>
                   <div className="text-slate-600">Factoring Fee</div>
-                  <div className="font-medium text-red-600">-${load.factoringFee}</div>
+                  <div className="font-medium text-red-600">-${load.factoringFee.toFixed(0)}</div>
                 </div>
                 <div>
                   <div className="text-slate-600">Fuel Cost</div>
-                  <div className="font-medium text-red-600">-${load.fuelCost}</div>
+                  <div className="font-medium text-red-600">-${load.fuelCost.toFixed(0)}</div>
                 </div>
                 <div>
                   <div className="text-slate-600">Net Profit</div>
-                  <div className="font-medium text-green-600">${load.netProfit.toLocaleString()}</div>
+                  <div className="font-medium text-green-600">${load.netProfit.toFixed(0)}</div>
                 </div>
               </div>
               
@@ -162,7 +158,7 @@ const LoadProfitabilityIntelligence = ({ carrierData }: LoadProfitabilityIntelli
               
               {load.profitMargin < 60 && (
                 <div className="mt-3 p-2 bg-orange-50 rounded text-sm text-orange-800">
-                  ⚠️ Consider renegotiating rates or optimizing route efficiency for this customer
+                  ⚠️ Consider renegotiating factoring rates or optimizing route efficiency for this customer
                 </div>
               )}
             </CardContent>
@@ -170,15 +166,16 @@ const LoadProfitabilityIntelligence = ({ carrierData }: LoadProfitabilityIntelli
         ))}
       </div>
       
-      {/* Recommendations */}
+      {/* Factoring-Specific Recommendations */}
       <Card className="bg-blue-50 border-blue-200">
         <CardContent className="p-4">
-          <h4 className="font-semibold text-blue-900 mb-2">Profitability Recommendations</h4>
+          <h4 className="font-semibold text-blue-900 mb-2">Factoring Profitability Recommendations</h4>
           <ul className="space-y-1 text-sm text-blue-800">
-            <li>• Focus on customers like {highMarginLoads[0]?.customer} - your highest margin performer</li>
-            <li>• Negotiate better rates with low-margin customers or consider alternatives</li>
-            <li>• Fuel optimization could improve margins by 2-3% across all loads</li>
-            <li>• Consider premium customers for loads over 500 miles - they typically pay 10-15% more</li>
+            <li>• Focus on customers like {highMarginLoads[0]?.customer} - your highest margin factored performer</li>
+            <li>• Negotiate better factoring rates for high-volume customers</li>
+            <li>• Consider volume discounts when factoring rates exceed 3%</li>
+            <li>• Fuel optimization could improve factored load margins by 2-3%</li>
+            <li>• Premium factoring customers typically offer better net margins despite fees</li>
           </ul>
         </CardContent>
       </Card>

@@ -13,6 +13,11 @@ export const mockLoadsData: Load[] = [
     deliveryTime: "Jun 8, 3:00 PM",
     distance: "240 miles",
     source: "tms",
+    factoring: {
+      isFactored: true,
+      rate: 2.5,
+      company: "Traction Pay"
+    },
     tmsData: {
       loadNumber: "TMS-001",
       brokerLoadNumber: "CLP-45821",
@@ -43,6 +48,11 @@ export const mockLoadsData: Load[] = [
     distance: "860 miles",
     source: "manual",
     fuelCost: "$320.00",
+    factoring: {
+      isFactored: true,
+      rate: 3.0,
+      company: "Traction Pay"
+    },
     rateConfirmation: {
       originalRate: "$1,450.00",
       commodity: "Manufacturing Equipment",
@@ -60,6 +70,9 @@ export const mockLoadsData: Load[] = [
     deliveryTime: "Today 4:30 PM",
     distance: "45 miles",
     source: "manual",
+    factoring: {
+      isFactored: false
+    },
     rateConfirmation: {
       originalRate: "$500.00",
       commodity: "General Freight",
@@ -77,6 +90,11 @@ export const mockLoadsData: Load[] = [
     deliveryTime: "May 29, 6:00 PM",
     distance: "332 miles",
     source: "manual",
+    factoring: {
+      isFactored: true,
+      rate: 2.8,
+      company: "Traction Pay"
+    },
     rateConfirmation: {
       originalRate: "$750.00",
       commodity: "Electronics",
@@ -94,6 +112,9 @@ export const mockLoadsData: Load[] = [
     deliveryTime: "Jun 7, 6:00 PM",
     distance: "1,100 miles",
     source: "manual",
+    factoring: {
+      isFactored: false
+    },
     rateConfirmation: {
       originalRate: "$1,200.00",
       commodity: "Electronics",
@@ -111,6 +132,11 @@ export const mockLoadsData: Load[] = [
     deliveryTime: "Jun 6, 4:00 PM",
     distance: "173 miles",
     source: "manual",
+    factoring: {
+      isFactored: true,
+      rate: 2.2,
+      company: "Traction Pay"
+    },
     rateConfirmation: {
       originalRate: "$850.00",
       commodity: "Machinery",
@@ -128,6 +154,11 @@ export const mockLoadsData: Load[] = [
     deliveryTime: "May 28, 2:00 PM",
     distance: "240 miles",
     source: "manual",
+    factoring: {
+      isFactored: true,
+      rate: 2.7,
+      company: "Traction Pay"
+    },
     rateConfirmation: {
       originalRate: "$650.00",
       commodity: "Steel Coils",
@@ -145,6 +176,9 @@ export const mockLoadsData: Load[] = [
     deliveryTime: "May 26, 10:00 AM",
     distance: "280 miles",
     source: "manual",
+    factoring: {
+      isFactored: false
+    },
     rateConfirmation: {
       originalRate: "$950.00",
       commodity: "Auto Parts",
@@ -162,6 +196,11 @@ export const mockLoadsData: Load[] = [
     deliveryTime: "May 20, 4:00 PM",
     distance: "270 miles",
     source: "manual",
+    factoring: {
+      isFactored: true,
+      rate: 2.4,
+      company: "Traction Pay"
+    },
     rateConfirmation: {
       originalRate: "$1,150.00",
       commodity: "Consumer Goods",
@@ -179,6 +218,9 @@ export const mockLoadsData: Load[] = [
     deliveryTime: "May 18, 6:00 PM",
     distance: "250 miles",
     source: "manual",
+    factoring: {
+      isFactored: false
+    },
     rateConfirmation: {
       originalRate: "$720.00",
       commodity: "Food Products",
