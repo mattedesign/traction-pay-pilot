@@ -18,6 +18,7 @@ const LoadAcceptanceCard = ({ load }: LoadAcceptanceCardProps) => {
   const { toast } = useToast();
   const [isAccepting, setIsAccepting] = useState(false);
   const [isRejecting, setIsRejecting] = useState(false);
+  const [isHidden, setIsHidden] = useState(false);
 
   const handleAcceptLoad = async () => {
     setIsAccepting(true);
@@ -31,13 +32,16 @@ const LoadAcceptanceCard = ({ load }: LoadAcceptanceCardProps) => {
           message: `Load #${load.id} has been accepted and is ready for pickup`,
           read: false,
           actionUrl: `/load/${load.id}`,
-          userType: "carrier" // Add the required userType property
+          userType: "carrier"
         });
         
         toast({
           title: "Load Accepted",
           description: `Load #${load.id} has been accepted successfully`,
         });
+        
+        // Hide the alert immediately
+        setIsHidden(true);
         
         navigate(`/load/${load.id}`);
       }
@@ -55,6 +59,9 @@ const LoadAcceptanceCard = ({ load }: LoadAcceptanceCardProps) => {
   const handleRejectLoad = async () => {
     setIsRejecting(true);
     try {
+      // Hide the alert immediately
+      setIsHidden(true);
+      
       // In a real app, this would update the load status to rejected
       toast({
         title: "Load Rejected",
@@ -72,7 +79,7 @@ const LoadAcceptanceCard = ({ load }: LoadAcceptanceCardProps) => {
     }
   };
 
-  if (load.status !== "pending_acceptance") {
+  if (load.status !== "pending_acceptance" || isHidden) {
     return null;
   }
 
