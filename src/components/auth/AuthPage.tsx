@@ -78,9 +78,19 @@ const AuthPage = () => {
             </div>
 
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="grid w-full grid-cols-2 mb-6">
-                <TabsTrigger value="login">Sign In</TabsTrigger>
-                <TabsTrigger value="signup">Sign Up</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-2 mb-6 bg-slate-100 p-1 rounded-lg">
+                <TabsTrigger 
+                  value="login" 
+                  className="rounded-md py-2 px-4 text-sm font-medium transition-all data-[state=active]:bg-slate-800 data-[state=active]:text-white data-[state=inactive]:text-slate-600 data-[state=inactive]:hover:text-slate-800"
+                >
+                  Sign In
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="signup"
+                  className="rounded-md py-2 px-4 text-sm font-medium transition-all data-[state=active]:bg-slate-800 data-[state=active]:text-white data-[state=inactive]:text-slate-600 data-[state=inactive]:hover:text-slate-800"
+                >
+                  Sign Up
+                </TabsTrigger>
               </TabsList>
               <TabsContent value="login">
                 <LoginForm />
