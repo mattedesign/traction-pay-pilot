@@ -21,73 +21,80 @@ interface NewLoadFormDataProps {
 
 const NewLoadFormData = ({ formData, onInputChange }: NewLoadFormDataProps) => {
   return (
-    <div className="space-y-4">
-      <div>
-        <Label htmlFor="loadId" className="text-sm font-medium text-slate-700">Load #</Label>
-        <Input
-          id="loadId"
-          value={formData.loadId}
-          onChange={(e) => onInputChange('loadId', e.target.value)}
-          placeholder="3249883"
-          className="mt-1"
-        />
-      </div>
-
-      <div>
-        <Label htmlFor="linehaul" className="text-sm font-medium text-slate-700">
-          <span className="inline-flex items-center">
-            💰 Linehaul
-          </span>
-        </Label>
-        <Input
-          id="linehaul"
-          value={formData.linehaul}
-          onChange={(e) => onInputChange('linehaul', e.target.value)}
-          placeholder="$1,250.00"
-          className="mt-1"
-        />
-      </div>
-
-      <div>
-        <Label htmlFor="broker" className="text-sm font-medium text-slate-700">
-          <span className="inline-flex items-center">
-            👤 Broker
-          </span>
-        </Label>
-        <div className="mt-1 relative">
+    <div className="space-y-6">
+      {/* First Row - Load # and Linehaul */}
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <Label htmlFor="loadId" className="text-sm font-medium text-slate-700">Load #</Label>
           <Input
-            id="broker"
-            value={formData.broker}
-            onChange={(e) => onInputChange('broker', e.target.value)}
-            placeholder="Mainstreet Brokerage"
+            id="loadId"
+            value={formData.loadId}
+            onChange={(e) => onInputChange('loadId', e.target.value)}
+            placeholder="3249883"
+            className="mt-1"
           />
-          {formData.broker && (
-            <Button
-              size="icon"
-              variant="ghost"
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 w-6 h-6"
-              onClick={() => onInputChange('broker', '')}
-            >
-              <X className="w-3 h-3" />
-            </Button>
-          )}
+        </div>
+
+        <div>
+          <Label htmlFor="linehaul" className="text-sm font-medium text-slate-700">
+            <span className="inline-flex items-center">
+              💰 Linehaul
+            </span>
+          </Label>
+          <Input
+            id="linehaul"
+            value={formData.linehaul}
+            onChange={(e) => onInputChange('linehaul', e.target.value)}
+            placeholder="$1,250.00"
+            className="mt-1"
+          />
         </div>
       </div>
 
-      <div>
-        <Label htmlFor="factor" className="text-sm font-medium text-slate-700">
-          <span className="inline-flex items-center">
-            👤 Factor
-          </span>
-        </Label>
-        <Input
-          id="factor"
-          value={formData.factor}
-          onChange={(e) => onInputChange('factor', e.target.value)}
-          className="mt-1"
-        />
+      {/* Second Row - Broker and Factor */}
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <Label htmlFor="broker" className="text-sm font-medium text-slate-700">
+            <span className="inline-flex items-center">
+              👤 Broker
+            </span>
+          </Label>
+          <div className="mt-1 relative">
+            <Input
+              id="broker"
+              value={formData.broker}
+              onChange={(e) => onInputChange('broker', e.target.value)}
+              placeholder="Mainstreet Brokerage"
+            />
+            {formData.broker && (
+              <Button
+                size="icon"
+                variant="ghost"
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 w-6 h-6"
+                onClick={() => onInputChange('broker', '')}
+              >
+                <X className="w-3 h-3" />
+              </Button>
+            )}
+          </div>
+        </div>
+
+        <div>
+          <Label htmlFor="factor" className="text-sm font-medium text-slate-700">
+            <span className="inline-flex items-center">
+              👤 Factor
+            </span>
+          </Label>
+          <Input
+            id="factor"
+            value={formData.factor}
+            onChange={(e) => onInputChange('factor', e.target.value)}
+            className="mt-1"
+          />
+        </div>
       </div>
 
+      {/* Third Row - Funding (full width) */}
       <div>
         <Label htmlFor="funding" className="text-sm font-medium text-slate-700">
           <span className="inline-flex items-center">
@@ -108,34 +115,37 @@ const NewLoadFormData = ({ formData, onInputChange }: NewLoadFormDataProps) => {
         </div>
       </div>
 
-      <div>
-        <Label htmlFor="invoiceNumber" className="text-sm font-medium text-slate-700">
-          <span className="inline-flex items-center">
-            📄 Invoice #
-          </span>
-        </Label>
-        <Input
-          id="invoiceNumber"
-          value={formData.invoiceNumber}
-          onChange={(e) => onInputChange('invoiceNumber', e.target.value)}
-          placeholder="#090345035"
-          className="mt-1"
-        />
-      </div>
+      {/* Fourth Row - Invoice # and Expected Pay Date */}
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <Label htmlFor="invoiceNumber" className="text-sm font-medium text-slate-700">
+            <span className="inline-flex items-center">
+              📄 Invoice #
+            </span>
+          </Label>
+          <Input
+            id="invoiceNumber"
+            value={formData.invoiceNumber}
+            onChange={(e) => onInputChange('invoiceNumber', e.target.value)}
+            placeholder="#090345035"
+            className="mt-1"
+          />
+        </div>
 
-      <div>
-        <Label htmlFor="expectedPayDate" className="text-sm font-medium text-slate-700">
-          <span className="inline-flex items-center">
-            📅 Expected Pay Date
-          </span>
-        </Label>
-        <Input
-          id="expectedPayDate"
-          value={formData.expectedPayDate}
-          onChange={(e) => onInputChange('expectedPayDate', e.target.value)}
-          placeholder="Monday, March 26, 2025"
-          className="mt-1"
-        />
+        <div>
+          <Label htmlFor="expectedPayDate" className="text-sm font-medium text-slate-700">
+            <span className="inline-flex items-center">
+              📅 Expected Pay Date
+            </span>
+          </Label>
+          <Input
+            id="expectedPayDate"
+            value={formData.expectedPayDate}
+            onChange={(e) => onInputChange('expectedPayDate', e.target.value)}
+            placeholder="Monday, March 26, 2025"
+            className="mt-1"
+          />
+        </div>
       </div>
     </div>
   );
