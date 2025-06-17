@@ -23,7 +23,7 @@ const LoadsSidebarContent = ({ loads, getAvatarIcon, onLoadSelect, selectedLoadI
           <div key={load.id} className="mb-3">
             <LoadItem 
               load={load} 
-              getAvatarIcon={getAvatarIcon}
+              avatarIcon={getAvatarIcon(load.broker)}
               onClick={() => handleLoadClick(load)}
               isSelected={selectedLoadId === load.id}
             />
