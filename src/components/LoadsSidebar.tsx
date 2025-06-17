@@ -4,11 +4,17 @@ import { useNavigate } from "react-router-dom";
 import { LoadService } from "@/services/loadService";
 import { EmailService, EmailThread } from "@/services/emailService";
 import { Load } from "@/types/load";
-import { Building2, Truck, Package, ShoppingCart, Zap, Globe, Target, Briefcase } from "lucide-react";
+import { Building2, Truck, Package, ShoppingCart, Zap, Globe, Target, Briefcase, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import LoadsSidebarHeader from "./LoadsSidebarHeader";
 import LoadsSidebarContent from "./LoadsSidebarContent";
 
-const LoadsSidebar = () => {
+interface LoadsSidebarProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+}
+
+const LoadsSidebar = ({ isOpen = true, onClose }: LoadsSidebarProps) => {
   const navigate = useNavigate();
   const [loads, setLoads] = useState<Load[]>([]);
   const [emailThreads, setEmailThreads] = useState<Map<string, EmailThread[]>>(new Map());
@@ -78,7 +84,7 @@ const LoadsSidebar = () => {
 
   if (isLoading) {
     return (
-      <div className="w-80 bg-white text-slate-900 h-screen flex flex-col shadow-sm border-r border-slate-200">
+      <div className={`${isOpen ? 'block' : 'hidden'} md:block w-full md:w-80 bg-white text-slate-900 h-screen flex flex-col shadow-sm border-r border-slate-200`}>
         <div className="p-4 border-b border-slate-200">
           <div className="flex items-center justify-center">
             <div className="text-slate-500">Loading...</div>
@@ -89,10 +95,30 @@ const LoadsSidebar = () => {
   }
 
   return (
-    <div className="w-80 bg-white text-slate-900 h-screen flex flex-col shadow-sm border-r border-slate-200">
-      <LoadsSidebarHeader onNewLoad={handleNewLoad} />
-      <LoadsSidebarContent loads={loads} getAvatarIcon={getAvatarIcon} />
-    </div>
+    <>
+      {/* Mobile Overlay */}
+      {isOpen && (
+        <div className="md:hidden fixed inset-0 z-40 bg-black bg-opacity-50" onClick={onClose}>
+          <div className="bg-white w-80 h-full shadow-lg" onClick={e => e.stopPropagation()}>
+            {/* Mobile close button */}
+            <div className="flex justify-end p-4 border-b border-slate-200">
+              <Button variant="ghost" size="icon" onClick={onClose}>
+                <X className="w-5 h-5" />
+              </Button>
+            </div>
+            
+            <LoadsSidebarHeader onNewLoad={handleNewLoad} />
+            <LoadsSidebarContent loads={loads} getAvatarIcon={getAvatarIcon} />
+          </div>
+        </div>
+      )}
+
+      {/* Desktop Sidebar */}
+      <div className="hidden md:block w-80 bg-white text-slate-900 h-screen flex-col shadow-sm border-r border-slate-200">
+        <LoadsSidebarHeader onNewLoad={handleNewLoad} />
+        <LoadsSidebarContent loads={loads} getAvatarIcon={getAvatarIcon} />
+      </div>
+    </>
   );
 };
 
