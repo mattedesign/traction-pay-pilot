@@ -73,7 +73,7 @@ export class NotificationService {
     }
   ];
 
-  static getAllNotifications(userType?: "carrier" | "broker"): LoadNotification[] {
+  static getAllNotifications(userType?: "carrier" | "broker" | "habitually_late_carrier"): LoadNotification[] {
     if (!userType) {
       return this.notifications.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
     }
@@ -83,7 +83,7 @@ export class NotificationService {
       .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
   }
 
-  static getUnreadNotifications(userType?: "carrier" | "broker"): LoadNotification[] {
+  static getUnreadNotifications(userType?: "carrier" | "broker" | "habitually_late_carrier"): LoadNotification[] {
     if (!userType) {
       return this.notifications.filter(n => !n.read);
     }
@@ -99,7 +99,7 @@ export class NotificationService {
     }
   }
 
-  static markAllAsRead(userType?: "carrier" | "broker"): void {
+  static markAllAsRead(userType?: "carrier" | "broker" | "habitually_late_carrier"): void {
     if (!userType) {
       this.notifications.forEach(n => n.read = true);
       return;
@@ -119,7 +119,7 @@ export class NotificationService {
     this.notifications.unshift(newNotification);
   }
 
-  static getUnreadCount(userType?: "carrier" | "broker"): number {
+  static getUnreadCount(userType?: "carrier" | "broker" | "habitually_late_carrier"): number {
     if (!userType) {
       return this.notifications.filter(n => !n.read).length;
     }
