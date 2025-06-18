@@ -5,6 +5,7 @@ import { Menu } from "lucide-react";
 import NavigationSidebar from "@/components/NavigationSidebar";
 import LoadsSidebar from "@/components/LoadsSidebar";
 import LoadMainContent from "@/components/LoadMainContent";
+import LoadsSummaryView from "@/components/LoadsSummaryView";
 import { Load } from "@/types/load";
 
 const LoadsPage = () => {
@@ -44,12 +45,7 @@ const LoadsPage = () => {
         {selectedLoad ? (
           <LoadMainContent loadData={selectedLoad} />
         ) : (
-          <div className="flex-1 flex items-center justify-center p-4" style={{ backgroundColor: '#F5F6FA' }}>
-            <div className="text-center text-slate-500 max-w-sm">
-              <h3 className="text-lg font-medium mb-2">Select a load to view details</h3>
-              <p className="text-sm">Choose a load from the sidebar to see its information</p>
-            </div>
-          </div>
+          <LoadsSummaryView onLoadSelect={handleLoadSelect} />
         )}
       </div>
     </div>
