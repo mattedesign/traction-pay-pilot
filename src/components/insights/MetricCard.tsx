@@ -9,7 +9,7 @@ interface MetricCardProps {
   trendIcon: LucideIcon;
   trendValue: string;
   trendLabel: string;
-  icon: LucideIcon;
+  icon: LucideIcon | (() => JSX.Element);
   iconBgColor: string;
   iconColor: string;
   trendColor: string;
@@ -27,6 +27,18 @@ const MetricCard = ({
   iconColor,
   trendColor
 }: MetricCardProps) => {
+  const renderIcon = () => {
+    if (typeof Icon === 'function' && Icon.prototype === undefined) {
+      // This is a custom JSX function
+      const CustomIcon = Icon as () => JSX.Element;
+      return <CustomIcon />;
+    } else {
+      // This is a Lucide icon component
+      const LucideIcon = Icon as LucideIcon;
+      return <LucideIcon className={`w-5 h-5 ${iconColor}`} />;
+    }
+  };
+
   return (
     <Card className="bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
       <CardContent className="p-6">
@@ -36,7 +48,7 @@ const MetricCard = ({
             <div className="text-slate-400 text-xs">{subtitle}</div>
           </div>
           <div className={`w-8 h-8 ${iconBgColor} rounded-lg flex items-center justify-center`}>
-            <Icon className={`w-5 h-5 ${iconColor}`} />
+            {renderIcon()}
           </div>
         </div>
         <div className="space-y-2">
