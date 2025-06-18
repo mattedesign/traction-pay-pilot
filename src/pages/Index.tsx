@@ -5,7 +5,6 @@ import SmallCarrierDashboard from "@/components/adaptive/SmallCarrierDashboard";
 import LargeCarrierDashboard from "@/components/adaptive/LargeCarrierDashboard";
 import CarrierSizeDetector from "@/components/adaptive/CarrierSizeDetector";
 import TabbedDashboard from "@/components/TabbedDashboard";
-import FactorDashboard from "@/components/FactorDashboard";
 import { useNavigate } from "react-router-dom";
 
 export interface CarrierProfile {
@@ -35,18 +34,20 @@ const Index = () => {
 
       console.log('Fetching carrier profile for user:', profile.email);
 
-      // Check if this is the factor demo user
-      if (profile.email === 'factor.demo@tractionpay.com') {
-        // Factor demo user gets their own special dashboard
-        console.log('Factor demo user detected, showing special dashboard');
-        setIsLoading(false);
-        return;
-      }
-
       // Determine onboarding status based on user email
       let mockProfile: CarrierProfile;
 
-      if (profile.email === 'newcarrier.demo@tractionpay.com') {
+      if (profile.email === 'factor.demo@tractionpay.com') {
+        // Factor demo user - gets onboarded profile with enterprise features
+        mockProfile = {
+          companySize: 'large',
+          fleetSize: 75,
+          userRoles: ['fleet-manager', 'executive'],
+          primaryUser: 'executive',
+          businessCoachingLevel: 'enterprise',
+          onboardingCompleted: true
+        };
+      } else if (profile.email === 'newcarrier.demo@tractionpay.com') {
         // New carrier demo - needs onboarding
         mockProfile = {
           companySize: 'small',
@@ -112,12 +113,6 @@ const Index = () => {
     );
   }
 
-  // Show factor dashboard for factor demo user
-  if (profile?.email === 'factor.demo@tractionpay.com') {
-    console.log('Rendering factor dashboard for:', profile.email);
-    return <FactorDashboard />;
-  }
-
   // Show carrier setup if not completed onboarding
   if (!carrierProfile?.onboardingCompleted) {
     console.log('Showing onboarding for user:', profile?.email, 'onboardingCompleted:', carrierProfile?.onboardingCompleted);
@@ -133,7 +128,7 @@ const Index = () => {
 
   console.log('Showing dashboard for user:', profile?.email, 'carrierProfile:', carrierProfile);
 
-  // Render tabbed dashboard for all completed onboarding users
+  // Render tabbed dashboard for all completed onboarding users (including factor demo)
   return (
     <div className="min-h-screen flex w-full bg-slate-50">
       <NavigationSidebar />
