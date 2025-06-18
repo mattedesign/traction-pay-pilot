@@ -54,7 +54,7 @@ const BrokerNavigationSidebar = () => {
   const handleNavClick = (path: string) => {
     console.log(`Navigating to ${path}`);
     navigate(path);
-    setIsMobileMenuOpen(false); // Close mobile menu after navigation
+    setIsMobileMenuOpen(false);
   };
 
   const handleLogoClick = () => {
@@ -76,53 +76,35 @@ const BrokerNavigationSidebar = () => {
 
   return (
     <>
-      {/* Mobile Header - Compact horizontal navigation */}
+      {/* Mobile Header */}
       <div className="md:hidden w-full bg-slate-800 text-white">
-        <div className="flex items-center justify-between px-3 py-2">
+        <div className="flex items-center justify-between px-4 py-3">
           <div className="flex items-center space-x-3">
             <div className="cursor-pointer" onClick={handleLogoClick}>
               <img 
                 alt="Logo" 
-                className="w-6 h-6 object-contain hover:opacity-80 transition-opacity" 
+                className="w-8 h-8 object-contain hover:opacity-80 transition-opacity" 
                 src="/lovable-uploads/b21fd570-2ee4-4af9-8ee7-44980e7d6708.png" 
               />
             </div>
-            
-            {/* Mobile navigation items - horizontal and compact */}
-            <div className="flex items-center space-x-1">
-              {brokerNavigationItems.slice(0, 3).map(item => (
-                <Button
-                  key={item.label}
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => handleNavClick(item.path)}
-                  className={`w-8 h-8 text-slate-300 hover:text-white hover:bg-slate-700 ${
-                    isActive(item.path) ? 'bg-slate-700 text-white' : ''
-                  }`}
-                  title={item.label}
-                >
-                  <item.icon className="w-4 h-4" />
-                </Button>
-              ))}
-            </div>
           </div>
           
-          <div className="flex items-center space-x-1">
+          <div className="flex items-center space-x-2">
             <NotificationBell />
             <UserProfileMenu />
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="text-white hover:bg-slate-700 w-8 h-8"
+              className="text-white hover:bg-slate-700"
             >
-              {isMobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+              {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </Button>
           </div>
         </div>
       </div>
 
-      {/* Mobile Menu Overlay - for additional items */}
+      {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
         <div className="md:hidden fixed inset-0 z-50 bg-black bg-opacity-50" onClick={() => setIsMobileMenuOpen(false)}>
           <div className="bg-slate-800 text-white w-64 h-full p-4" onClick={e => e.stopPropagation()}>
@@ -144,7 +126,6 @@ const BrokerNavigationSidebar = () => {
               </Button>
             </div>
 
-            {/* All navigation items in overlay */}
             <div className="space-y-2">
               {brokerNavigationItems.map(item => (
                 <Button
