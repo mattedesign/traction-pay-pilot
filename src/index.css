@@ -143,39 +143,65 @@
     color: hsl(var(--foreground)) !important;
   }
 
-  /* Override ALL yellow background classes */
-  .bg-yellow-50,
-  .bg-yellow-100,
-  .bg-yellow-200,
-  .bg-yellow-300,
-  .bg-yellow-400,
-  .bg-yellow-500,
-  .bg-yellow-600,
-  .bg-yellow-700,
-  .bg-yellow-800,
-  .bg-yellow-900 {
+  /* AGGRESSIVE YELLOW OVERRIDES - Target everything possible */
+  
+  /* Override ALL yellow background classes with high specificity */
+  html .bg-yellow-50,
+  html .bg-yellow-100,
+  html .bg-yellow-200,
+  html .bg-yellow-300,
+  html .bg-yellow-400,
+  html .bg-yellow-500,
+  html .bg-yellow-600,
+  html .bg-yellow-700,
+  html .bg-yellow-800,
+  html .bg-yellow-900,
+  body .bg-yellow-50,
+  body .bg-yellow-100,
+  body .bg-yellow-200,
+  body .bg-yellow-300,
+  body .bg-yellow-400,
+  body .bg-yellow-500,
+  body .bg-yellow-600,
+  body .bg-yellow-700,
+  body .bg-yellow-800,
+  body .bg-yellow-900 {
     background-color: rgb(248 250 252) !important; /* slate-50 */
     color: rgb(15 23 42) !important; /* slate-900 */
     border-color: rgb(226 232 240) !important; /* slate-200 */
   }
 
-  /* Override yellow button variants */
-  button.bg-yellow-50,
-  button.bg-yellow-100,
-  button.bg-yellow-200,
-  button.bg-yellow-300,
-  button.bg-yellow-400,
-  button.bg-yellow-500,
-  button.bg-yellow-600,
-  button.bg-yellow-700,
-  button.bg-yellow-800,
-  button.bg-yellow-900,
+  /* Override yellow button variants with extreme specificity */
+  html button.bg-yellow-50,
+  html button.bg-yellow-100,
+  html button.bg-yellow-200,
+  html button.bg-yellow-300,
+  html button.bg-yellow-400,
+  html button.bg-yellow-500,
+  html button.bg-yellow-600,
+  html button.bg-yellow-700,
+  html button.bg-yellow-800,
+  html button.bg-yellow-900,
+  body button.bg-yellow-50,
+  body button.bg-yellow-100,
+  body button.bg-yellow-200,
+  body button.bg-yellow-300,
+  body button.bg-yellow-400,
+  body button.bg-yellow-500,
+  body button.bg-yellow-600,
+  body button.bg-yellow-700,
+  body button.bg-yellow-800,
+  body button.bg-yellow-900,
   .bg-yellow-50 button,
   .bg-yellow-100 button,
   .bg-yellow-200 button,
   .bg-yellow-300 button,
   .bg-yellow-400 button,
-  .bg-yellow-500 button {
+  .bg-yellow-500 button,
+  .bg-yellow-600 button,
+  .bg-yellow-700 button,
+  .bg-yellow-800 button,
+  .bg-yellow-900 button {
     background-color: rgb(248 250 252) !important; /* slate-50 */
     color: rgb(15 23 42) !important; /* slate-900 */
     border-color: rgb(226 232 240) !important; /* slate-200 */
@@ -229,28 +255,37 @@
     border-color: rgb(226 232 240) !important; /* slate-200 */
   }
 
-  /* Target any element with yellow in its class name */
-  [class*="yellow"] {
+  /* Target any element with yellow in its class name with higher specificity */
+  html [class*="yellow"],
+  body [class*="yellow"],
+  div [class*="yellow"],
+  button [class*="yellow"] {
     background-color: rgb(248 250 252) !important; /* slate-50 */
     color: rgb(15 23 42) !important; /* slate-900 */
     border-color: rgb(226 232 240) !important; /* slate-200 */
   }
 
-  /* Override any inline styles with yellow */
+  /* Override any inline styles with yellow - more comprehensive */
   [style*="yellow"],
   [style*="#ff"],
   [style*="#FF"],
   [style*="rgb(255, 255, 0)"],
-  [style*="hsl(60,"] {
+  [style*="hsl(60,"],
+  [style*="background-color: yellow"],
+  [style*="background: yellow"],
+  [style*="bg: yellow"] {
     background-color: rgb(248 250 252) !important; /* slate-50 */
     color: rgb(15 23 42) !important; /* slate-900 */
     border-color: rgb(226 232 240) !important; /* slate-200 */
   }
 
   /* Specific overrides for common yellow button patterns */
-  button[class*="bg-yellow"],
-  .button[class*="bg-yellow"],
-  [class*="btn"][class*="yellow"] {
+  html button[class*="bg-yellow"],
+  body button[class*="bg-yellow"],
+  html .button[class*="bg-yellow"],
+  body .button[class*="bg-yellow"],
+  html [class*="btn"][class*="yellow"],
+  body [class*="btn"][class*="yellow"] {
     background-color: rgb(248 250 252) !important; /* slate-50 */
     color: rgb(15 23 42) !important; /* slate-900 */
     border: 1px solid rgb(226 232 240) !important; /* slate-200 */
@@ -261,14 +296,71 @@
     --tw-bg-opacity: 1 !important;
   }
 
-  /* Force override for any yellow utilities */
-  .bg-yellow-50,
-  .bg-yellow-100,
-  .bg-yellow-200,
-  .bg-yellow-300,
-  .bg-yellow-400,
-  .bg-yellow-500 {
+  /* Force override for any yellow utilities with maximum specificity */
+  html body .bg-yellow-50,
+  html body .bg-yellow-100,
+  html body .bg-yellow-200,
+  html body .bg-yellow-300,
+  html body .bg-yellow-400,
+  html body .bg-yellow-500 {
     --tw-bg-opacity: 1 !important;
     background-color: rgb(248 250 252 / var(--tw-bg-opacity)) !important;
+  }
+
+  /* Target specific yellow hex codes */
+  [style*="#FFFF00"],
+  [style*="#ffff00"],
+  [style*="#FFF200"],
+  [style*="#fff200"],
+  [style*="#FFEB3B"],
+  [style*="#ffeb3b"],
+  [style*="#FFD700"],
+  [style*="#ffd700"],
+  [style*="#F9F900"],
+  [style*="#f9f900"] {
+    background-color: rgb(248 250 252) !important; /* slate-50 */
+    color: rgb(15 23 42) !important; /* slate-900 */
+    border-color: rgb(226 232 240) !important; /* slate-200 */
+  }
+
+  /* Override yellow rgb values */
+  [style*="rgb(255,255,0)"],
+  [style*="rgb(255, 255, 0)"],
+  [style*="rgba(255,255,0"],
+  [style*="rgba(255, 255, 0"] {
+    background-color: rgb(248 250 252) !important; /* slate-50 */
+    color: rgb(15 23 42) !important; /* slate-900 */
+    border-color: rgb(226 232 240) !important; /* slate-200 */
+  }
+
+  /* Override yellow hsl values */
+  [style*="hsl(60,100%,50%)"],
+  [style*="hsl(60, 100%, 50%)"],
+  [style*="hsla(60,100%,50%"],
+  [style*="hsla(60, 100%, 50%"] {
+    background-color: rgb(248 250 252) !important; /* slate-50 */
+    color: rgb(15 23 42) !important; /* slate-900 */
+    border-color: rgb(226 232 240) !important; /* slate-200 */
+  }
+
+  /* Override any element with computed yellow background */
+  [style*="background-color: #"] {
+    background-color: rgb(248 250 252) !important; /* slate-50 */
+    color: rgb(15 23 42) !important; /* slate-900 */
+    border-color: rgb(226 232 240) !important; /* slate-200 */
+  }
+
+  /* Nuclear option - override anything that could remotely be yellow */
+  [class*="bg-amber"],
+  [class*="bg-lime"],
+  [class*="bg-lemon"],
+  [class*="bg-gold"],
+  [class*="text-amber"],
+  [class*="text-lime"],
+  [class*="text-lemon"],
+  [class*="text-gold"] {
+    background-color: rgb(248 250 252) !important; /* slate-50 */
+    color: rgb(15 23 42) !important; /* slate-900 */
+    border-color: rgb(226 232 240) !important; /* slate-200 */
   }
 }
