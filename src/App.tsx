@@ -208,6 +208,10 @@ const DashboardRouter = () => {
     return <BrokerDashboard />;
   }
   
+  if (profile?.user_type === 'habitually_late_carrier') {
+    return <Dashboard2Page />;
+  }
+  
   // Default to carrier dashboard with adaptive experience
   return <Index />;
 };

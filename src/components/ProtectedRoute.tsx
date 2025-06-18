@@ -4,7 +4,7 @@ import AuthPage from "./auth/AuthPage";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
-  requiredUserType?: 'carrier' | 'broker';
+  requiredUserType?: 'carrier' | 'broker' | 'habitually_late_carrier';
 }
 
 const ProtectedRoute = ({ children, requiredUserType }: ProtectedRouteProps) => {

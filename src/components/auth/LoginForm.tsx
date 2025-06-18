@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -84,6 +83,9 @@ const LoginForm = () => {
         if (profile?.user_type === 'broker') {
           console.log('Redirecting broker to /broker');
           navigate('/broker');
+        } else if (profile?.user_type === 'habitually_late_carrier') {
+          console.log('Redirecting habitually late carrier to /dashboard2');
+          navigate('/dashboard2');
         } else {
           console.log('Redirecting carrier to /');
           navigate('/');

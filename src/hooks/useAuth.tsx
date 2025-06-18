@@ -8,7 +8,7 @@ interface Profile {
   email: string;
   first_name: string | null;
   last_name: string | null;
-  user_type: 'carrier' | 'broker';
+  user_type: 'carrier' | 'broker' | 'habitually_late_carrier';
   company_name: string | null;
   phone: string | null;
   created_at: string;
@@ -53,7 +53,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       // Type cast the user_type to ensure it matches our Profile interface
       const profileData: Profile = {
         ...data,
-        user_type: data.user_type as 'carrier' | 'broker'
+        user_type: data.user_type as 'carrier' | 'broker' | 'habitually_late_carrier'
       };
 
       return profileData;
