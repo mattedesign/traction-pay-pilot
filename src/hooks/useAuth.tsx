@@ -1,3 +1,4 @@
+
 import { useState, useEffect, createContext, useContext } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
@@ -33,6 +34,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [profileFetchPromise, setProfileFetchPromise] = useState<Promise<Profile | null> | null>(null);
 
+  const clearAuthState = () => {
+    console.log('Clearing auth state due to invalid session');
+    setUser(null);
+    setProfile(null);
+    setSession(null);
+    setProfileFetchPromise(null);
+    setIsLoading(false);
+  };
+
   const fetchProfile = async (userId: string): Promise<Profile | null> => {
     try {
       console.log('Fetching profile for user:', userId);
@@ -50,7 +60,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       console.log('Profile fetched successfully:', data);
 
-      // Type cast the user_type to ensure it matches our Profile interface
       const profileData: Profile = {
         ...data,
         user_type: data.user_type as 'carrier' | 'broker'
@@ -64,13 +73,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const fetchProfileWithCache = async (userId: string): Promise<Profile | null> => {
-    // If there's already a pending fetch for this user, wait for it
     if (profileFetchPromise) {
       console.log('Waiting for existing profile fetch...');
       return await profileFetchPromise;
     }
 
-    // Create a new fetch promise
     const newPromise = fetchProfile(userId);
     setProfileFetchPromise(newPromise);
 
@@ -79,7 +86,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setProfile(result);
       return result;
     } finally {
-      // Clear the promise after completion
       setProfileFetchPromise(null);
     }
   };
@@ -99,17 +105,28 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       async (event, session) => {
         console.log('Auth state changed:', event, session?.user?.email);
         
+        // Handle sign out or session errors
+        if (event === 'SIGNED_OUT' || !session) {
+          clearAuthState();
+          return;
+        }
+
+        // Handle token refresh errors
+        if (event === 'TOKEN_REFRESHED' && !session) {
+          console.error('Token refresh failed, clearing auth state');
+          clearAuthState();
+          return;
+        }
+        
         // Update session and user immediately
         setSession(session);
         setUser(session?.user ?? null);
         
         if (session?.user) {
-          // Only fetch profile if we don't have one or user changed
           const currentProfileId = profile?.id;
           const newUserId = session.user.id;
           
           if (!currentProfileId || currentProfileId !== newUserId) {
-            // Defer profile fetching to avoid blocking auth state changes
             setTimeout(async () => {
               try {
                 await fetchProfileWithCache(session.user.id);
@@ -120,13 +137,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
               }
             }, 0);
           } else {
-            // Profile already matches, just update loading state
             setIsLoading(false);
           }
-        } else {
-          setProfile(null);
-          setProfileFetchPromise(null);
-          setIsLoading(false);
         }
       }
     );
@@ -139,6 +151,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         
         if (error) {
           console.error('Error getting session:', error);
+          // If there's an error getting the session (like invalid refresh token),
+          // clear any stale data and sign out
+          if (error.message.includes('refresh_token_not_found') || 
+              error.message.includes('Invalid Refresh Token')) {
+            console.log('Clearing stale auth data due to invalid refresh token');
+            await supabase.auth.signOut();
+            clearAuthState();
+            return;
+          }
           setIsLoading(false);
           return;
         }
@@ -153,6 +174,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
       } catch (error) {
         console.error('Error initializing auth:', error);
+        // Clear stale data on any initialization error
+        clearAuthState();
       } finally {
         setIsLoading(false);
       }
@@ -164,7 +187,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       console.log('Cleaning up auth subscription');
       subscription.unsubscribe();
     };
-  }, []); // Remove profile dependency to prevent re-initialization
+  }, []);
 
   const signOut = async () => {
     try {
@@ -175,14 +198,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         throw error;
       }
       console.log('User signed out successfully');
-      
-      // Clear local state
-      setUser(null);
-      setProfile(null);
-      setSession(null);
-      setProfileFetchPromise(null);
+      clearAuthState();
     } catch (error) {
       console.error('Error during sign out:', error);
+      // Even if sign out fails, clear local state
+      clearAuthState();
       throw error;
     }
   };
