@@ -197,7 +197,7 @@
     border-color: rgb(226 232 240) !important; /* slate-200 */
   }
 
-  /* NEW: Target notification banners and alerts */
+  /* Target notification banners and alerts */
   .notification,
   .alert,
   .banner,
@@ -215,7 +215,7 @@
     border-color: rgb(226 232 240) !important; /* slate-200 */
   }
 
-  /* NEW: Target dismiss buttons specifically */
+  /* Target dismiss buttons specifically */
   button[class*="dismiss"],
   button[data-dismiss],
   .dismiss-btn,
@@ -227,7 +227,7 @@
     border: 1px solid rgb(226 232 240) !important; /* slate-200 */
   }
 
-  /* NEW: Target bright yellow notification backgrounds */
+  /* Target bright yellow notification backgrounds */
   .bg-yellow-100.notification,
   .bg-yellow-200.notification,
   .bg-yellow-300.notification,
@@ -242,7 +242,7 @@
     border-color: rgb(226 232 240) !important; /* slate-200 */
   }
 
-  /* NEW: Override any dynamic content with yellow backgrounds */
+  /* Override any dynamic content with yellow backgrounds */
   *[style*="background-color: rgb(255, 255, 0)"],
   *[style*="background-color: hsl(60, 100%, 50%)"],
   *[style*="background: linear-gradient"] {
@@ -252,29 +252,8 @@
     background-image: none !important;
   }
 
-  /* NEW: Target any computed or generated yellow content */
+  /* Target any computed or generated yellow content */
   *[class*="yellow-"] {
-    background-color: rgb(248 250 252) !important; /* slate-50 */
-    color: rgb(15 23 42) !important; /* slate-900 */
-    border-color: rgb(226 232 240) !important; /* slate-200 */
-  }
-
-  /* NEW: Catch-all for any remaining yellow elements */
-  * {
-    background-color: white !important;
-  }
-
-  /* NEW: Override specific Tailwind yellow variants */
-  .bg-yellow-50,
-  .bg-yellow-100,
-  .bg-yellow-200,
-  .bg-yellow-300,
-  .bg-yellow-400,
-  .bg-yellow-500,
-  .bg-yellow-600,
-  .bg-yellow-700,
-  .bg-yellow-800,
-  .bg-yellow-900 {
     background-color: rgb(248 250 252) !important; /* slate-50 */
     color: rgb(15 23 42) !important; /* slate-900 */
     border-color: rgb(226 232 240) !important; /* slate-200 */
