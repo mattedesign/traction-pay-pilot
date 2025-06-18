@@ -8,6 +8,8 @@ import NetBurnCard from "@/components/dashboard2/NetBurnCard";
 import RevenueGrowthChart from "@/components/dashboard2/RevenueGrowthChart";
 import RevenueGrowthBarChart from "@/components/dashboard2/RevenueGrowthBarChart";
 import CashActivityTable from "@/components/dashboard2/CashActivityTable";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 
 const Dashboard2Page = () => {
   const { profile } = useAuth();

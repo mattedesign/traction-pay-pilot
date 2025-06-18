@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -9,7 +8,7 @@ import { NotificationService } from "@/services/notificationService";
 import { LoadNotification } from "@/types/load";
 
 interface NotificationPanelProps {
-  userType?: "carrier" | "broker";
+  userType?: "carrier" | "broker" | "habitually_late_carrier";
 }
 
 const NotificationPanel = ({ userType }: NotificationPanelProps) => {
