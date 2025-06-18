@@ -16,12 +16,7 @@ interface Invoice {
   brokerName: string;
 }
 
-interface InvoicesSidebarProps {
-  selectedInvoiceId?: string;
-  onInvoiceSelect: (invoice: Invoice) => void;
-}
-
-const InvoicesSidebar = ({ selectedInvoiceId, onInvoiceSelect }: InvoicesSidebarProps) => {
+const InvoicesSidebar = () => {
   const navigate = useNavigate();
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -80,7 +75,7 @@ const InvoicesSidebar = ({ selectedInvoiceId, onInvoiceSelect }: InvoicesSidebar
   }, []);
 
   const handleNewInvoice = () => {
-    navigate('/invoices/create');
+    navigate('/invoices/new');
   };
 
   if (isLoading) {
@@ -108,12 +103,7 @@ const InvoicesSidebar = ({ selectedInvoiceId, onInvoiceSelect }: InvoicesSidebar
             />
             <div>
               {overdueInvoices.map((invoice) => (
-                <InvoiceItem 
-                  key={invoice.id} 
-                  invoice={invoice} 
-                  isSelected={selectedInvoiceId === invoice.id}
-                  onSelect={onInvoiceSelect}
-                />
+                <InvoiceItem key={invoice.id} invoice={invoice} />
               ))}
             </div>
           </>
@@ -129,12 +119,7 @@ const InvoicesSidebar = ({ selectedInvoiceId, onInvoiceSelect }: InvoicesSidebar
             />
             <div>
               {pendingInvoices.map((invoice) => (
-                <InvoiceItem 
-                  key={invoice.id} 
-                  invoice={invoice} 
-                  isSelected={selectedInvoiceId === invoice.id}
-                  onSelect={onInvoiceSelect}
-                />
+                <InvoiceItem key={invoice.id} invoice={invoice} />
               ))}
             </div>
           </>
@@ -150,12 +135,7 @@ const InvoicesSidebar = ({ selectedInvoiceId, onInvoiceSelect }: InvoicesSidebar
             />
             <div>
               {paidInvoices.map((invoice) => (
-                <InvoiceItem 
-                  key={invoice.id} 
-                  invoice={invoice} 
-                  isSelected={selectedInvoiceId === invoice.id}
-                  onSelect={onInvoiceSelect}
-                />
+                <InvoiceItem key={invoice.id} invoice={invoice} />
               ))}
             </div>
           </>
