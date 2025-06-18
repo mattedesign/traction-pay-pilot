@@ -86,7 +86,6 @@ const NavigationSidebar = () => {
         navigationItems={navigationItems}
         isActive={isActive}
         onNavClick={handleNavClick}
-        onLogoClick={handleLogoClick}
         onClose={() => setIsMobileMenuOpen(false)}
       />
 

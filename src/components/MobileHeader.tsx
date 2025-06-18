@@ -13,8 +13,8 @@ interface MobileHeaderProps {
 
 const MobileHeader = ({ isMobileMenuOpen, setIsMobileMenuOpen, onLogoClick }: MobileHeaderProps) => {
   return (
-    <div className="md:hidden w-full bg-slate-800 text-white">
-      <div className="flex items-center justify-between px-4 py-3">
+    <div className="md:hidden w-full bg-slate-800 text-white fixed top-0 left-0 right-0 z-50">
+      <div className="flex items-center justify-between px-4 py-3 h-14">
         <div className="flex items-center space-x-3">
           <div className="cursor-pointer" onClick={onLogoClick}>
             <img 

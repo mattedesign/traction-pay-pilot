@@ -77,8 +77,8 @@ const BrokerNavigationSidebar = () => {
   return (
     <>
       {/* Mobile Header */}
-      <div className="md:hidden w-full bg-slate-800 text-white">
-        <div className="flex items-center justify-between px-4 py-3">
+      <div className="md:hidden w-full bg-slate-800 text-white fixed top-0 left-0 right-0 z-50">
+        <div className="flex items-center justify-between px-4 py-3 h-14">
           <div className="flex items-center space-x-3">
             <div className="cursor-pointer" onClick={handleLogoClick}>
               <img 
@@ -106,41 +106,21 @@ const BrokerNavigationSidebar = () => {
 
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
-        <div className="md:hidden fixed inset-0 z-50 bg-black bg-opacity-50" onClick={() => setIsMobileMenuOpen(false)}>
-          <div className="bg-slate-800 text-white w-64 h-full p-4" onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-6">
-              <div className="cursor-pointer" onClick={handleLogoClick}>
-                <img 
-                  alt="Logo" 
-                  className="w-8 h-8 object-contain hover:opacity-80 transition-opacity" 
-                  src="/lovable-uploads/b21fd570-2ee4-4af9-8ee7-44980e7d6708.png" 
-                />
-              </div>
+        <div className="md:hidden fixed top-14 left-0 right-0 z-40 bg-slate-800 text-white border-t border-slate-700">
+          <div className="px-4 py-2 space-y-1">
+            {brokerNavigationItems.map(item => (
               <Button
+                key={item.label}
                 variant="ghost"
-                size="icon"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="text-white hover:bg-slate-700"
+                onClick={() => handleNavClick(item.path)}
+                className={`w-full justify-start text-slate-300 hover:text-white hover:bg-slate-700 h-12 ${
+                  isActive(item.path) ? 'bg-slate-700 text-white' : ''
+                }`}
               >
-                <X className="w-5 h-5" />
+                <item.icon className="w-5 h-5 mr-3" />
+                {item.label}
               </Button>
-            </div>
-
-            <div className="space-y-2">
-              {brokerNavigationItems.map(item => (
-                <Button
-                  key={item.label}
-                  variant="ghost"
-                  onClick={() => handleNavClick(item.path)}
-                  className={`w-full justify-start text-slate-300 hover:text-white hover:bg-slate-700 ${
-                    isActive(item.path) ? 'bg-slate-700 text-white' : ''
-                  }`}
-                >
-                  <item.icon className="w-5 h-5 mr-3" />
-                  {item.label}
-                </Button>
-              ))}
-            </div>
+            ))}
           </div>
         </div>
       )}
