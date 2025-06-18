@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -70,6 +71,38 @@ const LoginForm = () => {
 
         if (profileError) {
           console.error('Error fetching profile:', profileError);
+          
+          // If profile doesn't exist, try to create it for demo users
+          if (email === 'latecarrier.demo@tractionpay.com') {
+            console.log('Creating profile for habitually late carrier demo user...');
+            const { error: insertError } = await supabase
+              .from('profiles')
+              .insert({
+                id: data.user.id,
+                email: data.user.email,
+                first_name: 'Alex',
+                last_name: 'Turner',
+                company_name: 'Always Late Logistics',
+                phone: '555-0299',
+                user_type: 'habitually_late_carrier'
+              });
+
+            if (insertError) {
+              console.error('Error creating profile:', insertError);
+              setError("Error creating user profile. Please try again.");
+              return;
+            }
+
+            // Profile created successfully, redirect to habitually late carrier dashboard
+            toast({
+              title: "Welcome back!",
+              description: "Successfully signed in to your payment dashboard.",
+            });
+            console.log('Redirecting habitually late carrier to /dashboard2');
+            navigate('/dashboard2');
+            return;
+          }
+          
           setError("Error loading user profile. Please try again.");
           return;
         }
