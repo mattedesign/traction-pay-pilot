@@ -1,4 +1,5 @@
 
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -10,15 +11,19 @@ import {
   MessageSquare,
   BarChart3,
   Calendar,
-  Star
+  Star,
+  Award
 } from "lucide-react";
-import { CarrierProfile } from "@/pages/AdaptiveDashboardPage";
+import { CarrierProfile } from "@/pages/Index";
+import PremiumProgramsDemo from "./PremiumProgramsDemo";
 
 interface AIBusinessCoachProps {
   carrierProfile: CarrierProfile;
 }
 
 const AIBusinessCoach = ({ carrierProfile }: AIBusinessCoachProps) => {
+  const [showPremiumProgramsDemo, setShowPremiumProgramsDemo] = useState(false);
+
   const weeklyReview = {
     performanceScore: 87,
     improvements: [
@@ -137,6 +142,48 @@ const AIBusinessCoach = ({ carrierProfile }: AIBusinessCoachProps) => {
         </Card>
       )}
 
+      {/* Premium Programs Section */}
+      <Card className="bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200">
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2">
+            <Award className="w-6 h-6 text-amber-600" />
+            <span>Premium Program Eligibility</span>
+            <Badge className="bg-amber-100 text-amber-800">Qualified</Badge>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <p className="text-slate-700">
+              Based on your excellent performance metrics, you qualify for our premium financing 
+              and business growth programs with preferential rates and terms.
+            </p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="text-center p-3 bg-white rounded-lg">
+                <div className="text-2xl font-bold text-amber-600">$500K</div>
+                <div className="text-sm text-slate-600">Equipment Financing</div>
+              </div>
+              <div className="text-center p-3 bg-white rounded-lg">
+                <div className="text-2xl font-bold text-amber-600">2.9%</div>
+                <div className="text-sm text-slate-600">Starting APR</div>
+              </div>
+              <div className="text-center p-3 bg-white rounded-lg">
+                <div className="text-2xl font-bold text-amber-600">24hr</div>
+                <div className="text-sm text-slate-600">Approval Time</div>
+              </div>
+            </div>
+
+            <Button 
+              onClick={() => setShowPremiumProgramsDemo(true)}
+              className="w-full bg-amber-600 hover:bg-amber-700"
+            >
+              <Award className="w-4 h-4 mr-2" />
+              Apply for Premium Programs
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Interactive Coach */}
       <Card className="bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200">
         <CardHeader>
@@ -173,6 +220,11 @@ const AIBusinessCoach = ({ carrierProfile }: AIBusinessCoachProps) => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Premium Programs Demo Modal */}
+      {showPremiumProgramsDemo && (
+        <PremiumProgramsDemo onClose={() => setShowPremiumProgramsDemo(false)} />
+      )}
     </div>
   );
 };
