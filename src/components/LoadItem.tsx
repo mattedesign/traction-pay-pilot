@@ -1,69 +1,73 @@
 
-import { useState } from "react";
-import { ChevronDown, ChevronRight, LucideIcon, Wifi } from "lucide-react";
-import { useNavigate, useParams } from "react-router-dom";
-import LoadItemExpanded from "./LoadItemExpanded";
+import { Badge } from "@/components/ui/badge";
+import { Load } from "@/types/load";
 
 interface LoadItemProps {
-  load: {
-    id: string;
-    broker: string;
-    status: string;
-    source?: "manual" | "tms";
-  };
-  avatarIcon: {
-    icon: LucideIcon;
-    color: string;
-  };
+  load: Load;
+  avatarIcon: { icon: React.ComponentType<{ className?: string }>; color: string };
+  onLoadSelect?: (load: Load) => void;
+  selectedLoadId?: string;
 }
 
-const LoadItem = ({
-  load,
-  avatarIcon
-}: LoadItemProps) => {
-  const navigate = useNavigate();
-  const {
-    loadId
-  } = useParams();
-  const isActive = loadId === load.id;
-  const [isExpanded, setIsExpanded] = useState(false);
-
-  const handleLoadClick = () => {
-    navigate(`/load/${load.id}`);
-  };
-
-  const handleChevronClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setIsExpanded(!isExpanded);
-  };
-
+const LoadItem = ({ load, avatarIcon, onLoadSelect, selectedLoadId }: LoadItemProps) => {
   const IconComponent = avatarIcon.icon;
+  const isSelected = selectedLoadId === load.id;
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "pending_acceptance":
+      case "pending_pickup":
+        return "bg-yellow-100 text-yellow-800";
+      case "in_transit":
+        return "bg-blue-100 text-blue-800";
+      case "delivered":
+      case "ready_to_invoice":
+        return "bg-green-100 text-green-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+  };
+
+  const formatStatus = (status: string) => {
+    return status.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+  };
 
   return (
-    <div>
-      <div className={`flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-slate-50 transition-colors ${isActive ? "bg-blue-50 border-r-2 border-blue-500" : ""}`} onClick={handleLoadClick}>
-        <div className="flex items-center space-x-3 flex-1 min-w-0">
-          <div className="w-8 h-8 border border-slate-200 flex items-center justify-center rounded-full bg-zinc-50 relative">
-            <IconComponent className="w-4 h-4" style={{
-              color: avatarIcon.color
-            }} />
-            {load.source === "tms" && (
-              <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-500 rounded-full flex items-center justify-center">
-                <Wifi className="w-2 h-2 text-white" />
-              </div>
-            )}
+    <div 
+      className={`p-4 border-b border-slate-100 hover:bg-slate-50 cursor-pointer transition-colors ${
+        isSelected ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+      }`}
+      onClick={() => onLoadSelect?.(load)}
+    >
+      <div className="flex items-center space-x-3">
+        <div 
+          className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium"
+          style={{ backgroundColor: avatarIcon.color }}
+        >
+          <IconComponent className="w-4 h-4" />
+        </div>
+        
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center justify-between mb-1">
+            <p className="text-sm font-medium text-slate-900 truncate">
+              {load.broker}
+            </p>
+            <Badge className={`text-xs ${getStatusColor(load.status)}`}>
+              {formatStatus(load.status)}
+            </Badge>
           </div>
-          <div className="flex-1 min-w-0">
-            <div className="text-sm font-medium text-slate-900 truncate">Load #{load.id}</div>
-            <div className="text-xs text-slate-500 truncate">{load.broker}</div>
+          
+          <div className="flex items-center justify-between text-sm text-slate-500">
+            <span>{load.origin} → {load.destination}</span>
+            <span className="font-medium text-slate-900">{load.amount}</span>
+          </div>
+          
+          <div className="flex items-center justify-between text-xs text-slate-400 mt-1">
+            <span>{load.distance}</span>
+            <span>{load.pickupTime}</span>
           </div>
         </div>
-        <button onClick={handleChevronClick} className="p-1 hover:bg-slate-200 rounded transition-colors flex-shrink-0" title={isExpanded ? "Collapse details" : "Expand details"}>
-          {isExpanded ? <ChevronDown className="w-4 h-4 text-slate-400" /> : <ChevronRight className="w-4 h-4 text-slate-400" />}
-        </button>
       </div>
-      
-      {isExpanded && <LoadItemExpanded loadId={load.id} onClose={() => setIsExpanded(false)} />}
     </div>
   );
 };

@@ -33,6 +33,7 @@ import BrokerProfitMarginAnalyticsPage from "./pages/BrokerProfitMarginAnalytics
 import BrokerQuickPayAnalyticsPage from "./pages/BrokerQuickPayAnalyticsPage";
 import BrokerLoadValueAnalyticsPage from "./pages/BrokerLoadValueAnalyticsPage";
 import AuthPage from "./components/auth/AuthPage";
+import Dashboard2Page from "./pages/Dashboard2Page";
 import "./App.css";
 import BrokerLoadDetailPage from "./pages/BrokerLoadDetailPage";
 
@@ -48,6 +49,11 @@ function App() {
             <Route path="/" element={
               <ProtectedRoute>
                 <DashboardRouter />
+              </ProtectedRoute>
+            } />
+            <Route path="/dashboard2" element={
+              <ProtectedRoute>
+                <Dashboard2Page />
               </ProtectedRoute>
             } />
             <Route path="/loads" element={
