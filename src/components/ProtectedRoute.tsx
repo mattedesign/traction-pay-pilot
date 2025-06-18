@@ -8,8 +8,6 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute = ({ children, requiredUserType }: ProtectedRouteProps) => {
-  console.log('ProtectedRoute rendering, about to call useAuth');
-  
   const { user, profile, isLoading } = useAuth();
 
   console.log('ProtectedRoute state:', { 
