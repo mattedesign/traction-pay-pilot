@@ -105,24 +105,25 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       async (event, session) => {
         console.log('Auth state changed:', event, session?.user?.email);
         
-        // Handle sign out or session errors
-        if (event === 'SIGNED_OUT' || !session) {
+        // Handle explicit sign out
+        if (event === 'SIGNED_OUT') {
           clearAuthState();
           return;
         }
 
-        // Handle token refresh errors
+        // Handle token refresh errors (when event is TOKEN_REFRESHED but session is null)
         if (event === 'TOKEN_REFRESHED' && !session) {
           console.error('Token refresh failed, clearing auth state');
           clearAuthState();
           return;
         }
-        
-        // Update session and user immediately
-        setSession(session);
-        setUser(session?.user ?? null);
-        
-        if (session?.user) {
+
+        // For INITIAL_SESSION, SIGNED_IN, TOKEN_REFRESHED with valid session
+        if (session) {
+          // Update session and user immediately
+          setSession(session);
+          setUser(session.user);
+          
           const currentProfileId = profile?.id;
           const newUserId = session.user.id;
           
@@ -139,6 +140,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           } else {
             setIsLoading(false);
           }
+        } else if (event === 'INITIAL_SESSION') {
+          // For INITIAL_SESSION with no session, just update loading state
+          console.log('No initial session found');
+          setIsLoading(false);
         }
       }
     );
