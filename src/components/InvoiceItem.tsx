@@ -1,7 +1,6 @@
 
 import { useState } from "react";
 import { ChevronDown, ChevronRight, FileText, DollarSign } from "lucide-react";
-import { useNavigate, useParams } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 
 interface Invoice {
@@ -15,16 +14,15 @@ interface Invoice {
 
 interface InvoiceItemProps {
   invoice: Invoice;
+  isSelected?: boolean;
+  onSelect: (invoice: Invoice) => void;
 }
 
-const InvoiceItem = ({ invoice }: InvoiceItemProps) => {
-  const navigate = useNavigate();
-  const { invoiceId } = useParams();
-  const isActive = invoiceId === invoice.id;
+const InvoiceItem = ({ invoice, isSelected = false, onSelect }: InvoiceItemProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handleInvoiceClick = () => {
-    navigate(`/invoice/${invoice.id}`);
+    onSelect(invoice);
   };
 
   const handleChevronClick = (e: React.MouseEvent) => {
@@ -45,7 +43,7 @@ const InvoiceItem = ({ invoice }: InvoiceItemProps) => {
     <div>
       <div 
         className={`flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-slate-50 transition-colors ${
-          isActive ? "bg-blue-50 border-r-2 border-blue-500" : ""
+          isSelected ? "bg-blue-50 border-r-2 border-blue-500" : ""
         }`}
         onClick={handleInvoiceClick}
       >

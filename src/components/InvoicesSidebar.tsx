@@ -16,7 +16,12 @@ interface Invoice {
   brokerName: string;
 }
 
-const InvoicesSidebar = () => {
+interface InvoicesSidebarProps {
+  selectedInvoiceId?: string;
+  onInvoiceSelect: (invoice: Invoice) => void;
+}
+
+const InvoicesSidebar = ({ selectedInvoiceId, onInvoiceSelect }: InvoicesSidebarProps) => {
   const navigate = useNavigate();
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -75,7 +80,7 @@ const InvoicesSidebar = () => {
   }, []);
 
   const handleNewInvoice = () => {
-    navigate('/invoices/new');
+    navigate('/invoices/create');
   };
 
   if (isLoading) {
@@ -103,7 +108,12 @@ const InvoicesSidebar = () => {
             />
             <div>
               {overdueInvoices.map((invoice) => (
-                <InvoiceItem key={invoice.id} invoice={invoice} />
+                <InvoiceItem 
+                  key={invoice.id} 
+                  invoice={invoice} 
+                  isSelected={selectedInvoiceId === invoice.id}
+                  onSelect={onInvoiceSelect}
+                />
               ))}
             </div>
           </>
@@ -119,7 +129,12 @@ const InvoicesSidebar = () => {
             />
             <div>
               {pendingInvoices.map((invoice) => (
-                <InvoiceItem key={invoice.id} invoice={invoice} />
+                <InvoiceItem 
+                  key={invoice.id} 
+                  invoice={invoice} 
+                  isSelected={selectedInvoiceId === invoice.id}
+                  onSelect={onInvoiceSelect}
+                />
               ))}
             </div>
           </>
@@ -135,7 +150,12 @@ const InvoicesSidebar = () => {
             />
             <div>
               {paidInvoices.map((invoice) => (
-                <InvoiceItem key={invoice.id} invoice={invoice} />
+                <InvoiceItem 
+                  key={invoice.id} 
+                  invoice={invoice} 
+                  isSelected={selectedInvoiceId === invoice.id}
+                  onSelect={onInvoiceSelect}
+                />
               ))}
             </div>
           </>
