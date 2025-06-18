@@ -75,47 +75,47 @@ const NavigationSidebar = () => {
 
   return (
     <>
-      {/* Mobile Header - Full width horizontal navigation */}
+      {/* Mobile Header - Compact horizontal navigation */}
       <div className="md:hidden w-full bg-slate-800 text-white">
-        <div className="flex items-center justify-between px-4 py-3">
-          <div className="flex items-center space-x-4">
+        <div className="flex items-center justify-between px-3 py-2">
+          <div className="flex items-center space-x-3">
             <div className="cursor-pointer" onClick={handleLogoClick}>
               <img 
                 alt="Logo" 
-                className="w-8 h-8 object-contain hover:opacity-80 transition-opacity" 
+                className="w-6 h-6 object-contain hover:opacity-80 transition-opacity" 
                 src="/lovable-uploads/b21fd570-2ee4-4af9-8ee7-44980e7d6708.png" 
               />
             </div>
             
-            {/* Mobile navigation items - horizontal */}
+            {/* Mobile navigation items - horizontal and compact */}
             <div className="flex items-center space-x-1">
-              {navigationItems.slice(0, 4).map(item => (
+              {navigationItems.slice(0, 3).map(item => (
                 <Button
                   key={item.label}
                   variant="ghost"
                   size="icon"
                   onClick={() => handleNavClick(item.path)}
-                  className={`w-10 h-10 text-slate-300 hover:text-white hover:bg-slate-700 ${
+                  className={`w-8 h-8 text-slate-300 hover:text-white hover:bg-slate-700 ${
                     isActive(item.path) ? 'bg-slate-700 text-white' : ''
                   }`}
                   title={item.label}
                 >
-                  <item.icon className="w-5 h-5" />
+                  <item.icon className="w-4 h-4" />
                 </Button>
               ))}
             </div>
           </div>
           
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-1">
             <NotificationBell />
             <UserProfileMenu />
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="text-white hover:bg-slate-700 w-10 h-10"
+              className="text-white hover:bg-slate-700 w-8 h-8"
             >
-              {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              {isMobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
             </Button>
           </div>
         </div>
@@ -125,7 +125,7 @@ const NavigationSidebar = () => {
       {isMobileMenuOpen && (
         <div className="md:hidden fixed inset-0 z-50 bg-black bg-opacity-50" onClick={() => setIsMobileMenuOpen(false)}>
           <div className="bg-slate-800 text-white w-64 h-full p-4" onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center justify-between mb-6">
               <div className="cursor-pointer" onClick={handleLogoClick}>
                 <img 
                   alt="Logo" 
@@ -139,7 +139,7 @@ const NavigationSidebar = () => {
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="text-white hover:bg-slate-700"
               >
-                <X className="w-6 h-6" />
+                <X className="w-5 h-5" />
               </Button>
             </div>
 
