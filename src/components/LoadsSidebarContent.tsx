@@ -11,10 +11,10 @@ interface LoadsSidebarContentProps {
 }
 
 const LoadsSidebarContent = ({ loads, getAvatarIcon, onLoadSelect, selectedLoadId }: LoadsSidebarContentProps) => {
-  // Filter loads by status
-  const pendingLoads = loads.filter(load => load.status === "Pending");
-  const inProgressLoads = loads.filter(load => load.status === "In Progress");
-  const deliveredLoads = loads.filter(load => load.status === "Delivered");
+  // Filter loads by status - using actual status values from the Load type
+  const pendingLoads = loads.filter(load => load.status === "pending_acceptance" || load.status === "pending_pickup");
+  const inProgressLoads = loads.filter(load => load.status === "in_transit");
+  const deliveredLoads = loads.filter(load => load.status === "delivered" || load.status === "ready_to_invoice");
 
   return (
     <ScrollArea className="flex-1 h-full">

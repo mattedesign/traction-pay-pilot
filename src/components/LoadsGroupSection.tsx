@@ -2,16 +2,18 @@
 import LoadGroupHeader from "./LoadGroupHeader";
 import LoadItem from "./LoadItem";
 import { Load } from "@/types/load";
-import { LucideIcon } from "lucide-react";
 
 interface LoadsGroupSectionProps {
   title: string;
   loads: Load[];
   isActive?: boolean;
-  getAvatarIcon: (brokerName: string) => { icon: LucideIcon; color: string };
+  getAvatarIcon: (brokerName: string) => { icon: React.ComponentType<{ className?: string }>; color: string };
+  onLoadSelect?: (load: Load) => void;
+  selectedLoadId?: string;
+  colorClasses?: string;
 }
 
-const LoadsGroupSection = ({ title, loads, isActive = false, getAvatarIcon }: LoadsGroupSectionProps) => {
+const LoadsGroupSection = ({ title, loads, isActive = false, getAvatarIcon, onLoadSelect, selectedLoadId }: LoadsGroupSectionProps) => {
   if (loads.length === 0) {
     return null;
   }
@@ -25,6 +27,8 @@ const LoadsGroupSection = ({ title, loads, isActive = false, getAvatarIcon }: Lo
             key={load.id}
             load={load}
             avatarIcon={getAvatarIcon(load.broker)}
+            onLoadSelect={onLoadSelect}
+            selectedLoadId={selectedLoadId}
           />
         ))}
       </div>
