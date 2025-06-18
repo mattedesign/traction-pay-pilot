@@ -8,11 +8,18 @@ import NetBurnCard from "@/components/dashboard2/NetBurnCard";
 import RevenueGrowthChart from "@/components/dashboard2/RevenueGrowthChart";
 import RevenueGrowthBarChart from "@/components/dashboard2/RevenueGrowthBarChart";
 import CashActivityTable from "@/components/dashboard2/CashActivityTable";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import PaymentPerformanceAlert from "@/components/dashboard2/PaymentPerformanceAlert";
+import PendingPaymentsSection from "@/components/dashboard2/PendingPaymentsSection";
+import FactoringRateOpportunities from "@/components/dashboard2/FactoringRateOpportunities";
+import PaymentCoachSection from "@/components/dashboard2/PaymentCoachSection";
+import PaymentCashFlowSection from "@/components/dashboard2/PaymentCashFlowSection";
+import PaymentSmartAlerts from "@/components/dashboard2/PaymentSmartAlerts";
+import PerformanceComparisonDashboard from "@/components/dashboard2/PerformanceComparisonDashboard";
+import QuickActionCenter from "@/components/dashboard2/QuickActionCenter";
 
 const Dashboard2Page = () => {
   const { profile } = useAuth();
+  const isHabituallyLateCarrier = profile?.user_type === 'habitually_late_carrier';
 
   // Use existing navigation based on user type
   const NavigationComponent = profile?.user_type === 'broker' ? BrokerNavigationSidebar : NavigationSidebar;
@@ -29,54 +36,76 @@ const Dashboard2Page = () => {
 
         {/* Dashboard Content */}
         <div className="flex-1 p-6">
+          {/* Payment Performance Alert for Habitually Late Carriers */}
+          {isHabituallyLateCarrier && (
+            <PaymentPerformanceAlert />
+          )}
+
           {/* Welcome Banner - customized for habitually late carriers */}
-          {profile?.user_type === 'habitually_late_carrier' ? (
-            <div className="bg-orange-50 rounded-lg p-4 flex items-center justify-between mb-6">
-              <span className="text-orange-900">⏰ Late Delivery Insights - Optimize your schedule and improve on-time performance.</span>
-              <Button className="bg-orange-600 hover:bg-orange-700 text-white">
-                <Plus className="w-4 h-4 mr-2" />
-                Schedule Optimizer
-              </Button>
-            </div>
+          {isHabituallyLateCarrier ? (
+            <PendingPaymentsSection />
           ) : (
             <WelcomeBanner />
           )}
 
-          {/* Main Dashboard Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-            {/* Left Column - Net Burn Cards and Pie Chart */}
-            <div className="lg:col-span-2 space-y-6">
-              {/* Net Burn Cards - customized for habitually late carriers */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <NetBurnCard
-                  title={profile?.user_type === 'habitually_late_carrier' ? "Late Delivery Penalty" : "Net Burn 3 Month Avg."}
-                  amount={profile?.user_type === 'habitually_late_carrier' ? "$45.2K" : "$330.47K"}
-                  progressColor="bg-red-200"
-                  progressWidth={profile?.user_type === 'habitually_late_carrier' ? "65%" : "78%"}
-                  percentage={profile?.user_type === 'habitually_late_carrier' ? "↑12%" : "24%"}
-                />
-                <NetBurnCard
-                  title={profile?.user_type === 'habitually_late_carrier' ? "On-Time Performance" : "Net Burn 3 Month Avg."}
-                  amount={profile?.user_type === 'habitually_late_carrier' ? "68%" : "$130.70K"}
-                  progressColor={profile?.user_type === 'habitually_late_carrier' ? "bg-yellow-200" : "bg-pink-200"}
-                  progressWidth={profile?.user_type === 'habitually_late_carrier' ? "68%" : "45%"}
-                  percentage={profile?.user_type === 'habitually_late_carrier' ? "↓8%" : "21%"}
-                />
+          {/* Enhanced Payment-Focused Dashboard for Habitually Late Carriers */}
+          {isHabituallyLateCarrier ? (
+            <div className="space-y-6 mt-6">
+              {/* Factoring Rate Opportunities */}
+              <FactoringRateOpportunities />
+
+              {/* AI Business Coach - Payment Focused */}
+              <PaymentCoachSection />
+
+              {/* Your Money Section - Enhanced Cash Flow */}
+              <PaymentCashFlowSection />
+
+              {/* Smart Alerts - Payment Focused */}
+              <PaymentSmartAlerts />
+
+              {/* Performance Comparison Dashboard */}
+              <PerformanceComparisonDashboard />
+
+              {/* Quick Action Center */}
+              <QuickActionCenter />
+            </div>
+          ) : (
+            /* Standard Dashboard Grid for Other User Types */
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+              {/* Left Column - Net Burn Cards and Pie Chart */}
+              <div className="lg:col-span-2 space-y-6">
+                {/* Net Burn Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <NetBurnCard
+                    title="Net Burn 3 Month Avg."
+                    amount="$330.47K"
+                    progressColor="bg-red-200"
+                    progressWidth="78%"
+                    percentage="24%"
+                  />
+                  <NetBurnCard
+                    title="Net Burn 3 Month Avg."
+                    amount="$130.70K"
+                    progressColor="bg-pink-200"
+                    progressWidth="45%"
+                    percentage="21%"
+                  />
+                </div>
+
+                {/* Revenue Growth Pie Chart */}
+                <RevenueGrowthChart />
               </div>
 
-              {/* Revenue Growth Pie Chart */}
-              <RevenueGrowthChart />
-            </div>
+              {/* Right Column - Bar Chart and Cash Activity Table */}
+              <div className="space-y-6">
+                {/* Revenue Growth Bar Chart */}
+                <RevenueGrowthBarChart />
 
-            {/* Right Column - Bar Chart and Cash Activity Table */}
-            <div className="space-y-6">
-              {/* Revenue Growth Bar Chart */}
-              <RevenueGrowthBarChart />
-
-              {/* Cash Activity Table */}
-              <CashActivityTable />
+                {/* Cash Activity Table */}
+                <CashActivityTable />
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>
