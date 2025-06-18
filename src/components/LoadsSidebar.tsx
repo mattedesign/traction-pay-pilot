@@ -86,7 +86,7 @@ const LoadsSidebar = ({ isOpen = true, onClose, onLoadSelect, selectedLoadId }: 
 
   if (isLoading) {
     return (
-      <div className={`${isOpen ? 'block' : 'hidden'} md:block w-full md:w-80 bg-white text-slate-900 h-screen flex flex-col shadow-sm border-r border-slate-200`}>
+      <div className={`${isOpen ? 'block' : 'hidden'} md:block w-full md:w-80 bg-white text-slate-900 h-full flex flex-col shadow-sm border-r border-slate-200`}>
         <div className="p-4 border-b border-slate-200">
           <div className="flex items-center justify-center">
             <div className="text-slate-500">Loading...</div>
@@ -101,34 +101,42 @@ const LoadsSidebar = ({ isOpen = true, onClose, onLoadSelect, selectedLoadId }: 
       {/* Mobile Overlay */}
       {isOpen && (
         <div className="md:hidden fixed inset-0 z-40 bg-black bg-opacity-50" onClick={onClose}>
-          <div className="bg-white w-80 h-full shadow-lg" onClick={e => e.stopPropagation()}>
+          <div className="bg-white w-80 h-full shadow-lg flex flex-col" onClick={e => e.stopPropagation()}>
             {/* Mobile close button */}
-            <div className="flex justify-end p-4 border-b border-slate-200">
+            <div className="flex justify-end p-4 border-b border-slate-200 flex-shrink-0">
               <Button variant="ghost" size="icon" onClick={onClose}>
                 <X className="w-5 h-5" />
               </Button>
             </div>
             
-            <LoadsSidebarHeader onNewLoad={handleNewLoad} />
-            <LoadsSidebarContent 
-              loads={loads} 
-              getAvatarIcon={getAvatarIcon} 
-              onLoadSelect={onLoadSelect}
-              selectedLoadId={selectedLoadId}
-            />
+            <div className="flex-shrink-0">
+              <LoadsSidebarHeader onNewLoad={handleNewLoad} />
+            </div>
+            <div className="flex-1 overflow-hidden">
+              <LoadsSidebarContent 
+                loads={loads} 
+                getAvatarIcon={getAvatarIcon} 
+                onLoadSelect={onLoadSelect}
+                selectedLoadId={selectedLoadId}
+              />
+            </div>
           </div>
         </div>
       )}
 
       {/* Desktop Sidebar */}
-      <div className="hidden md:block w-80 bg-white text-slate-900 h-screen flex-col shadow-sm border-r border-slate-200">
-        <LoadsSidebarHeader onNewLoad={handleNewLoad} />
-        <LoadsSidebarContent 
-          loads={loads} 
-          getAvatarIcon={getAvatarIcon} 
-          onLoadSelect={onLoadSelect}
-          selectedLoadId={selectedLoadId}
-        />
+      <div className="hidden md:flex w-80 bg-white text-slate-900 h-full flex-col shadow-sm border-r border-slate-200">
+        <div className="flex-shrink-0">
+          <LoadsSidebarHeader onNewLoad={handleNewLoad} />
+        </div>
+        <div className="flex-1 overflow-hidden">
+          <LoadsSidebarContent 
+            loads={loads} 
+            getAvatarIcon={getAvatarIcon} 
+            onLoadSelect={onLoadSelect}
+            selectedLoadId={selectedLoadId}
+          />
+        </div>
       </div>
     </>
   );

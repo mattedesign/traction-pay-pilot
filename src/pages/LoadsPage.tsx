@@ -18,7 +18,7 @@ const LoadsPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex">
+    <div className="h-screen bg-slate-50 flex overflow-hidden">
       <NavigationSidebar />
       
       {/* Mobile loads sidebar toggle - positioned for mobile with proper spacing */}
@@ -41,7 +41,7 @@ const LoadsPage = () => {
         selectedLoadId={selectedLoad?.id}
       />
       
-      <div className="flex-1 flex flex-col min-w-0 h-screen pt-14 md:pt-0">
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden pt-14 md:pt-0">
         {selectedLoad ? (
           <LoadMainContent loadData={selectedLoad} />
         ) : (

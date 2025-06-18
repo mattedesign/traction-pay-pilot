@@ -45,14 +45,14 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
   }, [loadData.id]);
 
   return (
-    <div className="flex flex-col h-full" style={{ backgroundColor: '#F5F6FA' }}>
+    <div className="flex flex-col h-full overflow-hidden" style={{ backgroundColor: '#F5F6FA' }}>
       {/* Header */}
       <div className="border-b border-slate-200 bg-white px-6 py-4 flex-shrink-0">
         <LoadHeader loadData={load} />
       </div>
       
       {/* Tabs Container */}
-      <div className="flex-1 min-h-0 px-6 pt-4">
+      <div className="flex-1 min-h-0 overflow-hidden px-6 pt-4">
         <LoadDetailTabs 
           load={load}
           emailThreads={emailThreads}
