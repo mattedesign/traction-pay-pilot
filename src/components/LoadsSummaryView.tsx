@@ -77,13 +77,13 @@ const LoadsSummaryView = ({ onLoadSelect }: LoadsSummaryViewProps) => {
 
   return (
     <div className="flex flex-col h-full" style={{ backgroundColor: '#F5F6FA' }}>
-      {/* Header */}
+      {/* Header - Fixed */}
       <div className="border-b border-slate-200 bg-white px-6 py-4 flex-shrink-0">
         <h1 className="text-2xl font-bold text-slate-900">Loads Overview</h1>
         <p className="text-slate-600 mt-1">Manage and track all your loads</p>
       </div>
 
-      {/* Content */}
+      {/* Content - Scrollable */}
       <div className="flex-1 overflow-auto p-6 space-y-6">
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

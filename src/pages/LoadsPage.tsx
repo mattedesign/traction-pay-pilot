@@ -41,7 +41,7 @@ const LoadsPage = () => {
         selectedLoadId={selectedLoad?.id}
       />
       
-      <div className="flex-1 flex flex-col min-w-0 pt-14 md:pt-0">
+      <div className="flex-1 flex flex-col min-w-0 h-screen pt-14 md:pt-0">
         {selectedLoad ? (
           <LoadMainContent loadData={selectedLoad} />
         ) : (
