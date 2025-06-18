@@ -1,11 +1,10 @@
-
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import NavigationSidebar from "@/components/NavigationSidebar";
 import SmallCarrierDashboard from "@/components/adaptive/SmallCarrierDashboard";
 import LargeCarrierDashboard from "@/components/adaptive/LargeCarrierDashboard";
 import CarrierSizeDetector from "@/components/adaptive/CarrierSizeDetector";
-import FunctionalChatInterface from "@/components/FunctionalChatInterface";
+import TabbedDashboard from "@/components/TabbedDashboard";
 import FactorDashboard from "@/components/FactorDashboard";
 import { useNavigate } from "react-router-dom";
 
@@ -23,8 +22,6 @@ const Index = () => {
   const { profile } = useAuth();
   const [carrierProfile, setCarrierProfile] = useState<CarrierProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isChatFocused, setIsChatFocused] = useState(false);
-  const [currentAction, setCurrentAction] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     // Fetch carrier profile based on the actual user's email and profile
@@ -104,13 +101,6 @@ const Index = () => {
     });
   };
 
-  const handleChatFocus = (focused: boolean) => {
-    setIsChatFocused(focused);
-    if (!focused) {
-      setCurrentAction(undefined);
-    }
-  };
-
   if (isLoading) {
     return (
       <div className="min-h-screen flex w-full bg-slate-50">
@@ -143,48 +133,15 @@ const Index = () => {
 
   console.log('Showing dashboard for user:', profile?.email, 'carrierProfile:', carrierProfile);
 
-  // Render appropriate dashboard based on carrier size
+  // Render tabbed dashboard for all completed onboarding users
   return (
     <div className="min-h-screen flex w-full bg-slate-50">
       <NavigationSidebar />
       <div className="flex-1 flex flex-col h-screen overflow-hidden">
-        {!isChatFocused ? (
-          <>
-            <div className="flex-1 overflow-auto">
-              {carrierProfile.companySize === 'small' ? (
-                <SmallCarrierDashboard 
-                  carrierProfile={carrierProfile}
-                  userProfile={profile}
-                />
-              ) : (
-                <LargeCarrierDashboard 
-                  carrierProfile={carrierProfile}
-                  userProfile={profile}
-                />
-              )}
-            </div>
-
-            {/* Chat input at bottom */}
-            <div className="shrink-0 p-4">
-              <div className="w-full max-w-4xl mx-auto">
-                <FunctionalChatInterface 
-                  onNavigateToLoad={navigate} 
-                  onFocusChange={handleChatFocus} 
-                  isFocused={isChatFocused}
-                  currentAction={currentAction}
-                />
-              </div>
-            </div>
-          </>
-        ) : (
-          /* Full-screen chat interface when focused */
-          <FunctionalChatInterface 
-            onNavigateToLoad={navigate} 
-            onFocusChange={handleChatFocus} 
-            isFocused={isChatFocused}
-            currentAction={currentAction}
-          />
-        )}
+        <TabbedDashboard 
+          carrierProfile={carrierProfile}
+          userProfile={profile}
+        />
       </div>
     </div>
   );
