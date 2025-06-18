@@ -1,6 +1,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TrendingUp, TrendingDown, BarChart3, Target, Fuel, Clock } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import SmartInsightsDashboard from "./SmartInsightsDashboard";
 import PerformanceBenchmarking from "./PerformanceBenchmarking";
 import LoadProfitabilityIntelligence from "./LoadProfitabilityIntelligence";
@@ -12,6 +13,8 @@ interface InsightsDashboardProps {
 }
 
 const InsightsDashboard = ({ carrierProfile, userProfile }: InsightsDashboardProps) => {
+  const navigate = useNavigate();
+  
   // Create carrierData object from carrierProfile and mock data
   const carrierData = {
     monthlyRevenue: 127500,
@@ -55,8 +58,11 @@ const InsightsDashboard = ({ carrierProfile, userProfile }: InsightsDashboardPro
         <h2 className="text-xl font-semibold text-slate-900">Key Metrics</h2>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {/* Total Revenue */}
-          <Card className="bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+          {/* Total Revenue - Clickable */}
+          <Card 
+            className="bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-all cursor-pointer hover:border-blue-300"
+            onClick={() => navigate('/revenue-breakdown')}
+          >
             <CardContent className="p-6">
               <div className="flex items-start justify-between mb-4">
                 <div>
@@ -78,8 +84,11 @@ const InsightsDashboard = ({ carrierProfile, userProfile }: InsightsDashboardPro
             </CardContent>
           </Card>
 
-          {/* On-Time Rate */}
-          <Card className="bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+          {/* On-Time Rate - Clickable */}
+          <Card 
+            className="bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-all cursor-pointer hover:border-green-300"
+            onClick={() => navigate('/on-time-rate')}
+          >
             <CardContent className="p-6">
               <div className="flex items-start justify-between mb-4">
                 <div>
@@ -101,8 +110,11 @@ const InsightsDashboard = ({ carrierProfile, userProfile }: InsightsDashboardPro
             </CardContent>
           </Card>
 
-          {/* Active Loads */}
-          <Card className="bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+          {/* Active Loads - Clickable */}
+          <Card 
+            className="bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-all cursor-pointer hover:border-purple-300"
+            onClick={() => navigate('/active-loads')}
+          >
             <CardContent className="p-6">
               <div className="flex items-start justify-between mb-4">
                 <div>
@@ -126,8 +138,11 @@ const InsightsDashboard = ({ carrierProfile, userProfile }: InsightsDashboardPro
             </CardContent>
           </Card>
 
-          {/* Fuel Efficiency */}
-          <Card className="bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+          {/* Fuel Efficiency - Clickable */}
+          <Card 
+            className="bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-all cursor-pointer hover:border-orange-300"
+            onClick={() => navigate('/fuel-efficiency')}
+          >
             <CardContent className="p-6">
               <div className="flex items-start justify-between mb-4">
                 <div>
