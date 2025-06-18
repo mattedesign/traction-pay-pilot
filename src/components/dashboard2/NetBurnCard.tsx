@@ -24,14 +24,14 @@ const NetBurnCard = ({ title, amount, progressColor, progressWidth, percentage }
         </div>
       </CardHeader>
       <CardContent>
-        <div className="space-y-3">
+        <div className="space-y-4">
           <div className="text-3xl font-bold text-gray-900">{amount}</div>
-          <div className={`w-full ${progressColor} rounded-full h-2`}>
-            <div className={`${progressColor.replace('200', '600')} h-2 rounded-full`} style={{ width: progressWidth }}></div>
+          <div className={`w-full bg-gray-200 rounded-full h-3`}>
+            <div className={`${progressColor.replace('200', '500')} h-3 rounded-full transition-all duration-300`} style={{ width: progressWidth }}></div>
           </div>
-          <div className="flex items-center text-sm">
+          <div className="flex items-center justify-between text-sm">
             <span className="text-gray-500">Compared to the previous 30 day period</span>
-            <Badge className="ml-2 bg-green-100 text-green-800">
+            <Badge className="bg-green-100 text-green-800 border-green-200">
               <TrendingUp className="w-3 h-3 mr-1" />
               {percentage}
             </Badge>
