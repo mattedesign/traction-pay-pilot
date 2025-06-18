@@ -11,6 +11,15 @@ interface InsightsDashboardProps {
 }
 
 const InsightsDashboard = ({ carrierProfile, userProfile }: InsightsDashboardProps) => {
+  // Create carrierData object from carrierProfile and mock data
+  const carrierData = {
+    monthlyRevenue: 127500,
+    factoringRate: 3.5,
+    loadCount: 24,
+    onTimeRate: 96.8,
+    fuelEfficiency: 7.2
+  };
+
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
@@ -77,12 +86,12 @@ const InsightsDashboard = ({ carrierProfile, userProfile }: InsightsDashboardPro
       </div>
 
       {/* Smart Insights Component */}
-      <SmartInsightsDashboard />
+      <SmartInsightsDashboard carrierData={carrierData} />
 
       {/* Performance Analysis */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <PerformanceBenchmarking />
-        <LoadProfitabilityIntelligence />
+        <PerformanceBenchmarking carrierData={carrierData} />
+        <LoadProfitabilityIntelligence carrierData={carrierData} />
       </div>
     </div>
   );
