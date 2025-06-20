@@ -1,5 +1,5 @@
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { TrendingUp, TrendingDown, BarChart3, Target, Fuel, Clock } from "lucide-react";
 import PaymentPerformanceAlert from "@/components/dashboard2/PaymentPerformanceAlert";
 import PendingPaymentsSection from "@/components/dashboard2/PendingPaymentsSection";
@@ -9,6 +9,11 @@ import PaymentCashFlowSection from "@/components/dashboard2/PaymentCashFlowSecti
 import PaymentSmartAlerts from "@/components/dashboard2/PaymentSmartAlerts";
 import PerformanceComparisonDashboard from "@/components/dashboard2/PerformanceComparisonDashboard";
 import QuickActionCenter from "@/components/dashboard2/QuickActionCenter";
+import MetroFreightCaseStudy from "@/components/dashboard2/MetroFreightCaseStudy";
+import AIPaymentOptimizer from "@/components/dashboard2/AIPaymentOptimizer";
+import FactoringSetupWizard from "@/components/dashboard2/FactoringSetupWizard";
+import CashFlowVisualization from "@/components/dashboard2/CashFlowVisualization";
+import DashboardHeader from "./DashboardHeader";
 import { CarrierProfile } from "@/pages/Index";
 
 interface HabituallyLateInsightsDashboardProps {
@@ -20,34 +25,19 @@ const HabituallyLateInsightsDashboard = ({ carrierProfile, userProfile }: Habitu
   return (
     <div className="p-6 space-y-6 bg-slate-50 min-h-full">
       {/* Header with greeting */}
-      <div className="flex items-center justify-between">
-        <div>
-          <div className="flex items-center space-x-3 mb-2">
-            <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
-              <div className="w-4 h-4 bg-orange-500 rounded-full relative">
-                <div className="absolute -top-1 -left-1 w-2 h-1 bg-orange-400 rounded-full"></div>
-                <div className="absolute -top-1 -right-1 w-2 h-1 bg-orange-400 rounded-full"></div>
-                <div className="absolute -bottom-1 -left-1 w-2 h-1 bg-orange-400 rounded-full"></div>
-                <div className="absolute -bottom-1 -right-1 w-2 h-1 bg-orange-400 rounded-full"></div>
-              </div>
-            </div>
-            <div>
-              <div className="text-sm text-slate-500 mb-1">
-                {new Date().toLocaleDateString('en-US', { 
-                  weekday: 'long', 
-                  year: 'numeric', 
-                  month: 'long', 
-                  day: 'numeric' 
-                })}
-              </div>
-              <h1 className="text-3xl font-bold text-slate-900">Good morning, {userProfile?.email?.split('@')[0] || 'Alex'}</h1>
-            </div>
-          </div>
-        </div>
-      </div>
+      <DashboardHeader userProfile={userProfile} />
 
       {/* Payment Performance Alert */}
       <PaymentPerformanceAlert />
+
+      {/* Metro Freight Case Study - Prominent placement */}
+      <MetroFreightCaseStudy />
+
+      {/* Cash Flow Transformation Visualization */}
+      <CashFlowVisualization />
+
+      {/* AI Payment Optimizer */}
+      <AIPaymentOptimizer />
 
       {/* Pending Payments Section */}
       <PendingPaymentsSection />
@@ -197,6 +187,9 @@ const HabituallyLateInsightsDashboard = ({ carrierProfile, userProfile }: Habitu
           </Card>
         </div>
       </div>
+
+      {/* Factoring Setup Wizard */}
+      <FactoringSetupWizard />
 
       {/* Enhanced Payment-Focused Dashboard */}
       <div className="space-y-6">
