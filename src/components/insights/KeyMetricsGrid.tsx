@@ -1,4 +1,5 @@
-import { TrendingUp, TrendingDown, BarChart3, Target, Fuel, Clock } from "lucide-react";
+
+import { TrendingUp, TrendingDown, BarChart3, Target, Fuel, Clock, CheckCircle } from "lucide-react";
 import MetricCard from "./MetricCard";
 
 const KeyMetricsGrid = () => {
@@ -28,19 +29,15 @@ const KeyMetricsGrid = () => {
       trendColor: "text-green-600"
     },
     {
-      title: "Active Loads",
-      subtitle: "Currently in progress",
-      value: "24",
+      title: "Loads Submitted and Paid Today",
+      subtitle: "Today's completed loads",
+      value: "12",
       trendIcon: TrendingUp,
-      trendValue: "+8.1%",
-      trendLabel: "vs last period",
-      icon: () => (
-        <div className="w-5 h-5 bg-purple-600 rounded flex items-center justify-center">
-          <div className="w-2 h-2 bg-white rounded"></div>
-        </div>
-      ),
-      iconBgColor: "bg-purple-50",
-      iconColor: "",
+      trendValue: "+3",
+      trendLabel: "vs yesterday",
+      icon: CheckCircle,
+      iconBgColor: "bg-emerald-50",
+      iconColor: "text-emerald-600",
       trendColor: "text-green-600"
     },
     {
