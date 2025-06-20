@@ -1,4 +1,3 @@
-
 import { TrendingUp, TrendingDown, BarChart3, Target, Fuel, Clock } from "lucide-react";
 import MetricCard from "./MetricCard";
 
@@ -69,7 +68,7 @@ const KeyMetricsGrid = () => {
       trendColor: "text-green-600"
     },
     {
-      title: "Pending Items",
+      title: "Needs Attention",
       subtitle: "Requiring attention",
       value: "5",
       trendIcon: TrendingDown,
