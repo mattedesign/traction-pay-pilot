@@ -1,209 +1,230 @@
 
-import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Mail, Clock, Paperclip, ChevronDown, ChevronRight, User } from "lucide-react";
-import { EmailThread, EmailCommunication } from "@/services/emailService";
+import React from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Button } from '@/components/ui/button';
+import { Mail, Clock, User, Paperclip, Reply, Forward, Archive } from 'lucide-react';
+import { format } from 'date-fns';
+import { EmailThread, EmailCommunication } from '../services/emailService';
 
 interface EmailThreadDisplayProps {
-  threads: EmailThread[];
-  compact?: boolean;
-  onThreadClick?: (threadId: string) => void;
+  thread: EmailThread;
+  onMarkAsRead?: (threadId: string) => void;
+  onReply?: (threadId: string) => void;
+  onForward?: (emailId: string) => void;
+  onArchive?: (threadId: string) => void;
 }
 
-const EmailThreadDisplay = ({ threads, compact = true, onThreadClick }: EmailThreadDisplayProps) => {
-  const [expandedThreads, setExpandedThreads] = useState<Set<string>>(new Set());
-
-  const toggleThread = (threadId: string, event?: React.MouseEvent) => {
-    if (event) {
-      event.stopPropagation();
-    }
-    
-    const newExpanded = new Set(expandedThreads);
-    if (newExpanded.has(threadId)) {
-      newExpanded.delete(threadId);
-    } else {
-      newExpanded.add(threadId);
-    }
-    setExpandedThreads(newExpanded);
-  };
-
-  const handleThreadClick = (threadId: string, event: React.MouseEvent) => {
-    event.stopPropagation();
-    if (onThreadClick) {
-      onThreadClick(threadId);
+const EmailThreadDisplay = ({ 
+  thread, 
+  onMarkAsRead, 
+  onReply, 
+  onForward, 
+  onArchive 
+}: EmailThreadDisplayProps) => {
+  const handleMarkAsRead = () => {
+    if (onMarkAsRead && thread.unreadCount > 0) {
+      onMarkAsRead(thread.threadId);
     }
   };
 
-  const formatTimeAgo = (date: Date) => {
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-    const diffDays = Math.floor(diffHours / 24);
-
-    if (diffDays > 0) {
-      return `${diffDays}d ago`;
-    } else if (diffHours > 0) {
-      return `${diffHours}h ago`;
-    } else {
-      return 'Just now';
+  const handleReply = () => {
+    if (onReply) {
+      onReply(thread.threadId);
     }
   };
 
-  const getEmailPreview = (thread: EmailThread) => {
-    const latestEmail = thread.emails.sort((a, b) => 
-      b.timestamp.getTime() - a.timestamp.getTime()
-    )[0];
-    return latestEmail?.body.substring(0, 100) + (latestEmail?.body.length > 100 ? '...' : '');
+  const handleForward = (emailId: string) => {
+    if (onForward) {
+      onForward(emailId);
+    }
   };
 
-  const getSenderName = (email: string) => {
-    return email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+  const handleArchive = () => {
+    if (onArchive) {
+      onArchive(thread.threadId);
+    }
   };
 
-  if (threads.length === 0) {
-    return null;
-  }
+  const getEmailStatusColor = (email: EmailCommunication) => {
+    if (!email.isRead) return 'bg-blue-50 border-blue-200';
+    return 'bg-white';
+  };
+
+  const getTypeIcon = (type: 'incoming' | 'outgoing') => {
+    return type === 'incoming' ? '📨' : '📤';
+  };
+
+  const formatEmailAddress = (email: string) => {
+    // Extract name if format is "Name <email@domain.com>"
+    const match = email.match(/^(.+?)\s*<(.+?)>$/);
+    if (match) {
+      return { name: match[1].trim(), email: match[2].trim() };
+    }
+    return { name: email, email };
+  };
 
   return (
-    <div className="space-y-2">
-      {threads.map((thread) => {
-        const isExpanded = expandedThreads.has(thread.threadId);
-        const sortedEmails = thread.emails.sort((a, b) => 
-          a.timestamp.getTime() - b.timestamp.getTime()
-        );
-
-        return (
-          <Card 
-            key={thread.threadId} 
-            className={`transition-all duration-200 ${
-              onThreadClick ? 'cursor-pointer hover:bg-slate-50 hover:shadow-md' : ''
-            }`}
-            onClick={onThreadClick ? (e) => handleThreadClick(thread.threadId, e) : undefined}
-          >
-            <CardHeader 
-              className="pb-2 cursor-pointer hover:bg-slate-50"
-              onClick={(e) => toggleThread(thread.threadId, e)}
-            >
-              <div className="flex items-start justify-between">
-                <div className="flex items-start space-x-2 flex-1">
-                  {isExpanded ? (
-                    <ChevronDown className="w-4 h-4 mt-1 text-slate-400" />
-                  ) : (
-                    <ChevronRight className="w-4 h-4 mt-1 text-slate-400" />
-                  )}
-                  <Mail className="w-4 h-4 mt-1 text-blue-600" />
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center space-x-2 mb-1">
-                      <CardTitle className="text-sm font-medium text-slate-900 truncate">
-                        {thread.subject}
-                      </CardTitle>
-                      {thread.unreadCount > 0 && (
-                        <Badge variant="destructive" className="text-xs px-1.5 py-0.5">
-                          {thread.unreadCount}
-                        </Badge>
-                      )}
-                      {thread.emails.some(e => e.attachments && e.attachments.length > 0) && (
-                        <Paperclip className="w-3 h-3 text-slate-400" />
-                      )}
-                    </div>
-                    {compact && !isExpanded && (
-                      <p className="text-xs text-slate-600 truncate">
-                        {getEmailPreview(thread)}
-                      </p>
-                    )}
-                    <div className="flex items-center space-x-2 mt-1">
-                      <span className="text-xs text-slate-500">
-                        {thread.emails.length} message{thread.emails.length !== 1 ? 's' : ''}
-                      </span>
-                      <span className="text-xs text-slate-400">•</span>
-                      <Clock className="w-3 h-3 text-slate-400" />
-                      <span className="text-xs text-slate-500">
-                        {formatTimeAgo(thread.lastActivity)}
-                      </span>
-                    </div>
-                  </div>
-                </div>
+    <Card className="w-full max-w-4xl mx-auto">
+      <CardHeader className="pb-4">
+        <div className="flex items-start justify-between">
+          <div className="flex-1">
+            <CardTitle className="text-xl font-semibold mb-2 flex items-center gap-2">
+              <Mail className="w-5 h-5" />
+              {thread.subject}
+              {thread.unreadCount > 0 && (
+                <Badge variant="secondary" className="ml-2">
+                  {thread.unreadCount} unread
+                </Badge>
+              )}
+            </CardTitle>
+            <div className="flex items-center gap-4 text-sm text-slate-600">
+              <div className="flex items-center gap-1">
+                <User className="w-4 h-4" />
+                <span>{thread.participants.length} participants</span>
               </div>
-            </CardHeader>
-            
-            {isExpanded && (
-              <CardContent className="pt-0">
-                <div className="space-y-3 border-l-2 border-slate-200 ml-3 pl-4">
-                  {sortedEmails.map((email, index) => (
-                    <div key={email.id} className="space-y-2">
+              <div className="flex items-center gap-1">
+                <Clock className="w-4 h-4" />
+                <span>Last activity: {format(thread.lastActivity, 'MMM dd, yyyy HH:mm')}</span>
+              </div>
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-2">
+            {thread.unreadCount > 0 && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleMarkAsRead}
+                className="text-xs"
+              >
+                Mark as Read
+              </Button>
+            )}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleReply}
+              className="text-xs"
+            >
+              <Reply className="w-3 h-3 mr-1" />
+              Reply
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleArchive}
+              className="text-xs"
+            >
+              <Archive className="w-3 h-3 mr-1" />
+              Archive
+            </Button>
+          </div>
+        </div>
+      </CardHeader>
+
+      <CardContent>
+        <ScrollArea className="h-96">
+          <div className="space-y-4">
+            {thread.emails.map((email, index) => {
+              const fromInfo = formatEmailAddress(email.from);
+              const toInfo = formatEmailAddress(email.to);
+              
+              return (
+                <div key={email.id}>
+                  <Card className={`${getEmailStatusColor(email)} transition-colors`}>
+                    <CardHeader className="pb-3">
                       <div className="flex items-start justify-between">
-                        <div className="flex items-center space-x-2">
-                          <div className={`w-2 h-2 rounded-full ${
-                            email.type === 'inbound' ? 'bg-blue-500' : 'bg-green-500'
-                          }`} />
-                          <User className="w-3 h-3 text-slate-400" />
-                          <span className="text-xs font-medium text-slate-700">
-                            {getSenderName(email.from)}
-                          </span>
-                          <span className="text-xs text-slate-500">
-                            to {getSenderName(email.to)}
-                          </span>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="text-lg">{getTypeIcon(email.type)}</span>
+                            <div className="text-sm">
+                              <div className="font-medium">
+                                {email.type === 'incoming' ? `From: ${fromInfo.name}` : `To: ${toInfo.name}`}
+                              </div>
+                              <div className="text-slate-500">
+                                {email.type === 'incoming' ? fromInfo.email : toInfo.email}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="text-xs text-slate-500 flex items-center gap-4">
+                            <span>{format(email.timestamp, 'MMM dd, yyyy HH:mm')}</span>
+                            {email.attachments && email.attachments.length > 0 && (
+                              <div className="flex items-center gap-1">
+                                <Paperclip className="w-3 h-3" />
+                                <span>{email.attachments.length} attachment{email.attachments.length > 1 ? 's' : ''}</span>
+                              </div>
+                            )}
+                          </div>
                         </div>
-                        <span className="text-xs text-slate-400">
-                          {email.timestamp.toLocaleTimeString([], { 
-                            hour: '2-digit', 
-                            minute: '2-digit' 
-                          })}
-                        </span>
+                        
+                        <div className="flex items-center gap-1">
+                          {!email.isRead && (
+                            <Badge variant="secondary" className="text-xs">
+                              Unread
+                            </Badge>
+                          )}
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleForward(email.id)}
+                            className="text-xs px-2 py-1 h-auto"
+                          >
+                            <Forward className="w-3 h-3" />
+                          </Button>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    
+                    <CardContent className="pt-0">
+                      <div className="text-sm whitespace-pre-wrap bg-slate-50 p-3 rounded-md">
+                        {email.body}
                       </div>
                       
-                      <div className="bg-slate-50 rounded p-3 ml-5">
-                        <p className="text-xs text-slate-700 whitespace-pre-wrap">
-                          {email.body}
-                        </p>
-                        
-                        {email.attachments && email.attachments.length > 0 && (
-                          <div className="mt-2 pt-2 border-t border-slate-200">
-                            <div className="flex items-center space-x-1 mb-1">
-                              <Paperclip className="w-3 h-3 text-slate-400" />
-                              <span className="text-xs text-slate-600 font-medium">
-                                {email.attachments.length} attachment{email.attachments.length !== 1 ? 's' : ''}
-                              </span>
-                            </div>
+                      {email.attachments && email.attachments.length > 0 && (
+                        <div className="mt-3 pt-3 border-t">
+                          <div className="text-xs font-medium text-slate-600 mb-2">Attachments:</div>
+                          <div className="space-y-1">
                             {email.attachments.map((attachment) => (
-                              <div key={attachment.id} className="flex items-center justify-between text-xs">
-                                <span className="text-slate-700 truncate">
-                                  {attachment.fileName}
-                                </span>
+                              <div
+                                key={attachment.id}
+                                className="flex items-center gap-2 text-xs bg-white p-2 rounded border"
+                              >
+                                <Paperclip className="w-3 h-3" />
+                                <span className="font-medium">{attachment.fileName}</span>
                                 <span className="text-slate-500">
-                                  {attachment.fileSize}
+                                  ({(attachment.fileSize / 1024).toFixed(1)} KB)
                                 </span>
+                                {attachment.downloadUrl && (
+                                  <a
+                                    href={attachment.downloadUrl}
+                                    className="text-blue-600 hover:underline ml-auto"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                  >
+                                    Download
+                                  </a>
+                                )}
                               </div>
                             ))}
                           </div>
-                        )}
-                      </div>
-                      
-                      {index < sortedEmails.length - 1 && (
-                        <div className="border-b border-slate-100 ml-5" />
+                        </div>
                       )}
-                    </div>
-                  ))}
+                    </CardContent>
+                  </Card>
+                  
+                  {index < thread.emails.length - 1 && (
+                    <Separator className="my-4" />
+                  )}
                 </div>
-                
-                <div className="mt-3 pt-3 border-t border-slate-200">
-                  <Button 
-                    size="sm" 
-                    variant="outline" 
-                    className="text-xs"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    Reply
-                  </Button>
-                </div>
-              </CardContent>
-            )}
-          </Card>
-        );
-      })}
-    </div>
+              );
+            })}
+          </div>
+        </ScrollArea>
+      </CardContent>
+    </Card>
   );
 };
 

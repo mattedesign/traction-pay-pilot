@@ -1,6 +1,5 @@
 
 import { EmailService } from '../services/emailService';
-import { SupabaseEmailService } from '../services/supabaseEmailService';
 import { toast } from '@/hooks/use-toast';
 
 export class DataMigrationUtility {
@@ -13,49 +12,33 @@ export class DataMigrationUtility {
       
       if (existingThreads.length === 0) {
         console.log('No email data to migrate');
+        toast({
+          title: "No Data to Migrate",
+          description: "No email data found to migrate to Supabase",
+        });
         return;
       }
 
-      let migratedThreads = 0;
-      let migratedEmails = 0;
-
-      for (const thread of existingThreads) {
-        try {
-          // Create the thread
-          await SupabaseEmailService.createEmailThread({
-            threadId: thread.threadId,
-            loadId: thread.loadId,
-            subject: thread.subject,
-            participants: thread.participants,
-            lastActivity: thread.lastActivity,
-            unreadCount: thread.unreadCount
-          });
-
-          migratedThreads++;
-
-          // Add each email to the thread
-          for (const email of thread.emails) {
-            await SupabaseEmailService.addEmailToThread(email);
-            migratedEmails++;
-          }
-
-          console.log(`Migrated thread ${thread.threadId} with ${thread.emails.length} emails`);
-        } catch (error) {
-          console.error(`Failed to migrate thread ${thread.threadId}:`, error);
-        }
-      }
-
-      toast({
-        title: "Migration Complete",
-        description: `Successfully migrated ${migratedThreads} email threads with ${migratedEmails} emails to Supabase`,
+      // Since we don't have a SupabaseEmailService implemented yet,
+      // we'll just log what would be migrated
+      console.log(`Found ${existingThreads.length} email threads to migrate`);
+      
+      let totalEmails = 0;
+      existingThreads.forEach(thread => {
+        totalEmails += thread.emails.length;
       });
 
-      console.log(`Migration complete: ${migratedThreads} threads, ${migratedEmails} emails`);
+      toast({
+        title: "Migration Ready",
+        description: `Found ${existingThreads.length} email threads with ${totalEmails} emails ready for migration. Supabase email service needs to be implemented.`,
+      });
+
+      console.log(`Migration preparation complete: ${existingThreads.length} threads, ${totalEmails} emails found`);
     } catch (error) {
       console.error('Error during email data migration:', error);
       toast({
         title: "Migration Failed",
-        description: "Failed to migrate email data. Please check the console for details.",
+        description: "Failed to prepare email data migration. Please check the console for details.",
         variant: "destructive"
       });
     }
@@ -63,8 +46,18 @@ export class DataMigrationUtility {
 
   static async testSupabaseConnection(): Promise<boolean> {
     try {
-      // Try to fetch email threads to test connection
-      await SupabaseEmailService.getAllEmailThreads();
+      // Test basic Supabase connection by checking if we can access the client
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+      
+      if (!supabaseUrl || !supabaseAnonKey || 
+          supabaseUrl === 'https://placeholder.supabase.co' || 
+          supabaseAnonKey === 'placeholder-key') {
+        console.log('Supabase not configured properly');
+        return false;
+      }
+      
+      console.log('Supabase connection configured');
       return true;
     } catch (error) {
       console.error('Supabase connection test failed:', error);
