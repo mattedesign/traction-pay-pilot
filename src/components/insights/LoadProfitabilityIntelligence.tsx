@@ -1,4 +1,3 @@
-
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { TrendingUp, TrendingDown, AlertCircle, Star } from "lucide-react";
@@ -82,89 +81,58 @@ const LoadProfitabilityIntelligence = ({ carrierData }: LoadProfitabilityIntelli
   const lowMarginLoads = loads.filter(load => load.profitMargin <= 60);
   
   return (
-    <div className="space-y-6">
-      {/* Summary Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="bg-green-50 border-green-200">
-          <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-green-900">{avgProfitMargin.toFixed(1)}%</div>
-            <div className="text-sm text-green-700">Average Profit Margin</div>
-            <div className="text-xs text-green-600">Factored Loads Only</div>
+    <div className="space-y-4">
+      {/* Load Analysis - removing title */}
+      {loads.map((load) => (
+        <Card key={load.id} className="bg-white">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between mb-3">
+              <div>
+                <div className="font-medium text-slate-900">Load #{load.id} - {load.customer}</div>
+                <div className="text-sm text-slate-600">{load.route}</div>
+                <div className="text-xs text-blue-600">Factoring Rate: {load.factoringRate}%</div>
+              </div>
+              <Badge className={getRatingColor(load.rating)}>
+                {getRatingIcon(load.rating)}
+                <span className="ml-1 capitalize">{load.rating}</span>
+              </Badge>
+            </div>
+            
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-3 text-sm">
+              <div>
+                <div className="text-slate-600">Gross Revenue</div>
+                <div className="font-medium">${load.grossRevenue.toLocaleString()}</div>
+              </div>
+              <div>
+                <div className="text-slate-600">Factoring Fee</div>
+                <div className="font-medium text-red-600">-${load.factoringFee.toFixed(0)}</div>
+              </div>
+              <div>
+                <div className="text-slate-600">Fuel Cost</div>
+                <div className="font-medium text-red-600">-${load.fuelCost.toFixed(0)}</div>
+              </div>
+              <div>
+                <div className="text-slate-600">Net Profit</div>
+                <div className="font-medium text-green-600">${load.netProfit.toFixed(0)}</div>
+              </div>
+            </div>
+            
+            <div className="space-y-2">
+              <div className="flex justify-between text-sm">
+                <span className="text-slate-600">Profit Margin</span>
+                <span className="font-medium">{load.profitMargin.toFixed(1)}%</span>
+              </div>
+              <Progress value={load.profitMargin} className="h-2" />
+            </div>
+            
+            {load.profitMargin < 60 && (
+              <div className="mt-3 p-2 bg-orange-50 rounded text-sm text-orange-800">
+                ⚠️ Consider renegotiating factoring rates or optimizing route efficiency for this customer
+              </div>
+            )}
           </CardContent>
         </Card>
-        
-        <Card className="bg-blue-50 border-blue-200">
-          <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-blue-900">{highMarginLoads.length}</div>
-            <div className="text-sm text-blue-700">High-Margin Customers</div>
-            <div className="text-xs text-blue-600">Above Average</div>
-          </CardContent>
-        </Card>
-        
-        <Card className="bg-red-50 border-red-200">
-          <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-red-900">{lowMarginLoads.length}</div>
-            <div className="text-sm text-red-700">Low-Margin Routes</div>
-            <div className="text-xs text-red-600">Needs Attention</div>
-          </CardContent>
-        </Card>
-      </div>
-      
-      {/* Load Analysis */}
-      <div className="space-y-4">
-        <h4 className="font-semibold text-slate-900">Recent Factored Load Profitability</h4>
-        
-        {loads.map((load) => (
-          <Card key={load.id} className="bg-white">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between mb-3">
-                <div>
-                  <div className="font-medium text-slate-900">Load #{load.id} - {load.customer}</div>
-                  <div className="text-sm text-slate-600">{load.route}</div>
-                  <div className="text-xs text-blue-600">Factoring Rate: {load.factoringRate}%</div>
-                </div>
-                <Badge className={getRatingColor(load.rating)}>
-                  {getRatingIcon(load.rating)}
-                  <span className="ml-1 capitalize">{load.rating}</span>
-                </Badge>
-              </div>
-              
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-3 text-sm">
-                <div>
-                  <div className="text-slate-600">Gross Revenue</div>
-                  <div className="font-medium">${load.grossRevenue.toLocaleString()}</div>
-                </div>
-                <div>
-                  <div className="text-slate-600">Factoring Fee</div>
-                  <div className="font-medium text-red-600">-${load.factoringFee.toFixed(0)}</div>
-                </div>
-                <div>
-                  <div className="text-slate-600">Fuel Cost</div>
-                  <div className="font-medium text-red-600">-${load.fuelCost.toFixed(0)}</div>
-                </div>
-                <div>
-                  <div className="text-slate-600">Net Profit</div>
-                  <div className="font-medium text-green-600">${load.netProfit.toFixed(0)}</div>
-                </div>
-              </div>
-              
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span className="text-slate-600">Profit Margin</span>
-                  <span className="font-medium">{load.profitMargin.toFixed(1)}%</span>
-                </div>
-                <Progress value={load.profitMargin} className="h-2" />
-              </div>
-              
-              {load.profitMargin < 60 && (
-                <div className="mt-3 p-2 bg-orange-50 rounded text-sm text-orange-800">
-                  ⚠️ Consider renegotiating factoring rates or optimizing route efficiency for this customer
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      ))}
       
       {/* Factoring-Specific Recommendations */}
       <Card className="bg-blue-50 border-blue-200">
