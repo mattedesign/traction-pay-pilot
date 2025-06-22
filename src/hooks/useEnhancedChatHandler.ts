@@ -67,17 +67,17 @@ export const useEnhancedChatHandler = ({
     const userMessage = addUserMessage(sanitizedMessage);
 
     try {
-      // Prepare conversation context
+      // Prepare conversation context - map ChatMessage type to role format
       const conversationMessages = chatHistory
         .slice(-10) // Keep last 10 messages for context
         .map(msg => ({
-          role: msg.role as 'user' | 'assistant',
+          role: msg.type === 'user' ? 'user' as const : 'assistant' as const,
           content: msg.content
         }));
 
       // Add current message
       conversationMessages.push({
-        role: 'user',
+        role: 'user' as const,
         content: sanitizedMessage
       });
 
