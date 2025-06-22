@@ -27,7 +27,7 @@ export const useAI = (options: UseAIOptions = {}) => {
     setIsLoading(true);
     
     try {
-      // Try Supabase first if preferred and available
+      // Try Supabase first if preferred
       if (useSupabase) {
         console.log('Attempting Supabase Edge Function...');
         const response = await supabaseService.sendMessage(messages, options.systemPrompt);
@@ -57,7 +57,7 @@ export const useAI = (options: UseAIOptions = {}) => {
         return response.content;
       }
       
-      throw new Error('No AI service initialized. Please provide an API key or check Supabase configuration.');
+      throw new Error('No AI service available');
       
     } finally {
       setIsLoading(false);
@@ -73,7 +73,7 @@ export const useAI = (options: UseAIOptions = {}) => {
     isLoading,
     apiKey,
     isClientInitialized: !!clientService,
-    isSupabaseAvailable: true,
+    isSupabaseAvailable: true, // Always available since Supabase is configured
     useSupabase,
     initializeClientService,
     toggleService,

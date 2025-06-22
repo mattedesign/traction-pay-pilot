@@ -36,15 +36,16 @@ export const useEnhancedChatHandler = ({
     sendMessage
   } = useAI({ systemPrompt, preferSupabase: true });
 
-  const isInitialized = isClientInitialized || isSupabaseAvailable;
+  // System is initialized if Supabase is available OR client is initialized
+  const isInitialized = isSupabaseAvailable || isClientInitialized;
 
   const handleAPIKeySubmit = async (key: string) => {
     try {
       initializeClientService(key);
       
       toast({
-        title: "AI Assistant Ready",
-        description: "Your Claude AI assistant is now ready to help with trucking operations.",
+        title: "Client AI Assistant Ready",
+        description: "Your Claude AI assistant is now ready for direct API access.",
       });
       
     } catch (error) {
@@ -61,15 +62,6 @@ export const useEnhancedChatHandler = ({
     const sanitizedMessage = sanitizeInput(message);
     
     if (!sanitizedMessage.trim() || isLoading) return;
-
-    if (!isInitialized && !apiKey) {
-      toast({
-        title: "Setup Required",
-        description: "Please enter your Anthropic API key or ensure Supabase is configured.",
-        variant: "destructive"
-      });
-      return;
-    }
 
     setMessage("");
     const userMessage = addUserMessage(sanitizedMessage);
@@ -104,7 +96,9 @@ export const useEnhancedChatHandler = ({
       let errorMessage = "❌ I'm having trouble connecting right now. ";
       
       if (error instanceof Error) {
-        if (error.message.includes('API key')) {
+        if (error.message.includes('No AI service available')) {
+          errorMessage += "Please provide your Anthropic API key or check the Supabase configuration.";
+        } else if (error.message.includes('API key')) {
           errorMessage += "Please check your Anthropic API key.";
         } else if (error.message.includes('network') || error.message.includes('fetch')) {
           errorMessage += "Please check your internet connection.";

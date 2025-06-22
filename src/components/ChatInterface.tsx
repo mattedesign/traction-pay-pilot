@@ -67,7 +67,8 @@ Always provide practical, actionable advice focused on safety, compliance, and p
     return <ChatPreview currentSuggestions={currentSuggestions} />;
   }
 
-  if (!isInitialized && !apiKey) {
+  // Only show setup if not initialized AND not using Supabase
+  if (!isInitialized) {
     return (
       <ChatSetup 
         onAPIKeySubmit={handleAPIKeySubmit} 

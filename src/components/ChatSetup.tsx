@@ -28,18 +28,18 @@ const ChatSetup = ({ onAPIKeySubmit, isLoading, useSupabase = true, onToggleServ
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       {/* Service Status */}
-      <Card className="border-blue-200 bg-blue-50">
+      <Card className="border-green-200 bg-green-50">
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <Brain className="w-5 h-5 text-blue-600" />
-            <span>AI Assistant Setup</span>
+            <Brain className="w-5 h-5 text-green-600" />
+            <span>AI Assistant Ready</span>
           </CardTitle>
           <CardDescription>
-            Choose how to connect to Claude AI for trucking operations assistance
+            Your Claude AI assistant is ready to help with trucking operations
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {/* Service Toggle */}
+          {/* Service Status */}
           <div className="flex items-center justify-between p-4 bg-white rounded-lg border">
             <div className="flex items-center space-x-3">
               <Zap className="w-5 h-5 text-green-600" />
@@ -47,102 +47,89 @@ const ChatSetup = ({ onAPIKeySubmit, isLoading, useSupabase = true, onToggleServ
                 <div className="font-medium">Supabase Edge Functions</div>
                 <div className="text-sm text-slate-600">Secure server-side processing</div>
               </div>
-              {useSupabase && <Badge className="bg-green-100 text-green-800">Active</Badge>}
+              <Badge className="bg-green-100 text-green-800">Ready</Badge>
             </div>
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={onToggleService}
-              disabled={isLoading}
-            >
-              {useSupabase ? 'Switch to Client' : 'Switch to Supabase'}
-            </Button>
+            {onToggleService && (
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={onToggleService}
+                disabled={isLoading}
+              >
+                Switch to Client Mode
+              </Button>
+            )}
           </div>
 
-          {!useSupabase && (
-            <div className="flex items-center justify-between p-4 bg-white rounded-lg border">
-              <div className="flex items-center space-x-3">
-                <Key className="w-5 h-5 text-blue-600" />
-                <div>
-                  <div className="font-medium">Direct API Connection</div>
-                  <div className="text-sm text-slate-600">Client-side with your API key</div>
-                </div>
-                <Badge className="bg-blue-100 text-blue-800">Active</Badge>
-              </div>
-            </div>
-          )}
+          <Alert>
+            <CheckCircle className="w-4 h-4" />
+            <AlertDescription>
+              Your AI assistant is ready to use! The system is configured to use secure Supabase Edge Functions for all AI requests.
+            </AlertDescription>
+          </Alert>
 
-          {/* Status Messages */}
-          {useSupabase ? (
-            <Alert>
-              <CheckCircle className="w-4 h-4" />
-              <AlertDescription>
-                Trying Supabase Edge Functions first. If unavailable, you can provide your API key as fallback.
-              </AlertDescription>
-            </Alert>
-          ) : (
-            <Alert>
-              <AlertCircle className="w-4 h-4" />
-              <AlertDescription>
-                Using direct API connection. Your API key will be used for all requests.
-              </AlertDescription>
-            </Alert>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* API Key Input */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <Key className="w-5 h-5" />
-            <span>Anthropic API Key</span>
-            {!useSupabase && <Badge variant="secondary">Required</Badge>}
-            {useSupabase && <Badge variant="outline">Fallback</Badge>}
-          </CardTitle>
-          <CardDescription>
-            {useSupabase 
-              ? "Optional fallback if Supabase Edge Functions are unavailable"
-              : "Required for direct API access to Claude AI"
-            }
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Input
-                type="password"
-                placeholder="sk-ant-api03-..."
-                value={apiKey}
-                onChange={(e) => setApiKey(e.target.value)}
-                className="font-mono text-sm"
-                disabled={isLoading}
-              />
-              <div className="text-xs text-slate-500">
-                Get your API key from the <a href="https://console.anthropic.com/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Anthropic Console</a>
-              </div>
-            </div>
-            
+          <div className="flex justify-center">
             <Button 
-              type="submit" 
-              disabled={!apiKey.trim() || isLoading}
-              className="w-full"
+              onClick={() => window.location.reload()}
+              className="w-full max-w-sm"
             >
-              {isLoading ? (
-                <>
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                  Setting up...
-                </>
-              ) : (
-                <>
-                  <Brain className="w-4 h-4 mr-2" />
-                  Initialize AI Assistant
-                </>
-              )}
+              <Brain className="w-4 h-4 mr-2" />
+              Start Chatting
             </Button>
-          </form>
+          </div>
         </CardContent>
       </Card>
+
+      {/* Optional API Key for Direct Access */}
+      {!useSupabase && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center space-x-2">
+              <Key className="w-5 h-5" />
+              <span>Direct API Access</span>
+              <Badge variant="secondary">Optional</Badge>
+            </CardTitle>
+            <CardDescription>
+              Provide your own Anthropic API key for direct access
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <Input
+                  type="password"
+                  placeholder="sk-ant-api03-..."
+                  value={apiKey}
+                  onChange={(e) => setApiKey(e.target.value)}
+                  className="font-mono text-sm"
+                  disabled={isLoading}
+                />
+                <div className="text-xs text-slate-500">
+                  Get your API key from the <a href="https://console.anthropic.com/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Anthropic Console</a>
+                </div>
+              </div>
+              
+              <Button 
+                type="submit" 
+                disabled={!apiKey.trim() || isLoading}
+                className="w-full"
+              >
+                {isLoading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    Setting up...
+                  </>
+                ) : (
+                  <>
+                    <Brain className="w-4 h-4 mr-2" />
+                    Use Direct API Access
+                  </>
+                )}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Advanced Options */}
       <Card>
@@ -166,16 +153,17 @@ const ChatSetup = ({ onAPIKeySubmit, isLoading, useSupabase = true, onToggleServ
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
               <div className="space-y-2">
-                <div className="font-medium">Service Options:</div>
+                <div className="font-medium">Service Features:</div>
                 <ul className="text-slate-600 space-y-1">
-                  <li>• Supabase: Secure, server-side processing</li>
-                  <li>• Direct API: Faster, requires your key</li>
-                  <li>• Automatic fallback between services</li>
+                  <li>• Secure server-side processing</li>
+                  <li>• No API key required from users</li>
+                  <li>• Automatic failover support</li>
+                  <li>• Enterprise-grade security</li>
                 </ul>
               </div>
               
               <div className="space-y-2">
-                <div className="font-medium">Features:</div>
+                <div className="font-medium">AI Capabilities:</div>
                 <ul className="text-slate-600 space-y-1">
                   <li>• Load search and tracking</li>
                   <li>• Route optimization advice</li>
