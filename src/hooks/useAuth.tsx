@@ -31,7 +31,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [profileFetchPromise, setProfileFetchPromise] = useState<Promise<Profile | null> | null>(null);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   const fetchProfile = async (userId: string): Promise<Profile | null> => {
     try {
@@ -50,7 +50,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       console.log('Profile fetched successfully:', data);
 
-      // Type cast the user_type to ensure it matches our Profile interface
       const profileData: Profile = {
         ...data,
         user_type: data.user_type as 'carrier' | 'broker' | 'habitually_late_carrier'
@@ -63,75 +62,39 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const fetchProfileWithCache = async (userId: string): Promise<Profile | null> => {
-    // If there's already a pending fetch for this user, wait for it
-    if (profileFetchPromise) {
-      console.log('Waiting for existing profile fetch...');
-      return await profileFetchPromise;
-    }
-
-    // Create a new fetch promise
-    const newPromise = fetchProfile(userId);
-    setProfileFetchPromise(newPromise);
-
-    try {
-      const result = await newPromise;
-      setProfile(result);
-      return result;
-    } finally {
-      // Clear the promise after completion
-      setProfileFetchPromise(null);
-    }
-  };
-
   const refreshProfile = async () => {
-    if (session?.user) {
+    if (session?.user && !isLoading) {
       console.log('Refreshing profile...');
-      await fetchProfileWithCache(session.user.id);
+      const profileData = await fetchProfile(session.user.id);
+      setProfile(profileData);
     }
   };
 
   useEffect(() => {
     console.log('Setting up auth state listener...');
     
-    // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         console.log('Auth state changed:', event, session?.user?.email);
         
-        // Update session and user immediately
         setSession(session);
         setUser(session?.user ?? null);
         
-        if (session?.user) {
-          // Only fetch profile if we don't have one or user changed
-          const currentProfileId = profile?.id;
-          const newUserId = session.user.id;
-          
-          if (!currentProfileId || currentProfileId !== newUserId) {
-            // Defer profile fetching to avoid blocking auth state changes
-            setTimeout(async () => {
-              try {
-                await fetchProfileWithCache(session.user.id);
-              } catch (error) {
-                console.error('Error fetching profile in auth state change:', error);
-              } finally {
-                setIsLoading(false);
-              }
-            }, 0);
-          } else {
-            // Profile already matches, just update loading state
-            setIsLoading(false);
-          }
-        } else {
+        if (session?.user && !profile) {
+          // Only fetch profile if we don't have one and auth is stable
+          const profileData = await fetchProfile(session.user.id);
+          setProfile(profileData);
+        } else if (!session?.user) {
           setProfile(null);
-          setProfileFetchPromise(null);
+        }
+        
+        if (isInitialized) {
           setIsLoading(false);
         }
       }
     );
 
-    // THEN check for existing session
+    // Check for existing session
     const initializeAuth = async () => {
       try {
         console.log('Checking for existing session...');
@@ -140,6 +103,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         if (error) {
           console.error('Error getting session:', error);
           setIsLoading(false);
+          setIsInitialized(true);
           return;
         }
 
@@ -149,12 +113,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setUser(session?.user ?? null);
         
         if (session?.user) {
-          await fetchProfileWithCache(session.user.id);
+          const profileData = await fetchProfile(session.user.id);
+          setProfile(profileData);
         }
       } catch (error) {
         console.error('Error initializing auth:', error);
       } finally {
         setIsLoading(false);
+        setIsInitialized(true);
       }
     };
 
@@ -164,7 +130,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       console.log('Cleaning up auth subscription');
       subscription.unsubscribe();
     };
-  }, []); // Remove profile dependency to prevent re-initialization
+  }, []);
 
   const signOut = async () => {
     try {
@@ -176,11 +142,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
       console.log('User signed out successfully');
       
-      // Clear local state
       setUser(null);
       setProfile(null);
       setSession(null);
-      setProfileFetchPromise(null);
     } catch (error) {
       console.error('Error during sign out:', error);
       throw error;

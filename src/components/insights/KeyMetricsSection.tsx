@@ -1,9 +1,13 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { TrendingUp, TrendingDown, BarChart3, Target, Fuel, Clock } from "lucide-react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 
 const KeyMetricsSection = () => {
+  const navigate = useNavigate();
+  const { user, isLoading } = useAuth();
+
   const metrics = [
     {
       title: "Total Revenue",
@@ -91,8 +95,24 @@ const KeyMetricsSection = () => {
     }
   ];
 
-  const handleCardClick = (path: string) => {
+  const handleCardClick = (event: React.MouseEvent, path: string) => {
+    event.preventDefault();
     console.log("Card clicked, navigating to:", path);
+    console.log("Auth state:", { user: !!user, isLoading });
+    
+    if (isLoading) {
+      console.log("Auth still loading, deferring navigation");
+      return;
+    }
+    
+    if (!user) {
+      console.log("No user found, redirecting to auth");
+      navigate('/auth');
+      return;
+    }
+    
+    console.log("Navigating to:", path);
+    navigate(path);
   };
 
   return (
@@ -102,10 +122,9 @@ const KeyMetricsSection = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {metrics.map((metric, index) => (
           <div key={index} className="relative">
-            <Link 
-              to={metric.path} 
-              className="block w-full h-full"
-              onClick={() => handleCardClick(metric.path)}
+            <div 
+              className="block w-full h-full cursor-pointer"
+              onClick={(e) => handleCardClick(e, metric.path)}
             >
               <Card className="bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-200 hover:border-blue-300 cursor-pointer transform hover:-translate-y-1 hover:bg-slate-50 h-full">
                 <CardContent className="p-6 h-full">
@@ -130,7 +149,7 @@ const KeyMetricsSection = () => {
                   </div>
                 </CardContent>
               </Card>
-            </Link>
+            </div>
           </div>
         ))}
       </div>

@@ -29,9 +29,22 @@ const ProtectedRoute = ({ children, requiredUserType }: ProtectedRouteProps) => 
     );
   }
 
-  if (!user || !profile) {
-    console.log('Redirecting to auth page - no user or profile');
+  if (!user) {
+    console.log('Redirecting to auth page - no user');
     return <AuthPage />;
+  }
+
+  // If we have a user but no profile yet, show loading
+  if (!profile) {
+    console.log('User found but profile loading');
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-800 mx-auto mb-4"></div>
+          <p className="text-slate-600">Loading profile...</p>
+        </div>
+      </div>
+    );
   }
 
   if (requiredUserType && profile.user_type !== requiredUserType) {
