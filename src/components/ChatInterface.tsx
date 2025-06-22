@@ -3,10 +3,9 @@ import ChatContainer from "./ChatContainer";
 import ChatPreview from "./ChatPreview";
 import ChatSetup from "./ChatSetup";
 import { useChatMessages } from "../hooks/useChatMessages";
-import { useUnifiedChatHandler } from "../hooks/useUnifiedChatHandler";
+import { useEnhancedChatHandler } from "../hooks/useEnhancedChatHandler";
 import { useSuggestedQuestions } from "../hooks/useSuggestedQuestions";
 import { useNavigate } from "react-router-dom";
-import { InteractiveResponseService } from "../services/interactiveResponseService";
 
 interface ChatInterfaceProps {
   isPreview?: boolean;
@@ -18,58 +17,43 @@ const ChatInterface = ({ isPreview = false, loadContext }: ChatInterfaceProps) =
   const { currentSuggestions } = useSuggestedQuestions();
   const navigate = useNavigate();
   
-  // Enhanced system prompt that supports both search and chat modes
-  const systemPrompt = `You are an AI assistant specialized in trucking operations and load management. You can operate in two modes:
+  // Enhanced system prompt for trucking operations
+  const systemPrompt = `You are an AI assistant specialized in trucking operations and load management. You help carriers with:
 
-**SEARCH MODE**: Help users find and analyze specific loads by ID, broker, route, or status. Provide detailed load information, status updates, and actionable insights.
-
-**CHAT MODE**: Provide general trucking advice, compliance guidance, route optimization, and industry knowledge including:
-- DOT regulations and compliance (HOS, ELD, safety requirements)
+**OPERATIONAL GUIDANCE**:
 - Route optimization and fuel efficiency
-- Equipment maintenance and safety
-- Freight operations and logistics
-- Payment processing and factoring
-- Professional communication
+- Load search and acceptance decisions
+- DOT regulations and compliance (HOS, ELD, safety)
+- Equipment maintenance and safety protocols
 
-When asking questions that could lead to specific actions, phrase them as yes/no questions when appropriate. For example:
-- "Would you like to see the details for Load #1234?"
-- "Should I show you the optimal route options?"
-- "Would you like to check your payment status?"
+**BUSINESS SUPPORT**:
+- Payment processing and factoring advice
+- Cash flow management and financing
+- Performance metrics and optimization
+- Growth planning and fleet expansion
 
-Always provide practical, actionable advice in a clear, professional tone. Focus on safety, compliance, and profitability.`;
+**COMMUNICATION**:
+- Professional interaction with brokers and shippers
+- Documentation and paperwork guidance
+- Dispute resolution and problem solving
 
-  // Custom addAIMessage that processes responses for interactive buttons
-  const addAIMessageWithButtons = (content: string) => {
-    const processed = InteractiveResponseService.processResponse(content);
-    
-    // Add the main content first
-    const mainMessage = addAIMessage(processed.mainContent);
-    
-    // If there's an interactive question, add it as a separate message with buttons
-    if (processed.questionContent && processed.interactiveButtons) {
-      setTimeout(() => {
-        addAIMessage(processed.questionContent!, processed.interactiveButtons);
-      }, 500); // Small delay to show it's a separate message
-    }
-    
-    return mainMessage;
-  };
+Always provide practical, actionable advice focused on safety, compliance, and profitability. Keep responses clear and industry-specific.`;
 
   const {
     message,
     setMessage,
     isLoading,
     isInitialized,
+    useSupabase,
+    apiKey,
     handleSendMessage,
     handleAPIKeySubmit,
-    loadResults,
-    showingResults,
-    handleLoadSelect
-  } = useUnifiedChatHandler({
+    toggleService
+  } = useEnhancedChatHandler({
     systemPrompt,
     chatHistory,
     addUserMessage,
-    addAIMessage: addAIMessageWithButtons,
+    addAIMessage,
     currentLoadId: loadContext,
     onLoadSelect: (loadId) => navigate(`/load/${loadId}`)
   });
@@ -83,8 +67,15 @@ Always provide practical, actionable advice in a clear, professional tone. Focus
     return <ChatPreview currentSuggestions={currentSuggestions} />;
   }
 
-  if (!isInitialized) {
-    return <ChatSetup onAPIKeySubmit={handleAPIKeySubmit} isLoading={isLoading} />;
+  if (!isInitialized && !apiKey) {
+    return (
+      <ChatSetup 
+        onAPIKeySubmit={handleAPIKeySubmit} 
+        isLoading={isLoading}
+        useSupabase={useSupabase}
+        onToggleService={toggleService}
+      />
+    );
   }
 
   return (
@@ -95,7 +86,6 @@ Always provide practical, actionable advice in a clear, professional tone. Focus
       currentSuggestions={currentSuggestions}
       onChatMessage={handleChatMessage}
       onAPIKeySubmit={handleAPIKeySubmit}
-      onLoadSelect={handleLoadSelect}
       onNavigate={navigate}
     />
   );
