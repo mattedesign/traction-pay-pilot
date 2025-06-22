@@ -1,4 +1,3 @@
-
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -34,8 +33,14 @@ import BrokerQuickPayAnalyticsPage from "./pages/BrokerQuickPayAnalyticsPage";
 import BrokerLoadValueAnalyticsPage from "./pages/BrokerLoadValueAnalyticsPage";
 import AuthPage from "./components/auth/AuthPage";
 import Dashboard2Page from "./pages/Dashboard2Page";
-import "./App.css";
 import BrokerLoadDetailPage from "./pages/BrokerLoadDetailPage";
+import RevenueAnalyticsPage from "./pages/RevenueAnalyticsPage";
+import PaymentPerformancePage from "./pages/PaymentPerformancePage";
+import AvailableLoadsPage from "./pages/AvailableLoadsPage";
+import FactoringDetailsPage from "./pages/FactoringDetailsPage";
+import PaymentTimelinePage from "./pages/PaymentTimelinePage";
+import OverdueInvoicesPage from "./pages/OverdueInvoicesPage";
+import "./App.css";
 
 const queryClient = new QueryClient();
 
@@ -189,6 +194,36 @@ function App() {
             <Route path="/broker/analytics/load-value" element={
               <ProtectedRoute requiredUserType="broker">
                 <BrokerLoadValueAnalyticsPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/revenue-analytics" element={
+              <ProtectedRoute>
+                <RevenueAnalyticsPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/payment-performance" element={
+              <ProtectedRoute>
+                <PaymentPerformancePage />
+              </ProtectedRoute>
+            } />
+            <Route path="/available-loads" element={
+              <ProtectedRoute>
+                <AvailableLoadsPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/factoring-details" element={
+              <ProtectedRoute>
+                <FactoringDetailsPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/payment-timeline" element={
+              <ProtectedRoute>
+                <PaymentTimelinePage />
+              </ProtectedRoute>
+            } />
+            <Route path="/overdue-invoices" element={
+              <ProtectedRoute>
+                <OverdueInvoicesPage />
               </ProtectedRoute>
             } />
             <Route path="*" element={<NotFound />} />
