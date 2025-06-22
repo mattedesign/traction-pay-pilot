@@ -7,83 +7,99 @@ const corsHeaders = {
 }
 
 interface ChatMessage {
-  role: 'user' | 'assistant';
-  content: string;
+  role: 'user' | 'assistant'
+  content: string
 }
 
 interface ChatRequest {
-  messages: ChatMessage[];
-  systemPrompt: string;
+  messages: ChatMessage[]
+  systemPrompt?: string
 }
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders })
+    return new Response(null, { headers: corsHeaders })
   }
 
   try {
+    console.log('Claude chat function called')
+    
     const { messages, systemPrompt }: ChatRequest = await req.json()
+    console.log('Request payload:', { 
+      messagesCount: messages?.length, 
+      systemPromptLength: systemPrompt?.length 
+    })
 
     const anthropicApiKey = Deno.env.get('ANTHROPIC_API_KEY')
     if (!anthropicApiKey) {
-      throw new Error('ANTHROPIC_API_KEY not configured')
+      console.error('ANTHROPIC_API_KEY not found in environment')
+      return new Response(
+        JSON.stringify({ error: 'ANTHROPIC_API_KEY not configured' }), 
+        {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        }
+      )
     }
 
-    console.log('Sending request to Claude Sonnet 3.5...')
+    console.log('Making request to Anthropic API...')
     
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'x-api-key': anthropicApiKey,
-        'anthropic-version': '2023-06-01',
+        'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-3-5-sonnet-20241022', // Updated to use the correct model name
+        model: 'claude-sonnet-4-20250514', // Use latest Claude 4 Sonnet
         max_tokens: 2048,
-        system: systemPrompt,
+        system: systemPrompt || 'You are a helpful AI assistant specialized in trucking operations, logistics, and transportation industry knowledge. Provide practical, accurate, and industry-specific advice.',
         messages: messages
       })
     })
 
+    console.log('Anthropic API response status:', response.status)
+
     if (!response.ok) {
       const errorText = await response.text()
-      console.error('Anthropic API Error:', errorText)
+      console.error('Anthropic API error:', response.status, errorText)
       
+      let errorMessage = `API request failed with status ${response.status}`
       if (response.status === 401) {
-        throw new Error('Invalid API key. Please check your Anthropic API key.')
-      } else if (response.status === 400) {
-        // Handle credit balance and other 400 errors more gracefully
-        const errorData = JSON.parse(errorText)
-        if (errorData.error?.message?.includes('credit balance')) {
-          throw new Error('Insufficient Anthropic API credits. Please add credits to your account.')
-        }
-        throw new Error(`API request error: ${errorData.error?.message || errorText}`)
+        errorMessage = 'Invalid API key'
       } else if (response.status === 429) {
-        throw new Error('Rate limit exceeded. Please try again in a moment.')
-      } else {
-        throw new Error(`API request failed: ${response.status} - ${errorText}`)
+        errorMessage = 'Rate limit exceeded'
+      } else if (response.status === 400) {
+        errorMessage = 'Invalid request format'
       }
+
+      return new Response(
+        JSON.stringify({ error: errorMessage }),
+        {
+          status: response.status,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        }
+      )
     }
 
     const data = await response.json()
-    console.log('Claude Sonnet 3.5 response received successfully')
-    
-    return new Response(JSON.stringify({
-      content: data.content[0].text
-    }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    })
+    console.log('Anthropic API success - response length:', data.content?.[0]?.text?.length || 0)
 
+    return new Response(
+      JSON.stringify({ content: data.content[0].text }),
+      {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      }
+    )
   } catch (error) {
-    console.error('Claude chat error:', error)
-    
-    return new Response(JSON.stringify({
-      error: error.message || 'An unexpected error occurred'
-    }), {
-      status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    })
+    console.error('Error in claude-chat function:', error)
+    return new Response(
+      JSON.stringify({ error: error.message }),
+      {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      }
+    )
   }
 })

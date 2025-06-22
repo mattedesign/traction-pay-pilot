@@ -17,10 +17,17 @@ export const useAI = (options: UseAIOptions = {}) => {
     setIsLoading(true);
     
     try {
+      console.log('=== AI Service Debug Info ===');
       console.log('Using Supabase Edge Function for AI...');
+      console.log('Messages being sent:', messages);
+      console.log('System prompt:', options.systemPrompt);
+      
       const response = await supabaseService.sendMessage(messages, options.systemPrompt);
       
+      console.log('Response received:', response);
+      
       if (response.error) {
+        console.error('AI service returned error:', response.error);
         throw new Error(response.error);
       }
       
@@ -28,7 +35,7 @@ export const useAI = (options: UseAIOptions = {}) => {
       return response.content;
       
     } catch (error) {
-      console.error('AI Service Error:', error);
+      console.error('AI Service Error Details:', error);
       throw error;
     } finally {
       setIsLoading(false);
