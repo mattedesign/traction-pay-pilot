@@ -91,37 +91,47 @@ const KeyMetricsSection = () => {
     }
   ];
 
+  const handleCardClick = (path: string) => {
+    console.log("Card clicked, navigating to:", path);
+  };
+
   return (
     <div className="space-y-4">
       <h2 className="text-xl font-semibold text-slate-900">Key Metrics</h2>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {metrics.map((metric, index) => (
-          <Link key={index} to={metric.path} className="block group">
-            <Card className="bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-200 hover:border-blue-300 cursor-pointer transform hover:-translate-y-1 group-hover:bg-slate-50">
-              <CardContent className="p-6">
-                <div className="flex items-start justify-between mb-4">
-                  <div>
-                    <div className="text-slate-600 text-sm font-medium mb-1 group-hover:text-blue-600 transition-colors">{metric.title}</div>
-                    <div className="text-slate-400 text-xs">{metric.subtitle}</div>
+          <div key={index} className="relative">
+            <Link 
+              to={metric.path} 
+              className="block w-full h-full"
+              onClick={() => handleCardClick(metric.path)}
+            >
+              <Card className="bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-200 hover:border-blue-300 cursor-pointer transform hover:-translate-y-1 hover:bg-slate-50 h-full">
+                <CardContent className="p-6 h-full">
+                  <div className="flex items-start justify-between mb-4">
+                    <div>
+                      <div className="text-slate-600 text-sm font-medium mb-1 hover:text-blue-600 transition-colors">{metric.title}</div>
+                      <div className="text-slate-400 text-xs">{metric.subtitle}</div>
+                    </div>
+                    <div className={`w-8 h-8 ${metric.iconBgColor} rounded-lg flex items-center justify-center hover:scale-110 transition-transform`}>
+                      <metric.icon className={`w-5 h-5 ${metric.iconColor}`} />
+                    </div>
                   </div>
-                  <div className={`w-8 h-8 ${metric.iconBgColor} rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform`}>
-                    <metric.icon className={`w-5 h-5 ${metric.iconColor}`} />
+                  <div className="space-y-2">
+                    <div className="text-3xl font-bold text-slate-900 hover:text-blue-600 transition-colors">{metric.value}</div>
+                    <div className="flex items-center text-xs">
+                      {metric.trendIcon && (
+                        <metric.trendIcon className={`w-3 h-3 ${metric.trendColor} mr-1`} />
+                      )}
+                      <span className={`${metric.trendColor} font-medium`}>{metric.change}</span>
+                      <span className="text-slate-500 ml-1">{metric.changeLabel}</span>
+                    </div>
                   </div>
-                </div>
-                <div className="space-y-2">
-                  <div className="text-3xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors">{metric.value}</div>
-                  <div className="flex items-center text-xs">
-                    {metric.trendIcon && (
-                      <metric.trendIcon className={`w-3 h-3 ${metric.trendColor} mr-1`} />
-                    )}
-                    <span className={`${metric.trendColor} font-medium`}>{metric.change}</span>
-                    <span className="text-slate-500 ml-1">{metric.changeLabel}</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
+                </CardContent>
+              </Card>
+            </Link>
+          </div>
         ))}
       </div>
     </div>
