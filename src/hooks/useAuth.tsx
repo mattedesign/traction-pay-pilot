@@ -70,6 +70,32 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const signOut = async () => {
+    try {
+      console.log('Signing out user...');
+      
+      // Clear local state first
+      setUser(null);
+      setProfile(null);
+      setSession(null);
+      
+      // Then sign out from Supabase
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error('Error signing out:', error);
+        throw error;
+      }
+      
+      console.log('User signed out successfully');
+      
+      // Force reload to ensure clean state
+      window.location.href = '/auth';
+    } catch (error) {
+      console.error('Error during sign out:', error);
+      throw error;
+    }
+  };
+
   useEffect(() => {
     console.log('Setting up auth state listener...');
     
@@ -131,25 +157,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       subscription.unsubscribe();
     };
   }, []);
-
-  const signOut = async () => {
-    try {
-      console.log('Signing out user...');
-      const { error } = await supabase.auth.signOut();
-      if (error) {
-        console.error('Error signing out:', error);
-        throw error;
-      }
-      console.log('User signed out successfully');
-      
-      setUser(null);
-      setProfile(null);
-      setSession(null);
-    } catch (error) {
-      console.error('Error during sign out:', error);
-      throw error;
-    }
-  };
 
   return (
     <AuthContext.Provider value={{ user, profile, session, isLoading, signOut, refreshProfile }}>
