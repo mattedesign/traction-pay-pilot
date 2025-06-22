@@ -15,6 +15,26 @@ interface EmailCommunicationsSectionProps {
 const EmailCommunicationsSection = ({ emailThreads, isLoadingEmails }: EmailCommunicationsSectionProps) => {
   const [isEmailSectionOpen, setIsEmailSectionOpen] = useState(false);
 
+  const handleMarkAsRead = (threadId: string) => {
+    console.log('Marking thread as read:', threadId);
+    // TODO: Implement actual mark as read functionality
+  };
+
+  const handleReply = (threadId: string) => {
+    console.log('Replying to thread:', threadId);
+    // TODO: Implement reply functionality
+  };
+
+  const handleForward = (emailId: string) => {
+    console.log('Forwarding email:', emailId);
+    // TODO: Implement forward functionality
+  };
+
+  const handleArchive = (threadId: string) => {
+    console.log('Archiving thread:', threadId);
+    // TODO: Implement archive functionality
+  };
+
   return (
     <Collapsible open={isEmailSectionOpen} onOpenChange={setIsEmailSectionOpen}>
       <Card>
@@ -43,8 +63,23 @@ const EmailCommunicationsSection = ({ emailThreads, isLoadingEmails }: EmailComm
               <div className="text-center py-8">
                 <div className="text-slate-500 text-sm">Loading communications...</div>
               </div>
+            ) : emailThreads.length === 0 ? (
+              <div className="text-center py-8">
+                <div className="text-slate-500 text-sm">No email communications found</div>
+              </div>
             ) : (
-              <EmailThreadDisplay threads={emailThreads} />
+              <div className="space-y-6">
+                {emailThreads.map((thread) => (
+                  <EmailThreadDisplay
+                    key={thread.threadId}
+                    thread={thread}
+                    onMarkAsRead={handleMarkAsRead}
+                    onReply={handleReply}
+                    onForward={handleForward}
+                    onArchive={handleArchive}
+                  />
+                ))}
+              </div>
             )}
           </CardContent>
         </CollapsibleContent>
