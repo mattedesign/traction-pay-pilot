@@ -1,5 +1,5 @@
-
-import { supabase, Database } from './supabaseClient';
+import { supabase } from '@/integrations/supabase/client';
+import { Database } from '@/integrations/supabase/types';
 import { EmailCommunication, EmailThread, EmailAttachment } from './emailService';
 
 type EmailThreadRow = Database['public']['Tables']['email_threads']['Row'];

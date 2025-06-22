@@ -1,7 +1,6 @@
 
 import ChatContainer from "./ChatContainer";
 import ChatPreview from "./ChatPreview";
-import ChatSetup from "./ChatSetup";
 import { useChatMessages } from "../hooks/useChatMessages";
 import { useEnhancedChatHandler } from "../hooks/useEnhancedChatHandler";
 import { useSuggestedQuestions } from "../hooks/useSuggestedQuestions";
@@ -44,11 +43,7 @@ Always provide practical, actionable advice focused on safety, compliance, and p
     setMessage,
     isLoading,
     isInitialized,
-    useSupabase,
-    apiKey,
-    handleSendMessage,
-    handleAPIKeySubmit,
-    toggleService
+    handleSendMessage
   } = useEnhancedChatHandler({
     systemPrompt,
     chatHistory,
@@ -67,18 +62,7 @@ Always provide practical, actionable advice focused on safety, compliance, and p
     return <ChatPreview currentSuggestions={currentSuggestions} />;
   }
 
-  // Only show setup if not initialized AND not using Supabase
-  if (!isInitialized) {
-    return (
-      <ChatSetup 
-        onAPIKeySubmit={handleAPIKeySubmit} 
-        isLoading={isLoading}
-        useSupabase={useSupabase}
-        onToggleService={toggleService}
-      />
-    );
-  }
-
+  // The system is always initialized since we're using Supabase Edge Functions
   return (
     <ChatContainer
       isInitialized={isInitialized}
@@ -86,7 +70,7 @@ Always provide practical, actionable advice focused on safety, compliance, and p
       chatHistory={chatHistory}
       currentSuggestions={currentSuggestions}
       onChatMessage={handleChatMessage}
-      onAPIKeySubmit={handleAPIKeySubmit}
+      onAPIKeySubmit={() => {}} // No longer needed
       onNavigate={navigate}
     />
   );

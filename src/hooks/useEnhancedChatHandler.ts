@@ -19,44 +19,18 @@ export const useEnhancedChatHandler = ({
   chatHistory,
   addUserMessage,
   addAIMessage,
-  currentLoadId,
-  onLoadSelect
+  currentLoadId
 }: UseEnhancedChatHandlerProps) => {
   const { toast } = useToast();
   const [message, setMessage] = useState("");
   
   const {
     isLoading,
-    apiKey,
-    isClientInitialized,
-    isSupabaseAvailable,
-    useSupabase,
-    initializeClientService,
-    toggleService,
     sendMessage
   } = useAI({ systemPrompt, preferSupabase: true });
 
-  // System is initialized if Supabase is available OR client is initialized
-  const isInitialized = isSupabaseAvailable || isClientInitialized;
-
-  const handleAPIKeySubmit = async (key: string) => {
-    try {
-      initializeClientService(key);
-      
-      toast({
-        title: "Client AI Assistant Ready",
-        description: "Your Claude AI assistant is now ready for direct API access.",
-      });
-      
-    } catch (error) {
-      console.error('API key setup error:', error);
-      toast({
-        title: "Setup Error",
-        description: "There was an issue setting up the AI assistant. Please check your API key.",
-        variant: "destructive"
-      });
-    }
-  };
+  // System is always initialized since we're using Supabase Edge Functions
+  const isInitialized = true;
 
   const handleSendMessage = async () => {
     const sanitizedMessage = sanitizeInput(message);
@@ -96,15 +70,17 @@ export const useEnhancedChatHandler = ({
       let errorMessage = "❌ I'm having trouble connecting right now. ";
       
       if (error instanceof Error) {
-        if (error.message.includes('No AI service available')) {
-          errorMessage += "Please provide your Anthropic API key or check the Supabase configuration.";
+        if (error.message.includes('Function not found')) {
+          errorMessage += "The AI service is not properly configured. Please contact support.";
         } else if (error.message.includes('API key')) {
-          errorMessage += "Please check your Anthropic API key.";
+          errorMessage += "There's an issue with the AI service configuration. Please contact support.";
         } else if (error.message.includes('network') || error.message.includes('fetch')) {
           errorMessage += "Please check your internet connection.";
         } else {
           errorMessage += "Please try again in a moment.";
         }
+      } else {
+        errorMessage += "Please try again in a moment.";
       }
       
       addAIMessage(errorMessage);
@@ -122,10 +98,6 @@ export const useEnhancedChatHandler = ({
     setMessage,
     isLoading,
     isInitialized,
-    useSupabase,
-    apiKey,
-    handleSendMessage,
-    handleAPIKeySubmit,
-    toggleService
+    handleSendMessage
   };
 };
