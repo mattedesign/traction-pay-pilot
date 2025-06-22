@@ -97,20 +97,20 @@ const KeyMetricsSection = () => {
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {metrics.map((metric, index) => (
-          <Link key={index} to={metric.path} className="block">
-            <Card className="bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-200 hover:border-slate-300 cursor-pointer">
+          <Link key={index} to={metric.path} className="block group">
+            <Card className="bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-200 hover:border-blue-300 cursor-pointer transform hover:-translate-y-1 group-hover:bg-slate-50">
               <CardContent className="p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div>
-                    <div className="text-slate-600 text-sm font-medium mb-1">{metric.title}</div>
+                    <div className="text-slate-600 text-sm font-medium mb-1 group-hover:text-blue-600 transition-colors">{metric.title}</div>
                     <div className="text-slate-400 text-xs">{metric.subtitle}</div>
                   </div>
-                  <div className={`w-8 h-8 ${metric.iconBgColor} rounded-lg flex items-center justify-center`}>
+                  <div className={`w-8 h-8 ${metric.iconBgColor} rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform`}>
                     <metric.icon className={`w-5 h-5 ${metric.iconColor}`} />
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <div className="text-3xl font-bold text-slate-900">{metric.value}</div>
+                  <div className="text-3xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors">{metric.value}</div>
                   <div className="flex items-center text-xs">
                     {metric.trendIcon && (
                       <metric.trendIcon className={`w-3 h-3 ${metric.trendColor} mr-1`} />
