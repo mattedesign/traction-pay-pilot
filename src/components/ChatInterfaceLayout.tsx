@@ -67,7 +67,7 @@ const ChatInterfaceLayout = ({
   }, [setMessage, handleMessageChange]);
 
   return (
-    <div className="h-full flex flex-col">
+    <div className={`flex flex-col ${isFocused ? 'h-screen' : 'h-full'}`}>
       <ChatEscapeHandler isFocused={isFocused} onClose={finalHandleClose} />
       
       <ChatDemoHandler
@@ -94,7 +94,7 @@ const ChatInterfaceLayout = ({
             </ChatTitleManager>
           </div>
           
-          <div className="flex-1 min-h-0">
+          <div className="flex-1 min-h-0 overflow-hidden">
             <ChatContentArea
               isFocused={isFocused}
               showingResults={showingResults}
@@ -106,7 +106,7 @@ const ChatInterfaceLayout = ({
             />
           </div>
           
-          <div className="shrink-0 p-4">
+          <div className="shrink-0 p-4 border-t bg-white">
             <div className="w-full max-w-4xl mx-auto">
               <ChatInput
                 ref={inputRef}
@@ -122,15 +122,17 @@ const ChatInterfaceLayout = ({
         </>
       ) : (
         /* Unfocused layout - just the input */
-        <ChatInput
-          ref={inputRef}
-          message={message}
-          onMessageChange={finalHandleMessageChange}
-          onSendMessage={handleSend}
-          isLoading={isLoading}
-          mode={mode}
-          onModeChange={handleModeChange}
-        />
+        <div className="p-4">
+          <ChatInput
+            ref={inputRef}
+            message={message}
+            onMessageChange={finalHandleMessageChange}
+            onSendMessage={handleSend}
+            isLoading={isLoading}
+            mode={mode}
+            onModeChange={handleModeChange}
+          />
+        </div>
       )}
     </div>
   );

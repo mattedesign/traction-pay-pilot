@@ -12,13 +12,15 @@ interface ChatInterfaceWrapperProps {
   userProfile: any;
   initialTopic?: string | null;
   onTopicChange?: (topic: string | null) => void;
+  onFocusChange?: (focused: boolean) => void;
 }
 
 const ChatInterfaceWrapper = ({
   carrierProfile,
   userProfile,
   initialTopic = null,
-  onTopicChange
+  onTopicChange,
+  onFocusChange
 }: ChatInterfaceWrapperProps) => {
   const [isInDemoMode, setIsInDemoMode] = useState(false);
   const [demoStep, setDemoStep] = useState<string | null>(null);
@@ -33,6 +35,10 @@ const ChatInterfaceWrapper = ({
     setIsFocused(focused);
     if (onTopicChange && !focused) {
       onTopicChange(null);
+    }
+    // Communicate focus change to parent
+    if (onFocusChange) {
+      onFocusChange(focused);
     }
   };
 
@@ -73,10 +79,13 @@ const ChatInterfaceWrapper = ({
         setMessage(topicMessage);
         if (!isFocused) {
           setIsFocused(true);
+          if (onFocusChange) {
+            onFocusChange(true);
+          }
         }
       }
     }
-  }, [initialTopic, message, isFocused, setMessage]);
+  }, [initialTopic, message, isFocused, setMessage, onFocusChange]);
 
   if (!isInitialized) {
     return (

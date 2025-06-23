@@ -13,9 +13,17 @@ interface ChatOnlyDashboardProps {
 
 const ChatOnlyDashboard = ({ carrierProfile, userProfile }: ChatOnlyDashboardProps) => {
   const [activeConversation, setActiveConversation] = useState<string | null>(null);
+  const [isChatFocused, setIsChatFocused] = useState(false);
 
   const handleCardClick = (topic: string) => {
     setActiveConversation(topic);
+  };
+
+  const handleChatFocusChange = (focused: boolean) => {
+    setIsChatFocused(focused);
+    if (!focused) {
+      setActiveConversation(null);
+    }
   };
 
   const quickAccessCards = [
@@ -38,6 +46,21 @@ const ChatOnlyDashboard = ({ carrierProfile, userProfile }: ChatOnlyDashboardPro
       topic: "payment_questions"
     }
   ];
+
+  // When chat is focused, render fullscreen chat interface
+  if (isChatFocused) {
+    return (
+      <div className="fixed inset-0 z-50 bg-white">
+        <ChatInterfaceWrapper 
+          carrierProfile={carrierProfile}
+          userProfile={userProfile}
+          initialTopic={activeConversation}
+          onTopicChange={setActiveConversation}
+          onFocusChange={handleChatFocusChange}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="flex-1 flex flex-col h-full overflow-hidden">
@@ -71,13 +94,14 @@ const ChatOnlyDashboard = ({ carrierProfile, userProfile }: ChatOnlyDashboardPro
         </div>
       </div>
 
-      {/* Chat Interface */}
+      {/* Chat Interface - Bottom positioned when not focused */}
       <div className="border-t bg-white">
         <ChatInterfaceWrapper 
           carrierProfile={carrierProfile}
           userProfile={userProfile}
           initialTopic={activeConversation}
           onTopicChange={setActiveConversation}
+          onFocusChange={handleChatFocusChange}
         />
       </div>
     </div>
