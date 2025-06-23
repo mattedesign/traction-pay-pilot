@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 
@@ -12,7 +11,7 @@ const ChatHeader = ({ isFocused, title, onClose }: ChatHeaderProps) => {
   if (!isFocused) return null;
 
   return (
-    <div className="bg-white border-b shadow-sm p-4 shrink-0">
+    <div className="bg-white border-b shadow-sm p-4 shrink-0" style={{ display: 'none' }}>
       <div className="flex items-center justify-between max-w-4xl mx-auto">
         <h1 className="text-xl font-semibold text-slate-900">
           {title}
