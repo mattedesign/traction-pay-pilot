@@ -77,7 +77,7 @@ export class InteractiveResponseService {
           text: 'Yes',
           action: 'navigate',
           actionData: {
-            path: '/load/1234',
+            path: '/loads/1234',
             message: 'Yes, show me the load details'
           }
         },
