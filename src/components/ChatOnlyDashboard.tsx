@@ -6,6 +6,7 @@ import ChatDrawer from "./ChatDrawer";
 import { CarrierProfile } from "@/pages/Index";
 import HomeDocumentUpload from "./HomeDocumentUpload";
 import ChatInput from "./ChatInput";
+import { useNavigate } from "react-router-dom";
 
 interface ChatOnlyDashboardProps {
   carrierProfile: CarrierProfile;
@@ -13,12 +14,20 @@ interface ChatOnlyDashboardProps {
 }
 
 const ChatOnlyDashboard = ({ carrierProfile, userProfile }: ChatOnlyDashboardProps) => {
+  const navigate = useNavigate();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [drawerTopic, setDrawerTopic] = useState<string | null>(null);
   const [drawerMessage, setDrawerMessage] = useState("");
   const [message, setMessage] = useState("");
 
   const handleCardClick = (topic: string) => {
+    // Handle document upload differently - navigate to the document upload page
+    if (topic === "document_upload") {
+      navigate("/document-upload");
+      return;
+    }
+
+    // For other topics, open the chat drawer as before
     setDrawerTopic(topic);
     setDrawerMessage("");
     setIsDrawerOpen(true);
