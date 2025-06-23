@@ -130,9 +130,9 @@ const HomeDocumentUpload = () => {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        {/* Drop Zone */}
+        {/* Combined Drop Zone with Uploaded Files */}
         <div
-          className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
+          className={`border-2 border-dashed rounded-lg transition-colors ${
             isDragging 
               ? 'border-blue-500 bg-blue-50' 
               : 'border-slate-300 hover:border-slate-400'
@@ -141,81 +141,88 @@ const HomeDocumentUpload = () => {
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
         >
-          <Upload className="w-12 h-12 text-slate-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-slate-900 mb-2">
-            Choose files or drag & drop them here
-          </h3>
-          <p className="text-sm text-slate-500 mb-4">
-            PDF, Word documents, and images up to 10MB each
-          </p>
-          <div>
-            <input
-              type="file"
-              multiple
-              onChange={handleFileInputChange}
-              accept={ALLOWED_FILE_TYPES.all.join(',')}
-              className="hidden"
-              id="file-upload-input"
-            />
-            <Button asChild variant="outline">
-              <label htmlFor="file-upload-input" className="cursor-pointer">
-                Browse Files
-              </label>
-            </Button>
-          </div>
-        </div>
-
-        {/* Uploaded Files List with Previews */}
-        {uploadedFiles.length > 0 && (
-          <div className="space-y-2">
-            <h4 className="font-medium text-slate-900">Uploaded Files ({uploadedFiles.length})</h4>
-            <div className="space-y-3 max-h-96 overflow-y-auto">
-              {uploadedFiles.map((file) => {
-                const FileIcon = getFileIcon(file.type);
-                
-                return (
-                  <div key={file.id} className="flex items-start gap-4 p-4 bg-slate-50 rounded-lg border">
-                    {/* Preview Section */}
-                    <div className="flex-shrink-0">
-                      {file.previewUrl ? (
-                        <div className="w-16 h-16 rounded-lg overflow-hidden border border-slate-200">
-                          <img 
-                            src={file.previewUrl} 
-                            alt={file.name}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                      ) : (
-                        <div className="w-16 h-16 bg-blue-100 rounded-lg flex items-center justify-center border border-slate-200">
-                          <FileIcon className="w-8 h-8 text-blue-600" />
-                        </div>
-                      )}
-                    </div>
-                    
-                    {/* File Info */}
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-slate-900 truncate">{file.name}</p>
-                      <p className="text-xs text-slate-500 mt-1">{formatFileSize(file.size)}</p>
-                      <p className="text-xs text-slate-400 mt-1 capitalize">
-                        {file.type.split('/')[0]} File
-                      </p>
-                    </div>
-                    
-                    {/* Remove Button */}
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => removeFile(file.id)}
-                      className="hover:bg-red-100 hover:text-red-600 shrink-0"
-                    >
-                      <X className="w-4 h-4" />
-                    </Button>
-                  </div>
-                );
-              })}
+          {/* Upload Prompt Section */}
+          <div className="p-8 text-center">
+            <Upload className="w-12 h-12 text-slate-400 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-slate-900 mb-2">
+              Choose files or drag & drop them here
+            </h3>
+            <p className="text-sm text-slate-500 mb-4">
+              PDF, Word documents, and images up to 10MB each
+            </p>
+            <div>
+              <input
+                type="file"
+                multiple
+                onChange={handleFileInputChange}
+                accept={ALLOWED_FILE_TYPES.all.join(',')}
+                className="hidden"
+                id="file-upload-input"
+              />
+              <Button asChild variant="outline">
+                <label htmlFor="file-upload-input" className="cursor-pointer">
+                  Browse Files
+                </label>
+              </Button>
             </div>
           </div>
-        )}
+
+          {/* Uploaded Files List Inside Drop Zone */}
+          {uploadedFiles.length > 0 && (
+            <div className="border-t border-slate-200 bg-slate-50/50">
+              <div className="p-4">
+                <h4 className="font-medium text-slate-900 mb-3 text-sm">
+                  Uploaded Files ({uploadedFiles.length})
+                </h4>
+                <div className="space-y-2 max-h-48 overflow-y-auto">
+                  {uploadedFiles.map((file) => {
+                    const FileIcon = getFileIcon(file.type);
+                    
+                    return (
+                      <div key={file.id} className="flex items-start gap-3 p-3 bg-white rounded-lg border border-slate-200 shadow-sm">
+                        {/* Preview Section */}
+                        <div className="flex-shrink-0">
+                          {file.previewUrl ? (
+                            <div className="w-12 h-12 rounded-md overflow-hidden border border-slate-200">
+                              <img 
+                                src={file.previewUrl} 
+                                alt={file.name}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                          ) : (
+                            <div className="w-12 h-12 bg-blue-100 rounded-md flex items-center justify-center border border-slate-200">
+                              <FileIcon className="w-6 h-6 text-blue-600" />
+                            </div>
+                          )}
+                        </div>
+                        
+                        {/* File Info */}
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-slate-900 truncate">{file.name}</p>
+                          <p className="text-xs text-slate-500 mt-1">{formatFileSize(file.size)}</p>
+                          <p className="text-xs text-slate-400 capitalize">
+                            {file.type.split('/')[0]} File
+                          </p>
+                        </div>
+                        
+                        {/* Remove Button */}
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removeFile(file.id)}
+                          className="hover:bg-red-100 hover:text-red-600 shrink-0 h-8 w-8 p-0"
+                        >
+                          <X className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       </CardContent>
     </Card>
   );
