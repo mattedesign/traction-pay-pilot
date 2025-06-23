@@ -1,101 +1,79 @@
 
 export class QueryPatternMatcher {
-  static isButtonResponse(query: string): boolean {
-    const queryLower = query.toLowerCase().trim();
-    const buttonResponses = [
-      'yes', 'no', 'yeah', 'nah', 'sure', 'ok', 'okay',
-      'yes please', 'no thanks', 'sounds good', 'not now',
-      'that works', 'not interested', 'go ahead', 'skip it'
+  static extractLoadIds(query: string): string[] {
+    const loadIdPatterns = [
+      /load\s*#?\s*(\w+)/gi,
+      /\b(\d{3,})\b/g, // 3 or more digits
+      /\b(TMS-\d+)\b/gi,
+      /\b(INV-\d+)\b/gi,
+      /\b([A-Z]+\d+)\b/g
     ];
+
+    const matches = new Set<string>();
     
-    // Check if the query is a simple button-like response
-    return buttonResponses.includes(queryLower) || 
-           (queryLower.length <= 10 && buttonResponses.some(resp => queryLower.includes(resp)));
+    for (const pattern of loadIdPatterns) {
+      const results = [...query.matchAll(pattern)];
+      results.forEach(match => {
+        if (match[1]) {
+          matches.add(match[1]);
+        }
+      });
+    }
+
+    console.log('QueryPatternMatcher: Extracted load IDs from query:', query, Array.from(matches));
+    return Array.from(matches);
   }
 
-  static isPureSearchQuery(query: string): boolean {
-    const pureSearchKeywords = [
-      'search', 'find', 'show', 'list', 'loads', 'by', 'from', 'to',
-      'broker', 'status', 'id', 'number', '#'
-    ];
-    
-    const complexAnalysisKeywords = [
-      'analyze', 'compare', 'recommend', 'suggest', 'best', 'worst',
-      'why', 'how', 'explain', 'what should', 'advice', 'help'
-    ];
-    
-    const queryLower = query.toLowerCase();
-    const hasSearchKeywords = pureSearchKeywords.some(keyword => queryLower.includes(keyword));
-    const hasComplexKeywords = complexAnalysisKeywords.some(keyword => queryLower.includes(keyword));
-    
-    // If it has search keywords but no complex analysis keywords, it's a pure search
-    return hasSearchKeywords && !hasComplexKeywords;
+  static isButtonResponse(query: string): boolean {
+    const trimmed = query.toLowerCase().trim();
+    return ['yes', 'no', 'y', 'n'].includes(trimmed);
   }
 
   static isCurrentLoadQuery(query: string): boolean {
-    const currentLoadKeywords = [
-      'this load', 'current load', 'my load', 'the load',
-      'this shipment', 'current shipment', 'my shipment',
-      'it', 'this one', 'here'
+    const patterns = [
+      /\b(this|current|my)\s+(load|shipment)\b/i,
+      /\bwhat\s+(is|about)\s+(this|current|my)/i,
+      /\bstatus\s+(of\s+)?(this|current|my)/i
     ];
 
-    return currentLoadKeywords.some(keyword => 
-      query.toLowerCase().includes(keyword)
-    );
+    return patterns.some(pattern => pattern.test(query));
+  }
+
+  static isPureSearchQuery(query: string): boolean {
+    const searchPatterns = [
+      /\bfind\s+(load|loads)\b/i,
+      /\bsearch\s+(for\s+)?(load|loads)\b/i,
+      /\bshow\s+(me\s+)?(load|loads)\b/i,
+      /\blist\s+(load|loads)\b/i
+    ];
+
+    return searchPatterns.some(pattern => pattern.test(query));
   }
 
   static isGeneralTruckingQuery(query: string): boolean {
     const truckingKeywords = [
-      'trucking', 'logistics', 'freight', 'transportation',
-      'dot', 'compliance', 'regulations', 'hours of service',
-      'fuel', 'maintenance', 'safety', 'inspection',
-      'cdl', 'license', 'permit', 'weight station',
-      'broker', 'carrier', 'dispatcher', 'shipper'
+      'fuel', 'route', 'delivery', 'pickup', 'driving', 'truck', 'trucking',
+      'logistics', 'freight', 'cargo', 'shipping', 'transport', 'miles',
+      'dispatch', 'broker', 'payment', 'invoice', 'factoring'
     ];
 
-    return truckingKeywords.some(keyword => 
-      query.toLowerCase().includes(keyword)
-    );
-  }
-
-  static extractLoadIds(query: string): string[] {
-    const patterns = [
-      /load\s*#?(\d{4})/gi,
-      /shipment\s*#?(\d{4})/gi,
-      /order\s*#?(\d{4})/gi,
-      /#(\d{4})/g,
-      /(\d{4})\s*load/gi
-    ];
-
-    const loadIds: string[] = [];
-    for (const pattern of patterns) {
-      const matches = query.matchAll(pattern);
-      for (const match of matches) {
-        if (match[1] && !loadIds.includes(match[1])) {
-          loadIds.push(match[1]);
-        }
-      }
-    }
-
-    return loadIds;
+    const queryLower = query.toLowerCase();
+    return truckingKeywords.some(keyword => queryLower.includes(keyword));
   }
 
   static shouldUseAI(query: string): boolean {
-    const queryLower = query.toLowerCase();
-    
-    // Don't use AI for simple status/info requests
-    const simpleInfoKeywords = ['status', 'where', 'when', 'info', 'information', 'details', 'show me'];
-    if (simpleInfoKeywords.some(keyword => queryLower.includes(keyword)) && queryLower.split(' ').length <= 4) {
-      return false;
-    }
-    
-    // Use AI for complex queries
-    const complexKeywords = [
-      'analyze', 'compare', 'recommend', 'suggest', 'best', 'worst',
-      'why', 'how', 'explain', 'what should', 'advice', 'help',
-      'problem', 'issue', 'delay', 'optimize'
+    const aiRequiredPatterns = [
+      /\bwhy\b/i,
+      /\bhow\b/i,
+      /\bwhat\s+should\b/i,
+      /\bcan\s+you\b/i,
+      /\bhelp\s+(me|with)\b/i,
+      /\badvice\b/i,
+      /\brecommend\b/i,
+      /\bexplain\b/i,
+      /\btell\s+me\s+about\b/i
     ];
-    
-    return complexKeywords.some(keyword => queryLower.includes(keyword));
+
+    return aiRequiredPatterns.some(pattern => pattern.test(query));
   }
 }

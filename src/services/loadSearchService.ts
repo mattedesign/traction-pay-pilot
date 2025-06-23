@@ -1,5 +1,5 @@
 
-import { LoadService } from './loadService';
+import { mockLoadsData } from '@/data/mockLoads';
 
 export interface LoadSearchResult {
   load: any;
@@ -8,156 +8,99 @@ export interface LoadSearchResult {
   matchReason: string;
 }
 
-export interface SearchCriteria {
-  loadId?: string;
-  broker?: string;
-  status?: string;
-  origin?: string;
-  destination?: string;
-  route?: string;
-  dateRange?: { start: Date; end: Date };
-  amountRange?: { min: number; max: number };
-}
-
 export class LoadSearchService {
-  static searchLoads(query: string, criteria?: SearchCriteria): LoadSearchResult[] {
-    const allLoads = LoadService.getAllLoads();
-    const results: LoadSearchResult[] = [];
+  static searchLoads(query: string): LoadSearchResult[] {
+    const queryLower = query.toLowerCase().trim();
+    
+    if (!queryLower) return [];
 
-    for (const load of allLoads) {
-      const searchResult = this.evaluateLoadMatch(load, query, criteria);
-      if (searchResult.relevanceScore > 0) {
-        results.push(searchResult);
-      }
-    }
+    const results = mockLoadsData
+      .filter(load => this.matchesQuery(load, queryLower))
+      .map(load => ({
+        load,
+        relevanceScore: this.calculateRelevance(load, queryLower),
+        matchedFields: this.getMatchedFields(load, queryLower),
+        matchReason: this.getMatchReason(load, queryLower)
+      }))
+      .sort((a, b) => b.relevanceScore - a.relevanceScore);
 
-    // Sort by relevance score (highest first)
-    return results.sort((a, b) => b.relevanceScore - a.relevanceScore);
+    console.log('LoadSearchService: Found results for query:', queryLower, results);
+    return results;
   }
 
   static findLoadById(loadId: string): any | null {
-    const allLoads = LoadService.getAllLoads();
-    return allLoads.find(load => load.id === loadId) || null;
+    const load = mockLoadsData.find(load => load.id === loadId);
+    console.log('LoadSearchService: Finding load by ID:', loadId, load ? 'found' : 'not found');
+    return load || null;
   }
 
-  static findLoadsByBroker(brokerName: string): any[] {
-    const allLoads = LoadService.getAllLoads();
-    return allLoads.filter(load => 
-      load.broker.toLowerCase().includes(brokerName.toLowerCase())
+  private static matchesQuery(load: any, query: string): boolean {
+    const searchableFields = [
+      load.id,
+      load.broker,
+      load.status,
+      load.origin,
+      load.destination,
+      load.amount
+    ];
+
+    return searchableFields.some(field => 
+      field && field.toString().toLowerCase().includes(query)
     );
   }
 
-  static findLoadsByRoute(origin?: string, destination?: string): any[] {
-    const allLoads = LoadService.getAllLoads();
-    return allLoads.filter(load => {
-      const originMatch = !origin || load.origin.toLowerCase().includes(origin.toLowerCase());
-      const destMatch = !destination || load.destination.toLowerCase().includes(destination.toLowerCase());
-      return originMatch && destMatch;
-    });
-  }
-
-  static findLoadsByStatus(status: string): any[] {
-    const allLoads = LoadService.getAllLoads();
-    return allLoads.filter(load => load.status === status);
-  }
-
-  private static evaluateLoadMatch(load: any, query: string, criteria?: SearchCriteria): LoadSearchResult {
-    let relevanceScore = 0;
-    const matchedFields: string[] = [];
-    const matchReasons: string[] = [];
-
-    const queryLower = query.toLowerCase();
-
-    // Direct load ID match (highest priority)
-    if (queryLower.includes(load.id)) {
-      relevanceScore += 100;
-      matchedFields.push('loadId');
-      matchReasons.push(`Load ID #${load.id} mentioned`);
+  private static calculateRelevance(load: any, query: string): number {
+    let score = 0;
+    
+    // Exact ID match gets highest score
+    if (load.id.toLowerCase() === query || load.id.toLowerCase().includes(query)) {
+      score += 100;
     }
-
+    
     // Broker name match
-    if (load.broker.toLowerCase().includes(queryLower) || queryLower.includes(load.broker.toLowerCase())) {
-      relevanceScore += 80;
-      matchedFields.push('broker');
-      matchReasons.push(`Broker ${load.broker} match`);
+    if (load.broker.toLowerCase().includes(query)) {
+      score += 80;
     }
-
+    
     // Status match
-    const statusKeywords = ['pending', 'pickup', 'transit', 'delivered', 'delayed', 'cancelled'];
-    for (const keyword of statusKeywords) {
-      if (queryLower.includes(keyword) && load.status.includes(keyword)) {
-        relevanceScore += 60;
-        matchedFields.push('status');
-        matchReasons.push(`Status ${load.status} match`);
-        break;
-      }
+    if (load.status.toLowerCase().includes(query)) {
+      score += 70;
+    }
+    
+    // Origin/destination match
+    if (load.origin.toLowerCase().includes(query) || 
+        load.destination.toLowerCase().includes(query)) {
+      score += 60;
+    }
+    
+    // Amount match
+    if (load.amount.toLowerCase().includes(query)) {
+      score += 50;
     }
 
-    // Location match (origin/destination)
-    const locations = [load.origin, load.destination];
-    for (const location of locations) {
-      const locationParts = location.toLowerCase().split(',');
-      for (const part of locationParts) {
-        if (part.trim() && queryLower.includes(part.trim())) {
-          relevanceScore += 40;
-          matchedFields.push('location');
-          matchReasons.push(`Location ${location} match`);
-          break;
-        }
-      }
-    }
-
-    // Amount/payment keywords
-    const paymentKeywords = ['payment', 'money', 'invoice', 'advance', 'factoring'];
-    if (paymentKeywords.some(keyword => queryLower.includes(keyword))) {
-      relevanceScore += 30;
-      matchedFields.push('payment');
-      matchReasons.push('Payment-related query');
-    }
-
-    // Route/delivery keywords
-    const routeKeywords = ['route', 'delivery', 'pickup', 'destination', 'fuel', 'stops'];
-    if (routeKeywords.some(keyword => queryLower.includes(keyword))) {
-      relevanceScore += 25;
-      matchedFields.push('route');
-      matchReasons.push('Route-related query');
-    }
-
-    // Document keywords
-    const documentKeywords = ['document', 'paperwork', 'pod', 'bol', 'receipt'];
-    if (documentKeywords.some(keyword => queryLower.includes(keyword))) {
-      relevanceScore += 20;
-      matchedFields.push('documents');
-      matchReasons.push('Document-related query');
-    }
-
-    // Apply criteria filters
-    if (criteria) {
-      if (criteria.loadId && load.id !== criteria.loadId) {
-        relevanceScore = 0;
-      }
-      if (criteria.broker && !load.broker.toLowerCase().includes(criteria.broker.toLowerCase())) {
-        relevanceScore *= 0.5;
-      }
-      if (criteria.status && load.status !== criteria.status) {
-        relevanceScore *= 0.5;
-      }
-    }
-
-    return {
-      load,
-      relevanceScore,
-      matchedFields,
-      matchReason: matchReasons.join(', ') || 'General relevance'
-    };
+    return Math.min(score, 100);
   }
 
-  static getLoadSummary(load: any): string {
-    return `Load #${load.id}: ${load.status} - ${load.broker} - ${load.origin} → ${load.destination} (${load.amount})`;
+  private static getMatchedFields(load: any, query: string): string[] {
+    const fields: string[] = [];
+    
+    if (load.id.toLowerCase().includes(query)) fields.push('loadId');
+    if (load.broker.toLowerCase().includes(query)) fields.push('broker');
+    if (load.status.toLowerCase().includes(query)) fields.push('status');
+    if (load.origin.toLowerCase().includes(query)) fields.push('origin');
+    if (load.destination.toLowerCase().includes(query)) fields.push('destination');
+    if (load.amount.toLowerCase().includes(query)) fields.push('amount');
+    
+    return fields;
   }
 
-  static getAllLoadsSummary(): string {
-    const allLoads = LoadService.getAllLoads();
-    return allLoads.map(load => this.getLoadSummary(load)).join('\n');
+  private static getMatchReason(load: any, query: string): string {
+    if (load.id.toLowerCase().includes(query)) return "Load ID match";
+    if (load.broker.toLowerCase().includes(query)) return "Broker name match";
+    if (load.status.toLowerCase().includes(query)) return "Status match";
+    if (load.origin.toLowerCase().includes(query)) return "Origin match";
+    if (load.destination.toLowerCase().includes(query)) return "Destination match";
+    if (load.amount.toLowerCase().includes(query)) return "Amount match";
+    return "General match";
   }
 }
