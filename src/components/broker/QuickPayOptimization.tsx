@@ -1,28 +1,10 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DollarSign, Clock, TrendingUp, Zap, Calculator, AlertCircle, Send, Bell } from "lucide-react";
 import QuickPayNotification from "./QuickPayNotification";
-
-interface LoadInProgress {
-  id: string;
-  origin: string;
-  destination: string;
-  status: "pickup_scheduled" | "in_transit" | "delivery_scheduled" | "delivered";
-  carrier: string;
-  driver: string;
-  currentLocation?: { lat: number; lng: number; city: string };
-  pickupDate: string;
-  deliveryDate: string;
-  rate: string;
-  distance: string;
-  eta: string;
-  lastUpdate: string;
-  quickPayEligible?: boolean;
-  quickPayRate?: string;
-}
+import { LoadInProgress } from "@/types/brokerLoad";
 
 interface QuickPayOptimizationProps {
   loads: LoadInProgress[];
@@ -216,7 +198,7 @@ const QuickPayOptimization = ({ loads }: QuickPayOptimizationProps) => {
                   </div>
                   <Button size="sm" className="bg-green-600 hover:bg-green-700">
                     <Zap className="w-4 h-4 mr-1" />
-                    Process Qu ickPay
+                    Process QuickPay
                   </Button>
                 </div>
               ))}
