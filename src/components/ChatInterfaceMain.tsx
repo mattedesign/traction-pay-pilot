@@ -4,7 +4,7 @@ import ChatFocusManager from "./ChatFocusManager";
 import ChatInterfaceLayout from "./ChatInterfaceLayout";
 import { useChatInterfaceHandlers } from "@/hooks/useChatInterfaceHandlers";
 import { InputFocusHandle } from "@/hooks/useInputFocus";
-import { ChatMessage } from "../hooks/useChatMessages";
+import { ChatMessage, InteractiveButton } from "../hooks/useChatMessages";
 
 interface ChatInterfaceMainProps {
   isFocused: boolean;
@@ -25,6 +25,7 @@ interface ChatInterfaceMainProps {
   setDemoStep: (value: string | null) => void;
   addUserMessage: (content: string) => ChatMessage;
   addAIMessage: (content: string) => ChatMessage;
+  onButtonClick?: (button: InteractiveButton) => void;
 }
 
 const ChatInterfaceMain = ({
@@ -45,7 +46,8 @@ const ChatInterfaceMain = ({
   demoStep,
   setDemoStep,
   addUserMessage,
-  addAIMessage
+  addAIMessage,
+  onButtonClick
 }: ChatInterfaceMainProps) => {
   const { handleSend } = useChatInterfaceHandlers({
     isInDemoMode,
@@ -88,6 +90,7 @@ const ChatInterfaceMain = ({
               handleMessageChange={handleMessageChange}
               handleClose={handleClose}
               handleSend={handleSend}
+              onButtonClick={onButtonClick}
             />
           )}
         </ChatFocusManager>

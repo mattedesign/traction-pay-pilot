@@ -4,9 +4,10 @@ import { useToast } from "@/hooks/use-toast";
 import { useClaude } from "./useClaude";
 import { useMainMessageHandler } from "./useMainMessageHandler";
 import { useAPIKeyHandler } from "./useAPIKeyHandler";
-import { ChatMessage } from "./useChatMessages";
+import { ChatMessage, InteractiveButton } from "./useChatMessages";
 import { sanitizeInput } from "@/utils/security";
 import { ChatMessageProcessor } from "@/services/chatMessageProcessor";
+import { ButtonClickHandler } from "@/services/buttonClickHandler";
 
 interface UseUnifiedChatHandlerProps {
   systemPrompt: string;
@@ -87,6 +88,43 @@ export const useUnifiedChatHandler = ({
     }
   };
 
+  const handleButtonClick = (button: InteractiveButton) => {
+    console.log('useUnifiedChatHandler: Button clicked:', button);
+    
+    ButtonClickHandler.handle({
+      button,
+      onNavigate,
+      onContinueChat: async (chatMessage: string) => {
+        console.log('useUnifiedChatHandler: Auto-sending message:', chatMessage);
+        setMessage(chatMessage);
+        
+        // Process the message directly
+        const sanitizedMessage = sanitizeInput(chatMessage);
+        if (!sanitizedMessage.trim() || isLoading || !isInitialized) return;
+
+        const userMessage = addUserMessage(sanitizedMessage);
+        setMessage("");
+
+        try {
+          await ChatMessageProcessor.processMessage({
+            sanitizedMessage,
+            currentLoadId,
+            chatHistory,
+            userMessage,
+            sendMessage,
+            systemPrompt,
+            addAIMessage,
+            toast,
+            onNavigate
+          });
+        } catch (error) {
+          console.error('Error in button click handler:', error);
+          addAIMessage("I apologize, but I encountered an error processing your request. Please try again.");
+        }
+      }
+    });
+  };
+
   return {
     message,
     setMessage,
@@ -96,6 +134,7 @@ export const useUnifiedChatHandler = ({
     handleAPIKeySubmit,
     loadResults,
     showingResults,
-    handleLoadSelect
+    handleLoadSelect,
+    handleButtonClick
   };
 };

@@ -7,7 +7,7 @@ import ChatEscapeHandler from "./ChatEscapeHandler";
 import ChatTitleManager from "./ChatTitleManager";
 import ChatDemoHandler from "./ChatDemoHandler";
 import { InputFocusHandle } from "@/hooks/useInputFocus";
-import { ChatMessage } from "../hooks/useChatMessages";
+import { ChatMessage, InteractiveButton } from "../hooks/useChatMessages";
 
 interface ChatInterfaceLayoutProps {
   isFocused: boolean;
@@ -29,6 +29,7 @@ interface ChatInterfaceLayoutProps {
   handleMessageChange: (newMessage: string) => void;
   handleClose: () => void;
   handleSend: () => Promise<void>;
+  onButtonClick?: (button: InteractiveButton) => void;
 }
 
 const ChatInterfaceLayout = ({
@@ -50,7 +51,8 @@ const ChatInterfaceLayout = ({
   handleModeChange,
   handleMessageChange,
   handleClose,
-  handleSend
+  handleSend,
+  onButtonClick
 }: ChatInterfaceLayoutProps) => {
   const finalHandleClose = useCallback(() => {
     handleClose();
@@ -100,6 +102,7 @@ const ChatInterfaceLayout = ({
               chatHistory={chatHistory}
               isLoading={isLoading}
               onLoadSelect={handleLoadSelect}
+              onButtonClick={onButtonClick}
             />
           </div>
           

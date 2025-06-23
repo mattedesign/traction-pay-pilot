@@ -1,7 +1,7 @@
 
 import ChatHistory from "./ChatHistory";
 import LoadResultsPresenter from "./LoadResultsPresenter";
-import { ChatMessage } from "../hooks/useChatMessages";
+import { ChatMessage, InteractiveButton } from "../hooks/useChatMessages";
 
 interface ChatContentAreaProps {
   isFocused: boolean;
@@ -10,6 +10,7 @@ interface ChatContentAreaProps {
   chatHistory: ChatMessage[];
   isLoading: boolean;
   onLoadSelect: (loadId: string) => void;
+  onButtonClick?: (button: InteractiveButton) => void;
 }
 
 const ChatContentArea = ({
@@ -18,7 +19,8 @@ const ChatContentArea = ({
   loadResults,
   chatHistory,
   isLoading,
-  onLoadSelect
+  onLoadSelect,
+  onButtonClick
 }: ChatContentAreaProps) => {
   if (!isFocused) return null;
 
@@ -38,7 +40,11 @@ const ChatContentArea = ({
         {/* Show chat history if available */}
         {chatHistory.length > 0 && (
           <div className="p-4">
-            <ChatHistory messages={chatHistory} isLoading={isLoading} />
+            <ChatHistory 
+              messages={chatHistory} 
+              isLoading={isLoading} 
+              onButtonClick={onButtonClick}
+            />
           </div>
         )}
         

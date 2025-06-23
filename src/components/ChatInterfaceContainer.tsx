@@ -50,7 +50,8 @@ const ChatInterfaceContainer = forwardRef<ChatInterfaceContainerRef, ChatInterfa
     handleAPIKeySubmit,
     loadResults,
     showingResults,
-    handleLoadSelect
+    handleLoadSelect,
+    handleButtonClick
   } = useUnifiedChatHandler({
     systemPrompt,
     chatHistory,
@@ -60,7 +61,8 @@ const ChatInterfaceContainer = forwardRef<ChatInterfaceContainerRef, ChatInterfa
       if (onNavigateToLoad) {
         onNavigateToLoad(`/load/${loadId}`);
       }
-    }
+    },
+    onNavigate: onNavigateToLoad
   });
 
   // Expose fillInputAndFocus method through ref
@@ -152,6 +154,7 @@ const ChatInterfaceContainer = forwardRef<ChatInterfaceContainerRef, ChatInterfa
       setDemoStep={setDemoStep}
       addUserMessage={addUserMessage}
       addAIMessage={addAIMessage}
+      onButtonClick={handleButtonClick}
     />
   );
 });
