@@ -25,7 +25,7 @@ const DashboardHeader = ({ userProfile }: DashboardHeaderProps) => {
                 day: 'numeric' 
               })}
             </div>
-            <h1 className="text-3xl font-bold text-slate-900">Good morning, {userProfile?.email?.split('@')[0] || 'Carrier'}</h1>
+            <h1 className="text-3xl font-bold text-slate-900">Insights</h1>
           </div>
         </div>
       </div>

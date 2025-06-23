@@ -104,11 +104,13 @@ const InsightsPage = () => {
   return (
     <div className="min-h-screen flex w-full bg-slate-50">
       <NavigationSidebar />
-      <div className="flex-1 flex flex-col h-screen overflow-hidden">
-        <InsightsDashboard 
-          carrierProfile={carrierProfile}
-          userProfile={profile}
-        />
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <div className="flex-1 overflow-auto">
+          <InsightsDashboard 
+            carrierProfile={carrierProfile}
+            userProfile={profile}
+          />
+        </div>
       </div>
     </div>
   );
