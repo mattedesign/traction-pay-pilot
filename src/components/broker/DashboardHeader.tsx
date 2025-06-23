@@ -11,14 +11,16 @@ const DashboardHeader = () => {
 
   const handleSignOut = async () => {
     try {
-      console.log('Dashboard header - signing out');
+      console.log('BrokerDashboardHeader: Starting sign out process');
       await signOut();
-      toast({
-        title: "Signed out",
-        description: "You have been successfully signed out.",
-      });
+      
+      console.log('BrokerDashboardHeader: Sign out successful, navigating to login');
+      
+      // Force navigation to login page
+      window.location.href = '/login';
+      
     } catch (error) {
-      console.error('Error signing out from dashboard:', error);
+      console.error('BrokerDashboardHeader: Error signing out:', error);
       toast({
         title: "Error",
         description: "There was an error signing out. Please try again.",

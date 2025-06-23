@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { User, Settings, HelpCircle, LogOut, ChevronUp } from "lucide-react";
 import {
@@ -12,18 +13,33 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 
 const UserProfileMenu = () => {
   const { profile, signOut } = useAuth();
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
 
   const handleSignOut = async () => {
     try {
+      console.log('UserProfileMenu: Starting sign out process');
+      setIsOpen(false); // Close the dropdown immediately
+      
       await signOut();
-      navigate('/');
+      
+      console.log('UserProfileMenu: Sign out successful, navigating to login');
+      
+      // Force navigation to login page
+      window.location.href = '/login';
+      
     } catch (error) {
-      console.error('Error signing out:', error);
+      console.error('UserProfileMenu: Error signing out:', error);
+      toast({
+        title: "Error",
+        description: "There was an error signing out. Please try again.",
+        variant: "destructive",
+      });
     }
   };
 
