@@ -10,7 +10,6 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import Index from "@/pages/Index";
 import LoadsPage from "@/pages/LoadsPage";
 import InvoicesPage from "@/pages/InvoicesPage";
-import ChatPage from "@/pages/ChatPage";
 import Dashboard2Page from "@/pages/Dashboard2Page";
 import BrokerDashboard from "@/pages/BrokerDashboard";
 import BrokerQuickPayAnalyticsPage from "@/pages/BrokerQuickPayAnalyticsPage";
@@ -41,11 +40,6 @@ const App = () => (
             <Route path="/invoices" element={
               <ProtectedRoute>
                 <InvoicesPage />
-              </ProtectedRoute>
-            } />
-            <Route path="/chat" element={
-              <ProtectedRoute>
-                <ChatPage />
               </ProtectedRoute>
             } />
             <Route path="/dashboard2" element={
