@@ -81,7 +81,7 @@ const InsightsPage = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex w-full bg-slate-50">
+      <div className="h-screen flex w-full bg-slate-50 overflow-hidden">
         <NavigationSidebar />
         <div className="flex-1 flex items-center justify-center">
           <div className="text-slate-600">Loading insights...</div>
@@ -92,7 +92,7 @@ const InsightsPage = () => {
 
   if (!carrierProfile) {
     return (
-      <div className="min-h-screen flex w-full bg-slate-50">
+      <div className="h-screen flex w-full bg-slate-50 overflow-hidden">
         <NavigationSidebar />
         <div className="flex-1 flex items-center justify-center">
           <div className="text-slate-600">Unable to load carrier profile</div>
