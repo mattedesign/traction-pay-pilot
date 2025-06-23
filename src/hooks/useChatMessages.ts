@@ -8,6 +8,7 @@ export interface InteractiveButton {
   actionData?: {
     path?: string;
     message?: string;
+    closeDrawer?: boolean; // Add the missing property
   };
 }
 
