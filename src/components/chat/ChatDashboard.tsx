@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import FunctionalChatInterface from "../FunctionalChatInterface";
 import { CarrierProfile } from "@/pages/Index";
@@ -15,7 +14,7 @@ const ChatDashboard = ({ carrierProfile, userProfile }: ChatDashboardProps) => {
   return (
     <div className="h-full flex flex-col">
       {/* Chat Header */}
-      <div className="shrink-0 p-6 border-b bg-white">
+      <div className="shrink-0 p-6 border-b bg-white" style={{ display: 'none' }}>
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-slate-900">AI Assistant</h1>
