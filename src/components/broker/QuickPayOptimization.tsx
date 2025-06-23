@@ -2,7 +2,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { DollarSign, Clock, TrendingUp, Zap, Calculator, AlertCircle } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { DollarSign, Clock, TrendingUp, Zap, Calculator, AlertCircle, Send, Bell } from "lucide-react";
+import QuickPayNotification from "./QuickPayNotification";
 
 interface LoadInProgress {
   id: string;
@@ -132,74 +134,100 @@ const QuickPayOptimization = ({ loads }: QuickPayOptimizationProps) => {
         </Card>
       </div>
 
-      {/* AI Optimization Suggestions */}
-      <Card className="bg-white">
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <TrendingUp className="w-5 h-5 text-purple-600" />
-            <span>AI-Powered Optimization</span>
-            <Badge className="bg-purple-100 text-purple-800">Beta</Badge>
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {optimizationSuggestions.map((suggestion, index) => (
-            <div key={index} className="border border-slate-200 rounded-lg p-4 hover:bg-slate-50 transition-colors">
-              <div className="flex justify-between items-start mb-3">
-                <div className="flex-1">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <h3 className="font-semibold text-slate-900">{suggestion.title}</h3>
-                    <Badge className={getPriorityColor(suggestion.priority)}>
-                      {getPriorityIcon(suggestion.priority)}
-                      <span className="ml-1 capitalize">{suggestion.priority}</span>
-                    </Badge>
-                  </div>
-                  <p className="text-sm text-slate-600 mb-2">{suggestion.description}</p>
-                  <p className="text-sm font-medium text-green-600">{suggestion.impact}</p>
-                </div>
-                <Button variant="outline" size="sm">
-                  {suggestion.action}
-                </Button>
-              </div>
-            </div>
-          ))}
-        </CardContent>
-      </Card>
+      {/* Main Content with Tabs */}
+      <Tabs defaultValue="optimization" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="optimization" className="flex items-center space-x-2">
+            <TrendingUp className="w-4 h-4" />
+            <span>AI Optimization</span>
+          </TabsTrigger>
+          <TabsTrigger value="loads" className="flex items-center space-x-2">
+            <Zap className="w-4 h-4" />
+            <span>Eligible Loads</span>
+          </TabsTrigger>
+          <TabsTrigger value="notifications" className="flex items-center space-x-2">
+            <Bell className="w-4 h-4" />
+            <span>Send Notifications</span>
+          </TabsTrigger>
+        </TabsList>
 
-      {/* QuickPay Eligible Loads */}
-      <Card className="bg-white">
-        <CardHeader>
-          <CardTitle>QuickPay Eligible Loads</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {quickPayEligibleLoads.map((load) => (
-            <div key={load.id} className="flex justify-between items-center p-4 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
-              <div className="flex-1">
-                <div className="flex items-center space-x-3 mb-2">
-                  <h3 className="font-semibold text-slate-900">{load.id}</h3>
-                  <Badge className="bg-blue-100 text-blue-800 capitalize">
-                    {load.status.replace('_', ' ')}
-                  </Badge>
+        <TabsContent value="optimization">
+          {/* AI Optimization Suggestions */}
+          <Card className="bg-white">
+            <CardHeader>
+              <CardTitle className="flex items-center space-x-2">
+                <TrendingUp className="w-5 h-5 text-purple-600" />
+                <span>AI-Powered Optimization</span>
+                <Badge className="bg-purple-100 text-purple-800">Beta</Badge>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {optimizationSuggestions.map((suggestion, index) => (
+                <div key={index} className="border border-slate-200 rounded-lg p-4 hover:bg-slate-50 transition-colors">
+                  <div className="flex justify-between items-start mb-3">
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-2 mb-2">
+                        <h3 className="font-semibold text-slate-900">{suggestion.title}</h3>
+                        <Badge className={getPriorityColor(suggestion.priority)}>
+                          {getPriorityIcon(suggestion.priority)}
+                          <span className="ml-1 capitalize">{suggestion.priority}</span>
+                        </Badge>
+                      </div>
+                      <p className="text-sm text-slate-600 mb-2">{suggestion.description}</p>
+                      <p className="text-sm font-medium text-green-600">{suggestion.impact}</p>
+                    </div>
+                    <Button variant="outline" size="sm">
+                      {suggestion.action}
+                    </Button>
+                  </div>
                 </div>
-                <div className="text-sm text-slate-600">
-                  <div>{load.carrier} • {load.origin} → {load.destination}</div>
-                  <div className="text-xs text-slate-500 mt-1">ETA: {load.eta}</div>
+              ))}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="loads">
+          {/* QuickPay Eligible Loads */}
+          <Card className="bg-white">
+            <CardHeader>
+              <CardTitle>QuickPay Eligible Loads</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {quickPayEligibleLoads.map((load) => (
+                <div key={load.id} className="flex justify-between items-center p-4 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
+                  <div className="flex-1">
+                    <div className="flex items-center space-x-3 mb-2">
+                      <h3 className="font-semibold text-slate-900">{load.id}</h3>
+                      <Badge className="bg-blue-100 text-blue-800 capitalize">
+                        {load.status.replace('_', ' ')}
+                      </Badge>
+                    </div>
+                    <div className="text-sm text-slate-600">
+                      <div>{load.carrier} • {load.origin} → {load.destination}</div>
+                      <div className="text-xs text-slate-500 mt-1">ETA: {load.eta}</div>
+                    </div>
+                  </div>
+                  <div className="text-right mr-4">
+                    <div className="text-lg font-bold text-slate-900">{load.rate}</div>
+                    <div className="text-sm text-green-600">QuickPay: {load.quickPayRate}</div>
+                    <div className="text-xs text-red-600">
+                      Discount: ${(parseFloat(load.rate.replace('$', '').replace(',', '')) - parseFloat(load.quickPayRate?.replace('$', '').replace(',', '') || '0')).toLocaleString()}
+                    </div>
+                  </div>
+                  <Button size="sm" className="bg-green-600 hover:bg-green-700">
+                    <Zap className="w-4 h-4 mr-1" />
+                    Process Qu ickPay
+                  </Button>
                 </div>
-              </div>
-              <div className="text-right mr-4">
-                <div className="text-lg font-bold text-slate-900">{load.rate}</div>
-                <div className="text-sm text-green-600">QuickPay: {load.quickPayRate}</div>
-                <div className="text-xs text-red-600">
-                  Discount: ${(parseFloat(load.rate.replace('$', '').replace(',', '')) - parseFloat(load.quickPayRate?.replace('$', '').replace(',', '') || '0')).toLocaleString()}
-                </div>
-              </div>
-              <Button size="sm" className="bg-green-600 hover:bg-green-700">
-                <Zap className="w-4 h-4 mr-1" />
-                Process QuickPay
-              </Button>
-            </div>
-          ))}
-        </CardContent>
-      </Card>
+              ))}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="notifications">
+          <QuickPayNotification loads={loads} />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
