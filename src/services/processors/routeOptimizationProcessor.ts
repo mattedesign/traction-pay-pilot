@@ -15,12 +15,15 @@ export class RouteOptimizationProcessor {
     addAIMessage,
     onNavigate
   }: RouteOptimizationProcessorParams) {
-    console.log('Processing route optimization request:', userMessage);
+    console.log('RouteOptimizationProcessor: Processing message:', userMessage);
     
-    const messageLower = userMessage.toLowerCase();
+    const messageLower = userMessage.toLowerCase().trim();
+    console.log('RouteOptimizationProcessor: Normalized message:', messageLower);
     
     // Check if user is asking for initial route optimization
     if (messageLower.includes('optimize') && (messageLower.includes('route') || messageLower.includes('routing'))) {
+      console.log('RouteOptimizationProcessor: Initial route optimization request detected');
+      
       const response = RouteOptimizationHandler.generateRouteOptimizationResponse('initial');
       const loads = RouteOptimizationHandler.getOptimizableLoads();
       
@@ -42,13 +45,30 @@ export class RouteOptimizationProcessor {
       return true;
     }
     
-    // Check if user selected a specific load for optimization
-    const loadMatch = messageLower.match(/optimize route for load #?(\w+)/);
-    if (loadMatch) {
-      const loadId = loadMatch[1];
+    // Enhanced regex patterns for load selection
+    const loadPatterns = [
+      /optimize\s+route\s+for\s+load\s*#?(\w+)/i,
+      /route\s+optimization\s+for\s+load\s*#?(\w+)/i,
+      /load\s*#?(\w+)\s+route\s+optimization/i,
+      /load\s*#?(\w+)\s+optimize/i
+    ];
+    
+    let loadId = null;
+    for (const pattern of loadPatterns) {
+      const match = messageLower.match(pattern);
+      if (match) {
+        loadId = match[1];
+        console.log('RouteOptimizationProcessor: Load ID extracted:', loadId);
+        break;
+      }
+    }
+    
+    if (loadId) {
+      console.log('RouteOptimizationProcessor: Looking up load:', loadId);
       const load = LoadService.getLoadById(loadId);
       
       if (load) {
+        console.log('RouteOptimizationProcessor: Load found, showing options for:', load.id);
         const response = RouteOptimizationHandler.generateRouteOptimizationResponse('show_options', { load });
         const options = RouteOptimizationHandler.getOptimizationOptions();
         
@@ -66,6 +86,7 @@ export class RouteOptimizationProcessor {
         addAIMessage(response, buttons);
         return true;
       } else {
+        console.log('RouteOptimizationProcessor: Load not found:', loadId);
         addAIMessage(`I couldn't find Load #${loadId}. Please check the load ID and try again.`);
         return true;
       }
@@ -85,6 +106,7 @@ export class RouteOptimizationProcessor {
           const optionName = RouteOptimizationHandler.getOptimizationOptions()
             .find(opt => opt.id === type.id)?.name || 'Route optimization';
           
+          console.log('RouteOptimizationProcessor: Navigating to optimization type:', type.id);
           addAIMessage(`Opening ${optionName} details...`);
           onNavigate(`/route-optimization/${type.id}`);
           return true;
@@ -92,6 +114,7 @@ export class RouteOptimizationProcessor {
       }
     }
     
+    console.log('RouteOptimizationProcessor: No route optimization patterns matched');
     return false;
   }
 }

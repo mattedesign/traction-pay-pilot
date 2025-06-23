@@ -32,7 +32,7 @@ export class ChatMessageProcessor {
     toast,
     onNavigate
   }: ProcessMessageParams) {
-    console.log('Processing with enhanced chat system...');
+    console.log('ChatMessageProcessor: Processing message:', sanitizedMessage);
     
     // Step 1: Check for route optimization requests first (highest priority)
     const routeOptimizationHandled = RouteOptimizationProcessor.handle({
@@ -42,14 +42,15 @@ export class ChatMessageProcessor {
     });
     
     if (routeOptimizationHandled) {
-      console.log('Route optimization request handled successfully');
+      console.log('ChatMessageProcessor: Route optimization request handled successfully');
       return { queryType: 'route_optimization', confidence: 95, requiresAI: false };
     }
     
     // Step 2: Analyze query and route appropriately
+    console.log('ChatMessageProcessor: Analyzing query with enhanced router');
     const routingResult = EnhancedQueryRouter.analyzeQuery(sanitizedMessage, currentLoadId);
     
-    console.log('Query routing result:', {
+    console.log('ChatMessageProcessor: Query routing result:', {
       queryType: routingResult.queryType,
       confidence: routingResult.confidence,
       loadResultsCount: routingResult.loadResults?.length || 0,
@@ -58,6 +59,7 @@ export class ChatMessageProcessor {
 
     // Step 3: Handle button responses without asking new questions
     if (routingResult.queryType === 'button_response') {
+      console.log('ChatMessageProcessor: Handling button response');
       return await ButtonResponseProcessor.handle({
         routingResult,
         systemPrompt,
@@ -70,11 +72,13 @@ export class ChatMessageProcessor {
 
     // Step 4: Handle pure search results without AI
     if (!routingResult.requiresAI && routingResult.loadResults && routingResult.loadResults.length > 0) {
+      console.log('ChatMessageProcessor: Handling search results without AI');
       return SearchResultsProcessor.handle(routingResult, addAIMessage);
     }
 
     // Step 5: Handle AI-required responses
     if (routingResult.requiresAI) {
+      console.log('ChatMessageProcessor: Handling AI-required response');
       return await AIResponseProcessor.handle({
         sanitizedMessage,
         routingResult,
@@ -88,6 +92,7 @@ export class ChatMessageProcessor {
       });
     }
 
+    console.log('ChatMessageProcessor: Returning routing result:', routingResult);
     return routingResult;
   }
 }

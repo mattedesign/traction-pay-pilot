@@ -13,7 +13,7 @@ interface UseUnifiedChatHandlerProps {
   systemPrompt: string;
   chatHistory: ChatMessage[];
   addUserMessage: (content: string) => ChatMessage;
-  addAIMessage: (content: string) => ChatMessage;
+  addAIMessage: (content: string, interactiveButtons?: InteractiveButton[]) => ChatMessage;
   currentLoadId?: string;
   onLoadSelect?: (loadId: string) => void;
   onNavigate?: (path: string) => void;
@@ -53,6 +53,7 @@ export const useUnifiedChatHandler = ({
 
   const handleSendMessage = async () => {
     const sanitizedMessage = sanitizeInput(message);
+    console.log('useUnifiedChatHandler: Sending message:', sanitizedMessage);
     
     if (!sanitizedMessage.trim() || isLoading) return;
 
@@ -83,29 +84,42 @@ export const useUnifiedChatHandler = ({
       });
       
     } catch (error) {
-      console.error('Error in unified chat handler:', error);
+      console.error('useUnifiedChatHandler: Error processing message:', error);
       addAIMessage("I apologize, but I encountered an error processing your request. Please try again.");
     }
   };
 
   const handleButtonClick = (button: InteractiveButton) => {
-    console.log('useUnifiedChatHandler: Button clicked:', button);
+    console.log('useUnifiedChatHandler: Button clicked:', {
+      buttonId: button.id,
+      buttonText: button.text,
+      action: button.action,
+      actionData: button.actionData
+    });
     
     ButtonClickHandler.handle({
       button,
       onNavigate,
       onContinueChat: async (chatMessage: string) => {
-        console.log('useUnifiedChatHandler: Auto-sending message:', chatMessage);
+        console.log('useUnifiedChatHandler: Auto-sending message from button click:', chatMessage);
         setMessage(chatMessage);
         
         // Process the message directly
         const sanitizedMessage = sanitizeInput(chatMessage);
-        if (!sanitizedMessage.trim() || isLoading || !isInitialized) return;
+        if (!sanitizedMessage.trim() || isLoading || !isInitialized) {
+          console.warn('useUnifiedChatHandler: Cannot process message - missing requirements:', {
+            hasMessage: !!sanitizedMessage.trim(),
+            isLoading,
+            isInitialized
+          });
+          return;
+        }
 
         const userMessage = addUserMessage(sanitizedMessage);
         setMessage("");
 
         try {
+          console.log('useUnifiedChatHandler: Processing auto-sent message:', sanitizedMessage);
           await ChatMessageProcessor.processMessage({
             sanitizedMessage,
             currentLoadId,
@@ -118,7 +132,7 @@ export const useUnifiedChatHandler = ({
             onNavigate
           });
         } catch (error) {
-          console.error('Error in button click handler:', error);
+          console.error('useUnifiedChatHandler: Error in button click handler:', error);
           addAIMessage("I apologize, but I encountered an error processing your request. Please try again.");
         }
       }
