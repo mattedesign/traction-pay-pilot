@@ -29,8 +29,8 @@ export const useUnifiedChatHandler = ({
 }: UseUnifiedChatHandlerProps) => {
   const [message, setMessage] = useState("");
   const { toast } = useToast();
-  const { isLoading, isInitialized, sendMessage } = useClaude({ systemPrompt });
-  const { handleAPIKeySubmit } = useAPIKeyHandler();
+  const { isLoading, isInitialized, sendMessage, initializeService } = useClaude({ systemPrompt });
+  const { handleAPIKeySubmit } = useAPIKeyHandler({ initializeService });
 
   const {
     handleSendMessage: handleMainSendMessage,
