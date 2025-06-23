@@ -1,9 +1,11 @@
 
 import React, { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { InputFocusHandle } from "@/hooks/useInputFocus";
-import { useChatMessages } from "../hooks/useChatMessages";
+import { useChatMessages, InteractiveButton } from "../hooks/useChatMessages";
 import { useUnifiedChatHandler } from "../hooks/useUnifiedChatHandler";
 import { getChatSystemPrompt } from "./ChatSystemPrompt";
+import { ButtonClickHandler } from "@/services/buttonClickHandler";
 import ChatInterfaceMain from "./ChatInterfaceMain";
 import { CarrierProfile } from "@/pages/Index";
 
@@ -26,11 +28,12 @@ const ChatInterfaceWrapper = ({
   const [demoStep, setDemoStep] = useState<string | null>(null);
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<InputFocusHandle>(null);
+  const navigate = useNavigate();
   
   const { chatHistory, addUserMessage, addAIMessage } = useChatMessages();
   const systemPrompt = getChatSystemPrompt();
 
-  // Handle topic changes and initial topic setting
+  // Handle focus changes and drawer closing
   const handleFocusChange = (focused: boolean) => {
     setIsFocused(focused);
     if (onTopicChange && !focused) {
@@ -39,6 +42,14 @@ const ChatInterfaceWrapper = ({
     // Communicate focus change to parent
     if (onFocusChange) {
       onFocusChange(focused);
+    }
+  };
+
+  const handleCloseDrawer = () => {
+    console.log('ChatInterfaceWrapper: Closing drawer');
+    setIsFocused(false);
+    if (onFocusChange) {
+      onFocusChange(false);
     }
   };
 
@@ -53,7 +64,7 @@ const ChatInterfaceWrapper = ({
     loadResults,
     showingResults,
     handleLoadSelect,
-    handleButtonClick
+    handleButtonClick: originalHandleButtonClick
   } = useUnifiedChatHandler({
     systemPrompt,
     chatHistory,
@@ -64,6 +75,31 @@ const ChatInterfaceWrapper = ({
       console.log('Load selected:', loadId);
     }
   });
+
+  // Enhanced button click handler with navigation support
+  const handleButtonClick = (button: InteractiveButton) => {
+    console.log('ChatInterfaceWrapper: Button clicked:', button);
+    
+    ButtonClickHandler.handle({
+      button,
+      onNavigate: (path: string) => {
+        console.log('ChatInterfaceWrapper: Navigating to:', path);
+        navigate(path);
+      },
+      onContinueChat: (message: string) => {
+        console.log('ChatInterfaceWrapper: Continuing chat with:', message);
+        setMessage(message);
+        // Optionally auto-send the message
+        // originalHandleSendMessage();
+      },
+      onCloseDrawer: handleCloseDrawer
+    });
+
+    // Also call the original handler for any additional processing
+    if (originalHandleButtonClick) {
+      originalHandleButtonClick(button);
+    }
+  };
 
   // Initialize with topic if provided
   React.useEffect(() => {

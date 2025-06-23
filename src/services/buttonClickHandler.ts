@@ -5,10 +5,11 @@ interface ButtonClickHandlerParams {
   button: InteractiveButton;
   onNavigate?: (path: string) => void;
   onContinueChat?: (message: string) => void;
+  onCloseDrawer?: () => void;
 }
 
 export class ButtonClickHandler {
-  static handle({ button, onNavigate, onContinueChat }: ButtonClickHandlerParams) {
+  static handle({ button, onNavigate, onContinueChat, onCloseDrawer }: ButtonClickHandlerParams) {
     console.log('ButtonClickHandler: Processing button click:', {
       buttonId: button.id,
       buttonText: button.text,
@@ -20,6 +21,14 @@ export class ButtonClickHandler {
       case 'navigate':
         if (button.actionData?.path && onNavigate) {
           console.log('ButtonClickHandler: Navigating to:', button.actionData.path);
+          
+          // Close drawer if requested
+          if (button.actionData.closeDrawer && onCloseDrawer) {
+            console.log('ButtonClickHandler: Closing drawer before navigation');
+            onCloseDrawer();
+          }
+          
+          // Navigate to the path
           onNavigate(button.actionData.path);
           
           // If there's a message to show, also trigger chat continuation

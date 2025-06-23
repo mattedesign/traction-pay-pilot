@@ -31,7 +31,8 @@ Would you like to view the full load details or ask me specific questions about 
           action: 'navigate',
           actionData: {
             path: `/load/${load.id}`,
-            message: `Navigating to Load #${load.id} details page`
+            message: `Navigating to Load #${load.id} details page`,
+            closeDrawer: true // Add flag to close drawer on navigation
           }
         },
         {
