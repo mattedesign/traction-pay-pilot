@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Truck, Route, CreditCard } from "lucide-react";
+import { Truck, Route, CreditCard, Upload } from "lucide-react";
 import ChatDrawer from "./ChatDrawer";
 import { CarrierProfile } from "@/pages/Index";
 import HomeDocumentUpload from "./HomeDocumentUpload";
@@ -69,6 +69,12 @@ const ChatOnlyDashboard = ({ carrierProfile, userProfile }: ChatOnlyDashboardPro
       title: "Payment Questions",
       description: "Ask about invoices and payments", 
       topic: "payment_questions"
+    },
+    {
+      icon: Upload,
+      title: "Document Processing",
+      description: "Upload and process documents",
+      topic: "document_upload"
     }
   ];
 
@@ -77,7 +83,7 @@ const ChatOnlyDashboard = ({ carrierProfile, userProfile }: ChatOnlyDashboardPro
       <div className="flex-1 overflow-auto">
         <div className="max-w-4xl mx-auto p-6 space-y-6">
           {/* Quick Access Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {quickAccessCards.map((card, index) => (
               <Card 
                 key={index} 

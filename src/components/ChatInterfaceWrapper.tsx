@@ -82,7 +82,8 @@ const ChatInterfaceWrapper = ({
       const topicMessages: Record<string, string> = {
         load_status: "I need help checking the status of my loads",
         route_optimization: "I want to optimize my routes and save fuel",
-        payment_questions: "I have questions about my invoices and payments"
+        payment_questions: "I have questions about my invoices and payments",
+        document_upload: "I want to upload and process documents"
       };
       
       const topicMessage = topicMessages[initialTopic];

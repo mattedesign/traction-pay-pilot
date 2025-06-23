@@ -6,6 +6,7 @@ import { ButtonResponseProcessor } from "./processors/buttonResponseProcessor";
 import { SearchResultsProcessor } from "./processors/searchResultsProcessor";
 import { AIResponseProcessor } from "./processors/aiResponseProcessor";
 import { RouteOptimizationProcessor } from "./processors/routeOptimizationProcessor";
+import { DocumentProcessingProcessor } from "./processors/documentProcessingProcessor";
 import { useToast } from "@/hooks/use-toast";
 
 interface ProcessMessageParams {
@@ -34,7 +35,19 @@ export class ChatMessageProcessor {
   }: ProcessMessageParams) {
     console.log('ChatMessageProcessor: Processing message:', sanitizedMessage);
     
-    // Step 1: Check for route optimization requests first (highest priority)
+    // Step 1: Check for document processing requests first (highest priority)
+    const documentProcessingHandled = DocumentProcessingProcessor.handle({
+      userMessage: sanitizedMessage,
+      addAIMessage,
+      onNavigate
+    });
+    
+    if (documentProcessingHandled) {
+      console.log('ChatMessageProcessor: Document processing request handled successfully');
+      return { queryType: 'document_processing', confidence: 95, requiresAI: false };
+    }
+    
+    // Step 2: Check for route optimization requests (second priority)
     const routeOptimizationHandled = RouteOptimizationProcessor.handle({
       userMessage: sanitizedMessage,
       addAIMessage,
@@ -46,7 +59,7 @@ export class ChatMessageProcessor {
       return { queryType: 'route_optimization', confidence: 95, requiresAI: false };
     }
     
-    // Step 2: Analyze query and route appropriately
+    // Step 3: Analyze query and route appropriately
     console.log('ChatMessageProcessor: Analyzing query with enhanced router');
     const routingResult = EnhancedQueryRouter.analyzeQuery(sanitizedMessage, currentLoadId);
     
@@ -57,7 +70,7 @@ export class ChatMessageProcessor {
       requiresAI: routingResult.requiresAI
     });
 
-    // Step 3: Handle button responses without asking new questions
+    // Step 4: Handle button responses without asking new questions
     if (routingResult.queryType === 'button_response') {
       console.log('ChatMessageProcessor: Handling button response');
       return await ButtonResponseProcessor.handle({
@@ -70,13 +83,13 @@ export class ChatMessageProcessor {
       });
     }
 
-    // Step 4: Handle pure search results without AI
+    // Step 5: Handle pure search results without AI
     if (!routingResult.requiresAI && routingResult.loadResults && routingResult.loadResults.length > 0) {
       console.log('ChatMessageProcessor: Handling search results without AI');
       return SearchResultsProcessor.handle(routingResult, addAIMessage);
     }
 
-    // Step 5: Handle AI-required responses
+    // Step 6: Handle AI-required responses
     if (routingResult.requiresAI) {
       console.log('ChatMessageProcessor: Handling AI-required response');
       return await AIResponseProcessor.handle({
