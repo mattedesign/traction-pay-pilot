@@ -18,6 +18,7 @@ import ProfilePage from "./pages/ProfilePage";
 import AccountPage from "./pages/AccountPage";
 import NotFound from "./pages/NotFound";
 import RouteOptionsPage from "./pages/RouteOptionsPage";
+import RouteOptimizationDetailPage from "./pages/RouteOptimizationDetailPage";
 import BrokerDashboard from "./pages/BrokerDashboard";
 import BrokerLoadsInProgressPage from "./pages/BrokerLoadsInProgressPage";
 import BrokerPaymentsPage from "./pages/BrokerPaymentsPage";
@@ -120,6 +121,11 @@ function App() {
             <Route path="/route-options" element={
               <ProtectedRoute requiredUserType="carrier">
                 <RouteOptionsPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/route-optimization/:optimizationType" element={
+              <ProtectedRoute>
+                <RouteOptimizationDetailPage />
               </ProtectedRoute>
             } />
             <Route path="/broker" element={

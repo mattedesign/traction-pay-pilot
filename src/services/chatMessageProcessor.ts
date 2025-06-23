@@ -5,6 +5,7 @@ import { EnhancedQueryRouter } from "./enhancedQueryRouter";
 import { ButtonResponseProcessor } from "./processors/buttonResponseProcessor";
 import { SearchResultsProcessor } from "./processors/searchResultsProcessor";
 import { AIResponseProcessor } from "./processors/aiResponseProcessor";
+import { RouteOptimizationProcessor } from "./processors/routeOptimizationProcessor";
 import { useToast } from "@/hooks/use-toast";
 
 interface ProcessMessageParams {
@@ -16,6 +17,7 @@ interface ProcessMessageParams {
   systemPrompt: string;
   addAIMessage: (content: string, interactiveButtons?: InteractiveButton[]) => ChatMessage;
   toast: ReturnType<typeof useToast>['toast'];
+  onNavigate?: (path: string) => void;
 }
 
 export class ChatMessageProcessor {
@@ -27,11 +29,23 @@ export class ChatMessageProcessor {
     sendMessage,
     systemPrompt,
     addAIMessage,
-    toast
+    toast,
+    onNavigate
   }: ProcessMessageParams) {
     console.log('Processing with enhanced chat system...');
     
-    // Step 1: Analyze query and route appropriately
+    // Step 1: Check for route optimization requests first
+    const routeOptimizationHandled = RouteOptimizationProcessor.handle({
+      userMessage: sanitizedMessage,
+      addAIMessage,
+      onNavigate
+    });
+    
+    if (routeOptimizationHandled) {
+      return { queryType: 'route_optimization', confidence: 95, requiresAI: false };
+    }
+    
+    // Step 2: Analyze query and route appropriately
     const routingResult = EnhancedQueryRouter.analyzeQuery(sanitizedMessage, currentLoadId);
     
     console.log('Query routing result:', {
@@ -41,7 +55,7 @@ export class ChatMessageProcessor {
       requiresAI: routingResult.requiresAI
     });
 
-    // Step 2: Handle button responses without asking new questions
+    // Step 3: Handle button responses without asking new questions
     if (routingResult.queryType === 'button_response') {
       return await ButtonResponseProcessor.handle({
         routingResult,
@@ -53,12 +67,12 @@ export class ChatMessageProcessor {
       });
     }
 
-    // Step 3: Handle pure search results without AI
+    // Step 4: Handle pure search results without AI
     if (!routingResult.requiresAI && routingResult.loadResults && routingResult.loadResults.length > 0) {
       return SearchResultsProcessor.handle(routingResult, addAIMessage);
     }
 
-    // Step 4: Handle AI-required responses
+    // Step 5: Handle AI-required responses
     if (routingResult.requiresAI) {
       return await AIResponseProcessor.handle({
         sanitizedMessage,
