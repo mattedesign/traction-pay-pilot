@@ -22,6 +22,7 @@ import SupportPage from "./pages/SupportPage";
 import SearchPage from "./pages/SearchPage";
 import NotFound from "./pages/NotFound";
 import DocumentUploadPage from "./pages/DocumentUploadPage";
+import InsightsPage from "./pages/InsightsPage";
 import BrokerDashboard from "./pages/BrokerDashboard";
 import BrokerLoadsInProgressPage from "./pages/BrokerLoadsInProgressPage";
 import BrokerLoadDetailPage from "./pages/BrokerLoadDetailPage";
@@ -59,6 +60,7 @@ function App() {
               <Route path="/account" element={<ProtectedRoute><AccountPage /></ProtectedRoute>} />
               <Route path="/support" element={<ProtectedRoute><SupportPage /></ProtectedRoute>} />
               <Route path="/search" element={<ProtectedRoute><SearchPage /></ProtectedRoute>} />
+              <Route path="/insights" element={<ProtectedRoute><InsightsPage /></ProtectedRoute>} />
               <Route path="/document-upload" element={<ProtectedRoute><DocumentUploadPage /></ProtectedRoute>} />
               {/* Broker Routes */}
               <Route path="/broker" element={<Navigate to="/broker/dashboard" replace />} />
