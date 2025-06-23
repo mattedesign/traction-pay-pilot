@@ -57,7 +57,7 @@ const ChatDashboard = ({ carrierProfile, userProfile }: ChatDashboardProps) => {
 
           <Card 
             className="cursor-pointer hover:shadow-md transition-shadow"
-            onClick={() => handleQu@ckAction("I need route optimization help")}
+            onClick={() => handleQuickAction("I need route optimization help")}
           >
             <CardHeader className="pb-3">
               <CardTitle className="text-sm">Route Optimization</CardTitle>
