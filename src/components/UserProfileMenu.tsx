@@ -33,13 +33,27 @@ const UserProfileMenu = () => {
       // Force navigation to login page
       window.location.href = '/login';
       
-    } catch (error) {
+    } catch (error: any) {
       console.error('UserProfileMenu: Error signing out:', error);
-      toast({
-        title: "Error",
-        description: "There was an error signing out. Please try again.",
-        variant: "destructive",
-      });
+      
+      // Check if it's a session-related error that we can ignore
+      const errorMessage = error?.message || '';
+      const isSessionError = errorMessage.includes('Session not found') || 
+                           errorMessage.includes('session_not_found') ||
+                           errorMessage.includes('Invalid session');
+      
+      if (isSessionError) {
+        // If it's just a session error, still redirect to login
+        console.log('UserProfileMenu: Session already cleared, redirecting to login');
+        window.location.href = '/login';
+      } else {
+        // Only show toast for non-session errors
+        toast({
+          title: "Error",
+          description: "There was an error signing out. Please try again.",
+          variant: "destructive",
+        });
+      }
     }
   };
 
