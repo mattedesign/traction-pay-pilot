@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Truck, Route, CreditCard } from "lucide-react";
-import ChatInterfaceMain from "./ChatInterfaceMain";
+import ChatInterfaceWrapper from "./ChatInterfaceWrapper";
 import { CarrierProfile } from "@/pages/Index";
 import HomeDocumentUpload from "./HomeDocumentUpload";
 
@@ -73,7 +73,7 @@ const ChatOnlyDashboard = ({ carrierProfile, userProfile }: ChatOnlyDashboardPro
 
       {/* Chat Interface */}
       <div className="border-t bg-white">
-        <ChatInterfaceMain 
+        <ChatInterfaceWrapper 
           carrierProfile={carrierProfile}
           userProfile={userProfile}
           initialTopic={activeConversation}
