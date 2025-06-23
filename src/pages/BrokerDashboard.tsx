@@ -4,10 +4,7 @@ import DashboardHeader from "@/components/broker/DashboardHeader";
 import ComprehensiveFinancialDashboard from "@/components/broker/ComprehensiveFinancialDashboard";
 import LoadsInProgressCard from "@/components/broker/LoadsInProgressCard";
 import PaperworkReviewCard from "@/components/broker/PaperworkReviewCard";
-import QuickPayOptimization from "@/components/broker/QuickPayOptimization";
 import { LoadInProgress } from "@/types/brokerLoad";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { DollarSign, Truck, Zap, BarChart3 } from "lucide-react";
 
 // Mock data for the financial dashboard
 const mockLoadsData: LoadInProgress[] = [
@@ -107,52 +104,13 @@ const BrokerDashboard = () => {
       <div className="flex-1 flex flex-col">
         <DashboardHeader />
 
-        <div className="flex-1 overflow-auto px-8 py-6">
-          <Tabs defaultValue="overview" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="overview" className="flex items-center space-x-2">
-                <BarChart3 className="w-4 h-4" />
-                <span>Overview</span>
-              </TabsTrigger>
-              <TabsTrigger value="loads" className="flex items-center space-x-2">
-                <Truck className="w-4 h-4" />
-                <span>Loads</span>
-              </TabsTrigger>
-              <TabsTrigger value="quickpay" className="flex items-center space-x-2">
-                <Zap className="w-4 h-4" />
-                <span>QuickPay</span>
-              </TabsTrigger>
-              <TabsTrigger value="financial" className="flex items-center space-x-2">
-                <DollarSign className="w-4 h-4" />
-                <span>Financial</span>
-              </TabsTrigger>
-            </TabsList>
+        <div className="flex-1 overflow-auto px-8 py-6 space-y-6">
+          <ComprehensiveFinancialDashboard loads={mockLoadsData} />
 
-            <TabsContent value="overview">
-              <div className="space-y-6">
-                <ComprehensiveFinancialDashboard loads={mockLoadsData} />
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  <LoadsInProgressCard />
-                  <PaperworkReviewCard />
-                </div>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="loads">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <LoadsInProgressCard />
-                <PaperworkReviewCard />
-              </div>
-            </TabsContent>
-
-            <TabsContent value="quickpay">
-              <QuickPayOptimization loads={mockLoadsData} />
-            </TabsContent>
-
-            <TabsContent value="financial">
-              <ComprehensiveFinancialDashboard loads={mockLoadsData} />
-            </TabsContent>
-          </Tabs>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <LoadsInProgressCard />
+            <PaperworkReviewCard />
+          </div>
         </div>
       </div>
     </div>
