@@ -1,5 +1,5 @@
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, forwardRef, useImperativeHandle } from "react";
 import { InputFocusHandle } from "@/hooks/useInputFocus";
 import { useChatMessages } from "../hooks/useChatMessages";
 import { useSuggestedQuestions } from "../hooks/useSuggestedQuestions";
@@ -15,12 +15,16 @@ interface ChatInterfaceContainerProps {
   currentAction?: string;
 }
 
-const ChatInterfaceContainer = ({ 
+export interface ChatInterfaceContainerRef {
+  fillInputAndFocus: (query: string) => void;
+}
+
+const ChatInterfaceContainer = forwardRef<ChatInterfaceContainerRef, ChatInterfaceContainerProps>(({ 
   onNavigateToLoad, 
   onFocusChange,
   isFocused = false,
   currentAction
-}: ChatInterfaceContainerProps) => {
+}, ref) => {
   const [isInDemoMode, setIsInDemoMode] = useState(false);
   const [demoStep, setDemoStep] = useState<string | null>(null);
   const inputRef = useRef<InputFocusHandle>(null);
@@ -58,6 +62,23 @@ const ChatInterfaceContainer = ({
       }
     }
   });
+
+  // Expose fillInputAndFocus method through ref
+  useImperativeHandle(ref, () => ({
+    fillInputAndFocus: (query: string) => {
+      console.log('ChatInterfaceContainer: fillInputAndFocus called with:', query);
+      setMessage(query);
+      if (onFocusChange) {
+        onFocusChange(true);
+      }
+      // Focus the input after a short delay to ensure state is updated
+      setTimeout(() => {
+        if (inputRef.current) {
+          inputRef.current.focus();
+        }
+      }, 100);
+    }
+  }));
 
   // Enhanced focus handler with debug logging
   const focusInput = useCallback(() => {
@@ -133,6 +154,8 @@ const ChatInterfaceContainer = ({
       addAIMessage={addAIMessage}
     />
   );
-};
+});
+
+ChatInterfaceContainer.displayName = "ChatInterfaceContainer";
 
 export default ChatInterfaceContainer;

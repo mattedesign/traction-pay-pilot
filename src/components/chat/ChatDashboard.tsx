@@ -1,7 +1,9 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import FunctionalChatInterface from "../FunctionalChatInterface";
 import { CarrierProfile } from "@/pages/Index";
 import { useNavigate } from "react-router-dom";
+import { useRef } from "react";
 
 interface ChatDashboardProps {
   carrierProfile: CarrierProfile;
@@ -10,6 +12,14 @@ interface ChatDashboardProps {
 
 const ChatDashboard = ({ carrierProfile, userProfile }: ChatDashboardProps) => {
   const navigate = useNavigate();
+  const chatRef = useRef<any>(null);
+
+  const handleQuickAction = (query: string) => {
+    // Fill the chat input and focus the chat interface
+    if (chatRef.current) {
+      chatRef.current.fillInputAndFocus(query);
+    }
+  };
 
   return (
     <div className="h-full flex flex-col">
@@ -33,7 +43,10 @@ const ChatDashboard = ({ carrierProfile, userProfile }: ChatDashboardProps) => {
       {/* Quick Actions */}
       <div className="shrink-0 p-6 bg-slate-50">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card className="cursor-pointer hover:shadow-md transition-shadow">
+          <Card 
+            className="cursor-pointer hover:shadow-md transition-shadow"
+            onClick={() => handleQuickAction("What's the status of load #1234?")}
+          >
             <CardHeader className="pb-3">
               <CardTitle className="text-sm">Load Status</CardTitle>
             </CardHeader>
@@ -42,7 +55,10 @@ const ChatDashboard = ({ carrierProfile, userProfile }: ChatDashboardProps) => {
             </CardContent>
           </Card>
 
-          <Card className="cursor-pointer hover:shadow-md transition-shadow">
+          <Card 
+            className="cursor-pointer hover:shadow-md transition-shadow"
+            onClick={() => handleQuickAction("What's the best route from Phoenix to Dallas?")}
+          >
             <CardHeader className="pb-3">
               <CardTitle className="text-sm">Route Optimization</CardTitle>
             </CardHeader>
@@ -51,7 +67,10 @@ const ChatDashboard = ({ carrierProfile, userProfile }: ChatDashboardProps) => {
             </CardContent>
           </Card>
 
-          <Card className="cursor-pointer hover:shadow-md transition-shadow">
+          <Card 
+            className="cursor-pointer hover:shadow-md transition-shadow"
+            onClick={() => handleQuickAction("When should I expect payment for load #9012?")}
+          >
             <CardHeader className="pb-3">
               <CardTitle className="text-sm">Payment Questions</CardTitle>
             </CardHeader>
@@ -66,6 +85,7 @@ const ChatDashboard = ({ carrierProfile, userProfile }: ChatDashboardProps) => {
       <div className="flex-1 flex flex-col min-h-0">
         <div className="flex-1 overflow-hidden">
           <FunctionalChatInterface 
+            ref={chatRef}
             onNavigateToLoad={navigate}
             onFocusChange={() => {}}
             isFocused={true}
