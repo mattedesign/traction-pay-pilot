@@ -42,7 +42,7 @@ const BrokerLoadCard = ({ load }: BrokerLoadCardProps) => {
   };
 
   const handleViewDetails = () => {
-    navigate(`/broker/load/${load.id}`);
+    navigate(`/broker/loads/${load.id}`);
   };
 
   const handleCall = () => {
