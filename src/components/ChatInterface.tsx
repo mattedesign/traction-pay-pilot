@@ -71,7 +71,7 @@ Always provide practical, actionable advice in a clear, professional tone. Focus
     addUserMessage,
     addAIMessage: addAIMessageWithButtons,
     currentLoadId: loadContext,
-    onLoadSelect: (loadId) => navigate(`/load/${loadId}`)
+    onLoadSelect: (loadId) => navigate(`/loads/${loadId}`)
   });
 
   const handleChatMessage = async (userMessage: string) => {

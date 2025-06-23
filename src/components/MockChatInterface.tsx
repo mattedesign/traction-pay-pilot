@@ -45,7 +45,7 @@ const MockChatInterface = forwardRef<MockChatInterfaceRef, MockChatInterfaceProp
       if (message.includes("load #") && onNavigateToLoad) {
         const loadMatch = message.match(/load #(\d+)/i);
         if (loadMatch) {
-          onNavigateToLoad(`/load/${loadMatch[1]}`);
+          onNavigateToLoad(`/loads/${loadMatch[1]}`);
         }
       }
       

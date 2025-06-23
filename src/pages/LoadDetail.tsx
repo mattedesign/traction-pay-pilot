@@ -6,10 +6,10 @@ import LoadMainContent from "@/components/LoadMainContent";
 import { LoadRepository } from "@/services/loadRepository";
 
 const LoadDetail = () => {
-  const { loadId } = useParams();
+  const { id } = useParams();
 
   // Get load data from repository
-  const loadData = LoadRepository.getLoadById(loadId || "1234");
+  const loadData = LoadRepository.getLoadById(id || "1234");
 
   // Fallback if load not found
   if (!loadData) {

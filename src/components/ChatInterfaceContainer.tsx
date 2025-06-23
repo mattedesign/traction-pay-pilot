@@ -59,7 +59,7 @@ const ChatInterfaceContainer = forwardRef<ChatInterfaceContainerRef, ChatInterfa
     addAIMessage,
     onLoadSelect: (loadId) => {
       if (onNavigateToLoad) {
-        onNavigateToLoad(`/load/${loadId}`);
+        onNavigateToLoad(`/loads/${loadId}`);
       }
     },
     onNavigate: onNavigateToLoad
