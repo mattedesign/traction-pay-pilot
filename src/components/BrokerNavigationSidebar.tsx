@@ -11,7 +11,7 @@ const brokerNavigationItems = [
   {
     icon: Home,
     label: "Dashboard",
-    path: "/broker"
+    path: "/broker/dashboard"
   },
   {
     icon: Truck,
@@ -62,14 +62,14 @@ const BrokerNavigationSidebar = () => {
     if (profile?.user_type === 'carrier') {
       navigate('/');
     } else {
-      navigate('/broker');
+      navigate('/broker/dashboard');
     }
     setIsMobileMenuOpen(false);
   };
 
   const isActive = (path: string) => {
-    if (path === "/broker") {
-      return location.pathname === "/broker";
+    if (path === "/broker/dashboard") {
+      return location.pathname === "/broker/dashboard" || location.pathname === "/broker";
     }
     return location.pathname === path || location.pathname.startsWith(path);
   };

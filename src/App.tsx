@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
@@ -29,6 +29,10 @@ import BrokerInvoicesPage from "./pages/BrokerInvoicesPage";
 import BrokerInvoiceDetail from "./pages/BrokerInvoiceDetail";
 import BrokerCarriersPage from "./pages/BrokerCarriersPage";
 import BrokerCarrierDetail from "./pages/BrokerCarrierDetail";
+import BrokerPaymentsPage from "./pages/BrokerPaymentsPage";
+import BrokerInsightsPage from "./pages/BrokerInsightsPage";
+import BrokerReportsPage from "./pages/BrokerReportsPage";
+import BrokerSettingsPage from "./pages/BrokerSettingsPage";
 
 const queryClient = new QueryClient();
 
@@ -57,13 +61,19 @@ function App() {
               <Route path="/search" element={<ProtectedRoute><SearchPage /></ProtectedRoute>} />
               <Route path="/document-upload" element={<ProtectedRoute><DocumentUploadPage /></ProtectedRoute>} />
               {/* Broker Routes */}
+              <Route path="/broker" element={<Navigate to="/broker/dashboard" replace />} />
               <Route path="/broker/dashboard" element={<ProtectedRoute><BrokerDashboard /></ProtectedRoute>} />
+              <Route path="/broker/loads-in-progress" element={<ProtectedRoute><BrokerLoadsInProgressPage /></ProtectedRoute>} />
               <Route path="/broker/loads" element={<ProtectedRoute><BrokerLoadsInProgressPage /></ProtectedRoute>} />
               <Route path="/broker/loads/:id" element={<ProtectedRoute><BrokerLoadDetailPage /></ProtectedRoute>} />
+              <Route path="/broker/payments" element={<ProtectedRoute><BrokerPaymentsPage /></ProtectedRoute>} />
+              <Route path="/broker/insights" element={<ProtectedRoute><BrokerInsightsPage /></ProtectedRoute>} />
               <Route path="/broker/invoices" element={<ProtectedRoute><BrokerInvoicesPage /></ProtectedRoute>} />
               <Route path="/broker/invoices/:id" element={<ProtectedRoute><BrokerInvoiceDetail /></ProtectedRoute>} />
               <Route path="/broker/carriers" element={<ProtectedRoute><BrokerCarriersPage /></ProtectedRoute>} />
               <Route path="/broker/carriers/:id" element={<ProtectedRoute><BrokerCarrierDetail /></ProtectedRoute>} />
+              <Route path="/broker/reports" element={<ProtectedRoute><BrokerReportsPage /></ProtectedRoute>} />
+              <Route path="/broker/settings" element={<ProtectedRoute><BrokerSettingsPage /></ProtectedRoute>} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </AuthProvider>
