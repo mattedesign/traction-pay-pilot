@@ -95,7 +95,7 @@ export const mockRouteOptimizationData: Record<string, RouteOptimizationData> = 
       duration: "6h 30m",
       fuelCost: "$265",
       tollCosts: "$45",
-      savings: "1h 15m saved"
+      savings: "1h 15m time saved"
     },
     fuelStops: [
       {
@@ -111,6 +111,104 @@ export const mockRouteOptimizationData: Record<string, RouteOptimizationData> = 
         location: "I-64 Optimal Route",
         delay: "Clear",
         description: "Traffic flowing smoothly on recommended route"
+      }
+    ]
+  },
+  "multi_stop": {
+    loadId: "1234",
+    optimizationType: "multi_stop",
+    originalRoute: {
+      distance: "487 miles",
+      duration: "7h 45m",
+      fuelCost: "$245",
+      tollCosts: "$35"
+    },
+    optimizedRoute: {
+      distance: "495 miles",
+      duration: "8h 15m",
+      fuelCost: "$185",
+      tollCosts: "$28",
+      savings: "$67"
+    },
+    fuelStops: [
+      {
+        name: "Love's Travel Stop",
+        address: "Exit 126, I-70, Richmond, IN",
+        pricePerGallon: "$3.78",
+        amenities: ["Showers", "McDonald's", "Subway", "Laundry", "Dog Park"]
+      },
+      {
+        name: "Flying J Travel Plaza",
+        address: "Exit 87, I-70, Vandalia, OH",
+        pricePerGallon: "$3.82",
+        amenities: ["Showers", "Denny's", "Cinnabon", "Game Room", "WiFi"]
+      },
+      {
+        name: "TA Express",
+        address: "Exit 52, I-70, Springfield, OH",
+        pricePerGallon: "$3.76",
+        amenities: ["Showers", "Subway", "Pizza Hut Express", "ATM"]
+      }
+    ],
+    weatherAlerts: [
+      {
+        location: "Richmond, IN area",
+        type: "Fog",
+        severity: "Moderate",
+        description: "Dense fog possible early morning, visibility reduced to 1/4 mile"
+      }
+    ],
+    trafficUpdates: [
+      {
+        location: "I-70 through Dayton",
+        delay: "10 minutes",
+        description: "Heavy traffic during rush hour 4-6 PM"
+      }
+    ]
+  },
+  "weather_aware": {
+    loadId: "1234",
+    optimizationType: "weather_aware",
+    originalRoute: {
+      distance: "487 miles",
+      duration: "7h 45m",
+      fuelCost: "$245",
+      tollCosts: "$35"
+    },
+    optimizedRoute: {
+      distance: "512 miles",
+      duration: "8h 30m",
+      fuelCost: "$258",
+      tollCosts: "$22",
+      savings: "Weather risk avoided"
+    },
+    fuelStops: [
+      {
+        name: "Petro Stopping Center",
+        address: "Safe Haven Plaza, Route 33",
+        pricePerGallon: "$3.94",
+        amenities: ["Covered Parking", "Restaurant", "Showers", "Weather Radio"]
+      }
+    ],
+    weatherAlerts: [
+      {
+        location: "Original I-70 Route",
+        type: "Severe Thunderstorm",
+        severity: "High",
+        description: "Severe storms with 60+ mph winds and large hail expected 3-7 PM"
+      },
+      {
+        location: "Alternative Route US-33",
+        type: "Clear",
+        severity: "Low",
+        description: "Partly cloudy skies, no precipitation expected"
+      }
+    ],
+    trafficUpdates: [
+      {
+        location: "Weather-Safe Route",
+        delay: "Normal",
+        description: "Alternative route adds 25 miles but avoids severe weather zone"
       }
     ]
   }

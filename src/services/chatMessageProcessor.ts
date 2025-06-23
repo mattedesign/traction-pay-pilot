@@ -34,7 +34,7 @@ export class ChatMessageProcessor {
   }: ProcessMessageParams) {
     console.log('Processing with enhanced chat system...');
     
-    // Step 1: Check for route optimization requests first
+    // Step 1: Check for route optimization requests first (highest priority)
     const routeOptimizationHandled = RouteOptimizationProcessor.handle({
       userMessage: sanitizedMessage,
       addAIMessage,
@@ -42,6 +42,7 @@ export class ChatMessageProcessor {
     });
     
     if (routeOptimizationHandled) {
+      console.log('Route optimization request handled successfully');
       return { queryType: 'route_optimization', confidence: 95, requiresAI: false };
     }
     

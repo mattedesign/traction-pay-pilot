@@ -20,13 +20,18 @@ export class RouteOptimizationProcessor {
     const messageLower = userMessage.toLowerCase();
     
     // Check if user is asking for initial route optimization
-    if (messageLower.includes('route') && messageLower.includes('optimization')) {
+    if (messageLower.includes('optimize') && (messageLower.includes('route') || messageLower.includes('routing'))) {
       const response = RouteOptimizationHandler.generateRouteOptimizationResponse('initial');
       const loads = RouteOptimizationHandler.getOptimizableLoads();
       
+      if (loads.length === 0) {
+        addAIMessage("I don't see any active loads that can be optimized right now. Route optimization is available for loads that are pending pickup or in transit.");
+        return true;
+      }
+      
       const buttons: InteractiveButton[] = loads.map(load => ({
         id: `route_load_${load.id}`,
-        text: `Load #${load.id}`,
+        text: `Load #${load.id} - ${load.origin} → ${load.destination}`,
         action: 'continue_chat',
         actionData: {
           message: `Optimize route for Load #${load.id}`
@@ -38,7 +43,7 @@ export class RouteOptimizationProcessor {
     }
     
     // Check if user selected a specific load for optimization
-    const loadMatch = messageLower.match(/optimize route for load #?(\d+)/);
+    const loadMatch = messageLower.match(/optimize route for load #?(\w+)/);
     if (loadMatch) {
       const loadId = loadMatch[1];
       const load = LoadService.getLoadById(loadId);
@@ -48,29 +53,43 @@ export class RouteOptimizationProcessor {
         const options = RouteOptimizationHandler.getOptimizationOptions();
         
         const buttons: InteractiveButton[] = options.map(option => ({
-          id: `route_option_${option.id}`,
+          id: `route_option_${option.id}_${loadId}`,
           text: `${option.icon} ${option.name}`,
           action: 'navigate',
           actionData: {
             path: `/route-optimization/${option.id}`,
-            message: `Show ${option.name.toLowerCase()} for Load #${loadId}`
+            loadId: loadId,
+            message: `Opening ${option.name.toLowerCase()} for Load #${loadId}`
           }
         }));
         
         addAIMessage(response, buttons);
         return true;
+      } else {
+        addAIMessage(`I couldn't find Load #${loadId}. Please check the load ID and try again.`);
+        return true;
       }
     }
     
-    // Check if user is asking about specific optimization types
-    const optimizationTypes = ['fuel efficient', 'fastest', 'multi stop', 'weather aware'];
-    const matchedType = optimizationTypes.find(type => messageLower.includes(type.replace(' ', '')));
+    // Check if user is asking about specific optimization types with navigation
+    const optimizationTypes = [
+      { keywords: ['fuel efficient', 'fuel optimization'], id: 'fuel_efficient' },
+      { keywords: ['fastest', 'quickest', 'time'], id: 'fastest' },
+      { keywords: ['multi stop', 'multiple stops'], id: 'multi_stop' },
+      { keywords: ['weather aware', 'weather routing'], id: 'weather_aware' }
+    ];
     
-    if (matchedType && onNavigate) {
-      const typeId = matchedType.replace(' ', '_').replace(' ', '_');
-      addAIMessage(`Opening ${matchedType} route optimization details...`);
-      onNavigate(`/route-optimization/${typeId}`);
-      return true;
+    for (const type of optimizationTypes) {
+      if (type.keywords.some(keyword => messageLower.includes(keyword))) {
+        if (onNavigate) {
+          const optionName = RouteOptimizationHandler.getOptimizationOptions()
+            .find(opt => opt.id === type.id)?.name || 'Route optimization';
+          
+          addAIMessage(`Opening ${optionName} details...`);
+          onNavigate(`/route-optimization/${type.id}`);
+          return true;
+        }
+      }
     }
     
     return false;

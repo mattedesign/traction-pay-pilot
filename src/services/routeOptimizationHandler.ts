@@ -22,7 +22,7 @@ export class RouteOptimizationHandler {
     // Return loads that are pending pickup or in transit (can be optimized)
     return allLoads.filter(load => 
       load.status === 'pending_pickup' || load.status === 'in_transit'
-    );
+    ).slice(0, 5); // Limit to 5 loads for better UX
   }
 
   static getOptimizationOptions(): RouteOptimizationOption[] {
@@ -31,15 +31,15 @@ export class RouteOptimizationHandler {
         id: 'fuel_efficient',
         name: 'Fuel-Efficient Route',
         description: 'Minimize fuel costs with optimized routing',
-        estimatedSavings: '$150-250',
-        timeImpact: '+15 min',
+        estimatedSavings: '$50-150',
+        timeImpact: '+15-30 min',
         icon: '⛽'
       },
       {
         id: 'fastest',
         name: 'Fastest Route',
         description: 'Minimize travel time avoiding traffic',
-        estimatedSavings: '2-3 hours',
+        estimatedSavings: '1-3 hours',
         timeImpact: 'Baseline',
         icon: '🚀'
       },
@@ -47,8 +47,8 @@ export class RouteOptimizationHandler {
         id: 'multi_stop',
         name: 'Multi-Stop Optimization',
         description: 'Optimize route with fuel and rest stops',
-        estimatedSavings: '$100-200',
-        timeImpact: '+30 min',
+        estimatedSavings: '$75-200',
+        timeImpact: '+30-45 min',
         icon: '🗺️'
       },
       {
@@ -56,7 +56,7 @@ export class RouteOptimizationHandler {
         name: 'Weather-Aware Route',
         description: 'Avoid weather delays and hazards',
         estimatedSavings: 'Risk reduction',
-        timeImpact: '+45 min',
+        timeImpact: '+20-60 min',
         icon: '🌤️'
       }
     ];
@@ -74,16 +74,16 @@ export class RouteOptimizationHandler {
           `• **Load #${load.id}** - ${load.origin} → ${load.destination} (${load.status.replace('_', ' ').toUpperCase()})`
         ).join('\n');
         
-        return `I can help optimize routes for your active loads! Here are the loads available for optimization:\n\n${loadsList}\n\nWhich load would you like to optimize the route for?`;
+        return `I'll help you optimize routes for your active loads! Here are the loads available for optimization:\n\n${loadsList}\n\n**Select a load** to see optimization options:`;
 
       case 'show_options':
         const selectedLoad = data.load;
         const options = this.getOptimizationOptions();
         const optionsList = options.map(opt => 
-          `• **${opt.icon} ${opt.name}** - ${opt.description}\n  Savings: ${opt.estimatedSavings} | Time: ${opt.timeImpact}`
+          `**${opt.icon} ${opt.name}**\n${opt.description}\n*Potential savings: ${opt.estimatedSavings} | Time impact: ${opt.timeImpact}*`
         ).join('\n\n');
 
-        return `Great! I'll help optimize the route for **Load #${selectedLoad.id}** from ${selectedLoad.origin} to ${selectedLoad.destination}.\n\n**Available Optimization Options:**\n\n${optionsList}\n\nWhich optimization approach would you prefer?`;
+        return `Perfect! I'll optimize the route for **Load #${selectedLoad.id}** from **${selectedLoad.origin}** to **${selectedLoad.destination}**.\n\n**Available Optimization Options:**\n\n${optionsList}\n\n**Choose your preferred optimization approach** to see detailed route analysis with fuel stops, weather alerts, and traffic updates:`;
 
       default:
         return "I can help you optimize routes for your active loads. Would you like to see your available loads for optimization?";
