@@ -1,152 +1,116 @@
-import { useState, useMemo } from "react";
+
+import { useState } from "react";
 import BrokerNavigationSidebar from "@/components/BrokerNavigationSidebar";
+import DashboardHeader from "@/components/broker/DashboardHeader";
 import BrokerLoadsInProgressHeader from "@/components/broker/BrokerLoadsInProgressHeader";
 import BrokerLoadsInProgressFilters from "@/components/broker/BrokerLoadsInProgressFilters";
 import BrokerLoadsInProgressList from "@/components/broker/BrokerLoadsInProgressList";
 import { LoadInProgress } from "@/types/brokerLoad";
 
-// Mock data for loads in progress
+// Mock data for demonstration
 const mockLoadsInProgress: LoadInProgress[] = [
   {
-    id: "TL-2024-001",
-    origin: "Dallas, TX",
-    destination: "Atlanta, GA", 
-    status: "in_transit" as const,
-    carrier: "Swift Transportation",
-    driver: "Mike Johnson",
-    driverPhone: "(555) 123-4567",
-    currentLocation: { lat: 32.7767, lng: -96.7970, city: "Dallas, TX" },
-    pickupDate: "June 8, 2024",
-    deliveryDate: "June 10, 2024",
-    rate: "$1,850",
-    distance: "925 mi",
-    eta: "June 10, 2:00 PM",
-    lastUpdate: "2 hours ago",
-    quickPayEligible: true,
-    quickPayRate: "$1,813",
-    commodity: "Electronics",
-    weight: "45,000 lbs",
-    equipment: "53' Dry Van",
-    referenceNumber: "REF-001",
-    specialInstructions: "Temperature sensitive - keep below 75°F"
-  },
-  {
-    id: "TL-2024-002", 
+    id: "LOAD-2024-001",
     origin: "Los Angeles, CA",
     destination: "Phoenix, AZ",
-    status: "delivery_scheduled" as const,
-    carrier: "J.B. Hunt",
-    driver: "Sarah Williams",
-    driverPhone: "(555) 234-5678",
-    currentLocation: { lat: 34.0522, lng: -118.2437, city: "Los Angeles, CA" },
-    pickupDate: "June 7, 2024",
-    deliveryDate: "June 9, 2024",
-    rate: "$1,200",
-    distance: "370 mi", 
-    eta: "June 9, 10:00 AM",
-    lastUpdate: "1 hour ago",
-    quickPayEligible: false,
-    commodity: "Automotive Parts",
-    weight: "38,500 lbs",
-    equipment: "53' Dry Van",
-    referenceNumber: "REF-002"
+    status: "in_transit",
+    carrier: "ABC Trucking",
+    driver: "John Smith",
+    driverPhone: "(555) 123-4567",
+    currentLocation: { lat: 34.0522, lng: -118.2437, city: "Barstow, CA" },
+    pickupDate: "2024-01-15",
+    deliveryDate: "2024-01-16",
+    rate: "$2,450",
+    distance: "390 miles",
+    eta: "Tomorrow 2:00 PM",
+    lastUpdate: "2 hours ago",
+    quickPayEligible: true,
+    quickPayRate: "$2,400",
+    commodity: "Electronics",
+    weight: "34,000 lbs",
+    equipment: "Dry Van",
+    referenceNumber: "REF-001",
+    specialInstructions: "Call before delivery"
   },
   {
-    id: "TL-2024-003",
-    origin: "Chicago, IL", 
-    destination: "Detroit, MI",
-    status: "pickup_scheduled" as const,
-    carrier: "Schneider National",
-    driver: "Robert Chen",
-    driverPhone: "(555) 345-6789",
-    pickupDate: "June 9, 2024",
-    deliveryDate: "June 10, 2024",
-    rate: "$950",
-    distance: "280 mi",
-    eta: "June 10, 4:00 PM",
-    lastUpdate: "30 minutes ago",
-    quickPayEligible: true,
-    quickPayRate: "$931",
-    commodity: "Manufacturing Equipment",
+    id: "LOAD-2024-002",
+    origin: "Dallas, TX",
+    destination: "Atlanta, GA",
+    status: "delivery_scheduled",
+    carrier: "XYZ Transport",
+    driver: "Maria Garcia",
+    driverPhone: "(555) 987-6543",
+    currentLocation: { lat: 32.7767, lng: -96.7970, city: "Birmingham, AL" },
+    pickupDate: "2024-01-14",
+    deliveryDate: "2024-01-17",
+    rate: "$3,200",
+    distance: "925 miles",
+    eta: "Wed 10:00 AM",
+    lastUpdate: "4 hours ago",
+    quickPayEligible: false,
+    commodity: "Auto Parts",
     weight: "42,000 lbs",
-    equipment: "48' Flatbed",
-    referenceNumber: "REF-003"
+    equipment: "Flatbed",
+    referenceNumber: "REF-002"
   }
 ];
 
 const BrokerLoadsInProgressPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("all");
+  const [loads] = useState<LoadInProgress[]>(mockLoadsInProgress);
 
-  // Filter loads based on search and status
-  const filteredLoads = useMemo(() => {
-    let filtered = mockLoadsInProgress;
+  const filteredLoads = loads.filter(load => {
+    const matchesSearch = load.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      load.carrier.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      load.origin.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      load.destination.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesStatus = selectedStatus === "all" || load.status === selectedStatus;
+    
+    return matchesSearch && matchesStatus;
+  });
 
-    // Filter by status
-    if (selectedStatus !== "all") {
-      filtered = filtered.filter(load => load.status === selectedStatus);
-    }
-
-    // Filter by search term
-    if (searchTerm) {
-      const term = searchTerm.toLowerCase();
-      filtered = filtered.filter(load => 
-        load.id.toLowerCase().includes(term) ||
-        load.carrier.toLowerCase().includes(term) ||
-        load.driver.toLowerCase().includes(term) ||
-        load.origin.toLowerCase().includes(term) ||
-        load.destination.toLowerCase().includes(term) ||
-        load.commodity.toLowerCase().includes(term)
-      );
-    }
-
-    return filtered;
-  }, [searchTerm, selectedStatus]);
-
-  // Calculate header statistics
-  const headerStats = useMemo(() => {
-    const totalLoads = mockLoadsInProgress.length;
-    const inTransitCount = mockLoadsInProgress.filter(load => load.status === "in_transit").length;
-    const deliveryScheduledCount = mockLoadsInProgress.filter(load => load.status === "delivery_scheduled").length;
-    const delayedCount = 0; // Would be calculated based on actual delays
-
-    return {
-      totalLoads,
-      inTransitCount,
-      deliveryScheduledCount,
-      delayedCount
-    };
-  }, []);
+  const inTransitCount = loads.filter(load => load.status === "in_transit").length;
+  const deliveryScheduledCount = loads.filter(load => load.status === "delivery_scheduled").length;
+  const delayedCount = 0; // Mock count
 
   const handleExport = () => {
     console.log("Exporting loads data...");
-    // Implementation for exporting data would go here
+    // Implementation for export functionality
   };
 
   return (
-    <div className="h-screen overflow-hidden flex w-full bg-slate-50">
+    <div className="h-screen bg-slate-50 flex w-full">
       <BrokerNavigationSidebar />
       
-      <div className="flex-1 flex flex-col">
-        {/* Header */}
-        <div className="bg-white border-b border-slate-200 px-8 py-6">
-          <h1 className="text-2xl font-bold text-slate-900">Loads in Progress</h1>
-          <p className="text-slate-600 mt-1">Monitor and manage active loads</p>
-        </div>
+      <div className="flex-1 flex flex-col min-h-0">
+        <DashboardHeader />
+        
+        <div className="flex-1 overflow-auto">
+          <div className="p-8">
+            <div className="mb-8">
+              <h1 className="text-3xl font-bold text-slate-800 mb-2">Loads in Progress</h1>
+              <p className="text-slate-600">Monitor and manage active shipments</p>
+            </div>
 
-        {/* Main Content */}
-        <div className="flex-1 overflow-auto px-8 py-6 space-y-6">
-          <BrokerLoadsInProgressHeader {...headerStats} />
-          
-          <BrokerLoadsInProgressFilters
-            searchTerm={searchTerm}
-            onSearchChange={setSearchTerm}
-            selectedStatus={selectedStatus}
-            onStatusChange={setSelectedStatus}
-            onExport={handleExport}
-          />
-          
-          <BrokerLoadsInProgressList loads={filteredLoads} />
+            <BrokerLoadsInProgressHeader
+              totalLoads={loads.length}
+              inTransitCount={inTransitCount}
+              deliveryScheduledCount={deliveryScheduledCount}
+              delayedCount={delayedCount}
+            />
+
+            <BrokerLoadsInProgressFilters
+              searchTerm={searchTerm}
+              onSearchChange={setSearchTerm}
+              selectedStatus={selectedStatus}
+              onStatusChange={setSelectedStatus}
+              onExport={handleExport}
+            />
+
+            <BrokerLoadsInProgressList loads={filteredLoads} />
+          </div>
         </div>
       </div>
     </div>

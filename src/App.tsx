@@ -23,8 +23,8 @@ import SearchPage from "./pages/SearchPage";
 import NotFound from "./pages/NotFound";
 import DocumentUploadPage from "./pages/DocumentUploadPage";
 import BrokerDashboard from "./pages/BrokerDashboard";
-import BrokerLoadsPage from "./pages/BrokerLoadsPage";
-import BrokerLoadDetail from "./pages/BrokerLoadDetail";
+import BrokerLoadsInProgressPage from "./pages/BrokerLoadsInProgressPage";
+import BrokerLoadDetailPage from "./pages/BrokerLoadDetailPage";
 import BrokerInvoicesPage from "./pages/BrokerInvoicesPage";
 import BrokerInvoiceDetail from "./pages/BrokerInvoiceDetail";
 import BrokerCarriersPage from "./pages/BrokerCarriersPage";
@@ -58,8 +58,8 @@ function App() {
               <Route path="/document-upload" element={<ProtectedRoute><DocumentUploadPage /></ProtectedRoute>} />
               {/* Broker Routes */}
               <Route path="/broker/dashboard" element={<ProtectedRoute><BrokerDashboard /></ProtectedRoute>} />
-              <Route path="/broker/loads" element={<ProtectedRoute><BrokerLoadsPage /></ProtectedRoute>} />
-              <Route path="/broker/loads/:id" element={<ProtectedRoute><BrokerLoadDetail /></ProtectedRoute>} />
+              <Route path="/broker/loads" element={<ProtectedRoute><BrokerLoadsInProgressPage /></ProtectedRoute>} />
+              <Route path="/broker/loads/:id" element={<ProtectedRoute><BrokerLoadDetailPage /></ProtectedRoute>} />
               <Route path="/broker/invoices" element={<ProtectedRoute><BrokerInvoicesPage /></ProtectedRoute>} />
               <Route path="/broker/invoices/:id" element={<ProtectedRoute><BrokerInvoiceDetail /></ProtectedRoute>} />
               <Route path="/broker/carriers" element={<ProtectedRoute><BrokerCarriersPage /></ProtectedRoute>} />
