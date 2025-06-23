@@ -1,21 +1,11 @@
-import { useState, useEffect } from "react";
+
 import { useAuth } from "@/hooks/useAuth";
 import NavigationSidebar from "@/components/NavigationSidebar";
-import CarrierSizeDetector from "@/components/adaptive/CarrierSizeDetector";
-import ChatOnlyDashboard from "@/components/ChatOnlyDashboard";
-import { useNavigate } from "react-router-dom";
+import InsightsDashboard from "@/components/insights/InsightsDashboard";
+import { CarrierProfile } from "@/pages/Index";
+import { useState, useEffect } from "react";
 
-export interface CarrierProfile {
-  companySize: 'small' | 'large';
-  fleetSize: number;
-  userRoles: string[];
-  primaryUser: 'owner-operator' | 'dispatcher' | 'fleet-manager' | 'executive';
-  businessCoachingLevel: 'basic' | 'advanced' | 'enterprise';
-  onboardingCompleted: boolean;
-}
-
-const Index = () => {
-  const navigate = useNavigate();
+const InsightsPage = () => {
   const { profile } = useAuth();
   const [carrierProfile, setCarrierProfile] = useState<CarrierProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -30,13 +20,12 @@ const Index = () => {
         return;
       }
 
-      console.log('Fetching carrier profile for user:', profile.email);
+      console.log('Fetching carrier profile for insights page, user:', profile.email);
 
-      // Determine onboarding status based on user email
+      // Determine profile based on user email (same logic as Index.tsx)
       let mockProfile: CarrierProfile;
 
       if (profile.email === 'factor.demo@tractionpay.com') {
-        // Factor demo user - gets onboarded profile with enterprise features
         mockProfile = {
           companySize: 'large',
           fleetSize: 75,
@@ -46,17 +35,15 @@ const Index = () => {
           onboardingCompleted: true
         };
       } else if (profile.email === 'newcarrier.demo@tractionpay.com') {
-        // New carrier demo - needs onboarding
         mockProfile = {
           companySize: 'small',
           fleetSize: 2,
           userRoles: ['owner-operator'],
           primaryUser: 'owner-operator',
           businessCoachingLevel: 'basic',
-          onboardingCompleted: false
+          onboardingCompleted: true // Set to true for insights page
         };
       } else if (profile.email === 'carrier.demo@tractionpay.com') {
-        // Existing carrier demo - already onboarded, goes directly to dashboard
         mockProfile = {
           companySize: 'small',
           fleetSize: 5,
@@ -66,14 +53,13 @@ const Index = () => {
           onboardingCompleted: true
         };
       } else {
-        // Default for other users - assume they need onboarding
         mockProfile = {
           companySize: 'small',
           fleetSize: 3,
           userRoles: ['owner-operator'],
           primaryUser: 'owner-operator',
           businessCoachingLevel: 'basic',
-          onboardingCompleted: false
+          onboardingCompleted: true // Set to true for insights page
         };
       }
 
@@ -85,7 +71,7 @@ const Index = () => {
         mockProfile.businessCoachingLevel = 'advanced';
       }
 
-      console.log('Setting carrier profile:', mockProfile);
+      console.log('Setting carrier profile for insights:', mockProfile);
       setCarrierProfile(mockProfile);
       setIsLoading(false);
     };
@@ -93,45 +79,33 @@ const Index = () => {
     fetchCarrierProfile();
   }, [profile]);
 
-  const handleCarrierSetup = (setupProfile: CarrierProfile) => {
-    setCarrierProfile({
-      ...setupProfile,
-      onboardingCompleted: true
-    });
-  };
-
   if (isLoading) {
     return (
       <div className="min-h-screen flex w-full bg-slate-50">
         <NavigationSidebar />
         <div className="flex-1 flex items-center justify-center">
-          <div className="text-slate-600">Loading dashboard...</div>
+          <div className="text-slate-600">Loading insights...</div>
         </div>
       </div>
     );
   }
 
-  // Show carrier setup if not completed onboarding
-  if (!carrierProfile?.onboardingCompleted) {
-    console.log('Showing onboarding for user:', profile?.email, 'onboardingCompleted:', carrierProfile?.onboardingCompleted);
+  if (!carrierProfile) {
     return (
       <div className="min-h-screen flex w-full bg-slate-50">
         <NavigationSidebar />
-        <div className="flex-1">
-          <CarrierSizeDetector onSetupComplete={handleCarrierSetup} />
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-slate-600">Unable to load carrier profile</div>
         </div>
       </div>
     );
   }
 
-  console.log('Showing chat dashboard for user:', profile?.email, 'carrierProfile:', carrierProfile);
-
-  // Render chat-only dashboard for all completed onboarding users
   return (
     <div className="min-h-screen flex w-full bg-slate-50">
       <NavigationSidebar />
       <div className="flex-1 flex flex-col h-screen overflow-hidden">
-        <ChatOnlyDashboard 
+        <InsightsDashboard 
           carrierProfile={carrierProfile}
           userProfile={profile}
         />
@@ -140,4 +114,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default InsightsPage;

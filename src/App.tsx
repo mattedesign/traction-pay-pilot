@@ -34,6 +34,7 @@ import BrokerQuickPayAnalyticsPage from "./pages/BrokerQuickPayAnalyticsPage";
 import BrokerLoadValueAnalyticsPage from "./pages/BrokerLoadValueAnalyticsPage";
 import AuthPage from "./components/auth/AuthPage";
 import Dashboard2Page from "./pages/Dashboard2Page";
+import InsightsPage from "./pages/InsightsPage";
 import "./App.css";
 import BrokerLoadDetailPage from "./pages/BrokerLoadDetailPage";
 
@@ -54,6 +55,11 @@ function App() {
             <Route path="/dashboard2" element={
               <ProtectedRoute>
                 <Dashboard2Page />
+              </ProtectedRoute>
+            } />
+            <Route path="/insights" element={
+              <ProtectedRoute requiredUserType="carrier">
+                <InsightsPage />
               </ProtectedRoute>
             } />
             <Route path="/loads" element={
@@ -212,7 +218,7 @@ const DashboardRouter = () => {
     return <Dashboard2Page />;
   }
   
-  // Default to carrier dashboard with adaptive experience
+  // Default to carrier dashboard with chat-only experience
   return <Index />;
 };
 

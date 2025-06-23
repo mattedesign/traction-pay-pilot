@@ -1,5 +1,5 @@
 
-import { Home, Truck, FileText, Banknote, Search, HelpCircle } from "lucide-react";
+import { Home, Truck, FileText, Banknote, Search, HelpCircle, BarChart3 } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useState } from "react";
@@ -23,6 +23,10 @@ const navigationItems = [{
   icon: Banknote,
   label: "Banking",
   path: "/banking"
+}, {
+  icon: BarChart3,
+  label: "Insights",
+  path: "/insights"
 }, {
   icon: Search,
   label: "Search",
