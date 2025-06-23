@@ -1,6 +1,8 @@
 
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { TrendingDown, TrendingUp, DollarSign } from "lucide-react";
 
@@ -12,12 +14,27 @@ interface FactoringCostCalculatorProps {
 }
 
 const FactoringCostCalculator = ({ carrierData }: FactoringCostCalculatorProps) => {
-  const monthlyFactoringCost = (carrierData.monthlyRevenue * carrierData.factoringRate) / 100;
+  const [customRate, setCustomRate] = useState(carrierData.factoringRate);
+  
+  const monthlyFactoringCost = (carrierData.monthlyRevenue * customRate) / 100;
   const potentialFuelSavings = carrierData.monthlyRevenue * 0.08; // 8% potential fuel savings
   const netImpact = potentialFuelSavings - monthlyFactoringCost;
   
   return (
     <div className="space-y-4">
+      {/* Rate Input */}
+      <div>
+        <Label htmlFor="factoring-rate">Your Factoring Rate (%)</Label>
+        <Input
+          id="factoring-rate"
+          type="number"
+          step="0.1"
+          value={customRate}
+          onChange={(e) => setCustomRate(parseFloat(e.target.value) || 0)}
+          className="mt-1"
+        />
+      </div>
+
       {/* Cost Breakdown */}
       <div className="grid grid-cols-1 gap-4">
         <Card className="bg-red-50 border-red-200">
@@ -30,9 +47,6 @@ const FactoringCostCalculator = ({ carrierData }: FactoringCostCalculatorProps) 
               <span className="text-xl font-bold text-red-900">
                 ${monthlyFactoringCost.toLocaleString()}
               </span>
-            </div>
-            <div className="text-sm text-red-700 mt-1">
-              Rate: {carrierData.factoringRate}%
             </div>
           </CardContent>
         </Card>

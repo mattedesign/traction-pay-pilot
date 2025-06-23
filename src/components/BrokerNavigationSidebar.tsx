@@ -1,163 +1,168 @@
 
-import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { useAuth } from "@/hooks/useAuth";
-import { 
-  LayoutDashboard, 
-  Truck, 
-  FileText, 
-  MessageSquare, 
-  Bell,
-  Settings,
-  LogOut,
-  Menu,
-  X,
-  CreditCard,
-  BarChart3,
-  Zap,
-  TrendingUp
-} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import UserProfileMenu from "./UserProfileMenu";
+import { Home, DollarSign, BarChart3, Users, FileText, Settings, Truck, Menu, X } from "lucide-react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import { useState } from "react";
 import NotificationBell from "./NotificationBell";
+import UserProfileMenu from "./UserProfileMenu";
+
+const brokerNavigationItems = [
+  {
+    icon: Home,
+    label: "Dashboard",
+    path: "/broker"
+  },
+  {
+    icon: Truck,
+    label: "Loads in Progress",
+    path: "/broker/loads-in-progress"
+  },
+  {
+    icon: DollarSign,
+    label: "Payments",
+    path: "/broker/payments"
+  },
+  {
+    icon: BarChart3,
+    label: "Insights",
+    path: "/broker/insights"
+  },
+  {
+    icon: Users,
+    label: "Carriers",
+    path: "/broker/carriers"
+  },
+  {
+    icon: FileText,
+    label: "Reports",
+    path: "/broker/reports"
+  },
+  {
+    icon: Settings,
+    label: "Settings",
+    path: "/broker/settings"
+  }
+];
 
 const BrokerNavigationSidebar = () => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const navigate = useNavigate();
   const location = useLocation();
-  const { signOut, profile } = useAuth();
+  const { profile } = useAuth();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const navigationItems = [
-    { 
-      icon: LayoutDashboard, 
-      label: "Dashboard", 
-      href: "/broker",
-      description: "Overview & Metrics"
-    },
-    { 
-      icon: Truck, 
-      label: "Loads in Progress", 
-      href: "/broker/loads-in-progress",
-      description: "Active Shipments"
-    },
-    { 
-      icon: Zap, 
-      label: "QuickPay Optimization", 
-      href: "/broker/quickpay-optimization",
-      description: "AI-Powered Optimization",
-      badge: "New"
-    },
-    { 
-      icon: BarChart3, 
-      label: "QuickPay Analytics", 
-      href: "/broker/quickpay-analytics",
-      description: "Performance Insights"
-    },
-    { 
-      icon: FileText, 
-      label: "Documents", 
-      href: "/broker/documents",
-      description: "Manage Paperwork"
-    },
-    { 
-      icon: MessageSquare, 
-      label: "Communications", 
-      href: "/broker/communications",
-      description: "Messages & Updates"
+  const handleNavClick = (path: string) => {
+    console.log(`Navigating to ${path}`);
+    navigate(path);
+    setIsMobileMenuOpen(false);
+  };
+
+  const handleLogoClick = () => {
+    // Navigate to appropriate dashboard based on user type
+    if (profile?.user_type === 'carrier') {
+      navigate('/');
+    } else {
+      navigate('/broker');
     }
-  ];
+    setIsMobileMenuOpen(false);
+  };
 
-  const isActive = (href: string) => location.pathname === href;
+  const isActive = (path: string) => {
+    if (path === "/broker") {
+      return location.pathname === "/broker";
+    }
+    return location.pathname === path || location.pathname.startsWith(path);
+  };
 
   return (
     <>
-      {/* Desktop Sidebar */}
-      <div className={`hidden lg:flex flex-col bg-white border-r border-slate-200 transition-all duration-300 ${
-        isCollapsed ? 'w-16' : 'w-64'
-      }`}>
-        {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-slate-200">
-          {!isCollapsed && (
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                <Truck className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <h1 className="font-bold text-slate-900">TractionPay</h1>
-                <p className="text-xs text-slate-500">Broker Portal</p>
-              </div>
+      {/* Mobile Header */}
+      <div className="md:hidden w-full bg-slate-800 text-white fixed top-0 left-0 right-0 z-50">
+        <div className="flex items-center justify-between px-4 py-3 h-14">
+          <div className="flex items-center space-x-3">
+            <div className="cursor-pointer" onClick={handleLogoClick}>
+              <img 
+                alt="Logo" 
+                className="w-8 h-8 object-contain hover:opacity-80 transition-opacity" 
+                src="/lovable-uploads/b21fd570-2ee4-4af9-8ee7-44980e7d6708.png" 
+              />
             </div>
-          )}
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setIsCollapsed(!isCollapsed)}
-            className="hover:bg-slate-100"
-          >
-            <Menu className="w-4 h-4" />
-          </Button>
-        </div>
-
-        {/* Navigation */}
-        <nav className="flex-1 p-4 space-y-2">
-          {navigationItems.map((item) => {
-            const Icon = item.icon;
-            return (
-              <Link
-                key={item.href}
-                to={item.href}
-                className={`flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors group relative ${
-                  isActive(item.href)
-                    ? 'bg-blue-50 text-blue-700 border border-blue-200'
-                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
-                }`}
-              >
-                <Icon className={`w-5 h-5 ${isActive(item.href) ? 'text-blue-600' : 'text-slate-500'}`} />
-                {!isCollapsed && (
-                  <>
-                    <div className="flex-1">
-                      <div className="flex items-center space-x-2">
-                        <span className="font-medium">{item.label}</span>
-                        {item.badge && (
-                          <span className="px-2 py-0.5 text-xs bg-green-100 text-green-800 rounded-full">
-                            {item.badge}
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-xs text-slate-500">{item.description}</p>
-                    </div>
-                  </>
-                )}
-                {isCollapsed && item.badge && (
-                  <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-500 rounded-full"></div>
-                )}
-              </Link>
-            );
-          })}
-        </nav>
-
-        {/* User Profile */}
-        <div className="border-t border-slate-200 p-4">
-          {!isCollapsed ? (
+          </div>
+          
+          <div className="flex items-center space-x-2">
+            <NotificationBell />
             <UserProfileMenu />
-          ) : (
-            <div className="flex flex-col space-y-2">
-              <NotificationBell />
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={signOut}
-                className="hover:bg-slate-100"
-              >
-                <LogOut className="w-4 h-4" />
-              </Button>
-            </div>
-          )}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="text-white hover:bg-slate-700"
+            >
+              {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </Button>
+          </div>
         </div>
       </div>
 
-      {/* Mobile Navigation */}
-      <div className="lg:hidden">
-        {/* Mobile header will be handled by the main content area */}
+      {/* Mobile Menu Overlay */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden fixed top-14 left-0 right-0 z-40 bg-slate-800 text-white border-t border-slate-700">
+          <div className="px-4 py-2 space-y-1">
+            {brokerNavigationItems.map(item => (
+              <Button
+                key={item.label}
+                variant="ghost"
+                onClick={() => handleNavClick(item.path)}
+                className={`w-full justify-start text-slate-300 hover:text-white hover:bg-slate-700 h-12 ${
+                  isActive(item.path) ? 'bg-slate-700 text-white' : ''
+                }`}
+              >
+                <item.icon className="w-5 h-5 mr-3" />
+                {item.label}
+              </Button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Desktop Sidebar */}
+      <div className="hidden md:flex w-16 bg-slate-800 text-white min-h-screen flex-col items-center py-4">
+        {/* Logo - clickable to navigate to appropriate dashboard */}
+        <div className="mb-8 cursor-pointer" onClick={handleLogoClick}>
+          <img 
+            alt="Logo" 
+            className="w-8 h-8 object-contain hover:opacity-80 transition-opacity" 
+            src="/lovable-uploads/b21fd570-2ee4-4af9-8ee7-44980e7d6708.png" 
+          />
+        </div>
+
+        {/* Main navigation items */}
+        <div className="space-y-4 flex flex-col items-center">
+          {brokerNavigationItems.map(item => (
+            <Button
+              key={item.label}
+              variant="ghost"
+              size="icon"
+              onClick={() => handleNavClick(item.path)}
+              className={`w-12 h-12 text-slate-300 hover:text-white hover:bg-slate-700 flex items-center justify-center ${
+                isActive(item.path) ? 'bg-slate-700 text-white' : ''
+              }`}
+              title={item.label}
+            >
+              <item.icon className="w-6 h-6" />
+            </Button>
+          ))}
+        </div>
+        
+        {/* Push notification bell and user menu to bottom */}
+        <div className="mt-auto flex flex-col items-center space-y-2">
+          <div className="p-2">
+            <NotificationBell />
+          </div>
+          <div className="p-2">
+            <UserProfileMenu />
+          </div>
+        </div>
       </div>
     </>
   );

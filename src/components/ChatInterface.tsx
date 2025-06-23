@@ -1,10 +1,12 @@
 
 import ChatContainer from "./ChatContainer";
 import ChatPreview from "./ChatPreview";
+import ChatSetup from "./ChatSetup";
 import { useChatMessages } from "../hooks/useChatMessages";
-import { useEnhancedChatHandler } from "../hooks/useEnhancedChatHandler";
+import { useUnifiedChatHandler } from "../hooks/useUnifiedChatHandler";
 import { useSuggestedQuestions } from "../hooks/useSuggestedQuestions";
 import { useNavigate } from "react-router-dom";
+import { InteractiveResponseService } from "../services/interactiveResponseService";
 
 interface ChatInterfaceProps {
   isPreview?: boolean;
@@ -16,39 +18,58 @@ const ChatInterface = ({ isPreview = false, loadContext }: ChatInterfaceProps) =
   const { currentSuggestions } = useSuggestedQuestions();
   const navigate = useNavigate();
   
-  // Enhanced system prompt for trucking operations
-  const systemPrompt = `You are an AI assistant specialized in trucking operations and load management. You help carriers with:
+  // Enhanced system prompt that supports both search and chat modes
+  const systemPrompt = `You are an AI assistant specialized in trucking operations and load management. You can operate in two modes:
 
-**OPERATIONAL GUIDANCE**:
+**SEARCH MODE**: Help users find and analyze specific loads by ID, broker, route, or status. Provide detailed load information, status updates, and actionable insights.
+
+**CHAT MODE**: Provide general trucking advice, compliance guidance, route optimization, and industry knowledge including:
+- DOT regulations and compliance (HOS, ELD, safety requirements)
 - Route optimization and fuel efficiency
-- Load search and acceptance decisions
-- DOT regulations and compliance (HOS, ELD, safety)
-- Equipment maintenance and safety protocols
+- Equipment maintenance and safety
+- Freight operations and logistics
+- Payment processing and factoring
+- Professional communication
 
-**BUSINESS SUPPORT**:
-- Payment processing and factoring advice
-- Cash flow management and financing
-- Performance metrics and optimization
-- Growth planning and fleet expansion
+When asking questions that could lead to specific actions, phrase them as yes/no questions when appropriate. For example:
+- "Would you like to see the details for Load #1234?"
+- "Should I show you the optimal route options?"
+- "Would you like to check your payment status?"
 
-**COMMUNICATION**:
-- Professional interaction with brokers and shippers
-- Documentation and paperwork guidance
-- Dispute resolution and problem solving
+Always provide practical, actionable advice in a clear, professional tone. Focus on safety, compliance, and profitability.`;
 
-Always provide practical, actionable advice focused on safety, compliance, and profitability. Keep responses clear and industry-specific.`;
+  // Custom addAIMessage that processes responses for interactive buttons
+  const addAIMessageWithButtons = (content: string) => {
+    const processed = InteractiveResponseService.processResponse(content);
+    
+    // Add the main content first
+    const mainMessage = addAIMessage(processed.mainContent);
+    
+    // If there's an interactive question, add it as a separate message with buttons
+    if (processed.questionContent && processed.interactiveButtons) {
+      setTimeout(() => {
+        addAIMessage(processed.questionContent!, processed.interactiveButtons);
+      }, 500); // Small delay to show it's a separate message
+    }
+    
+    return mainMessage;
+  };
 
   const {
     message,
     setMessage,
     isLoading,
     isInitialized,
-    handleSendMessage
-  } = useEnhancedChatHandler({
+    handleSendMessage,
+    handleAPIKeySubmit,
+    loadResults,
+    showingResults,
+    handleLoadSelect
+  } = useUnifiedChatHandler({
     systemPrompt,
     chatHistory,
     addUserMessage,
-    addAIMessage,
+    addAIMessage: addAIMessageWithButtons,
     currentLoadId: loadContext,
     onLoadSelect: (loadId) => navigate(`/load/${loadId}`)
   });
@@ -62,7 +83,10 @@ Always provide practical, actionable advice focused on safety, compliance, and p
     return <ChatPreview currentSuggestions={currentSuggestions} />;
   }
 
-  // The system is always initialized since we're using Supabase Edge Functions
+  if (!isInitialized) {
+    return <ChatSetup onAPIKeySubmit={handleAPIKeySubmit} isLoading={isLoading} />;
+  }
+
   return (
     <ChatContainer
       isInitialized={isInitialized}
@@ -70,7 +94,8 @@ Always provide practical, actionable advice focused on safety, compliance, and p
       chatHistory={chatHistory}
       currentSuggestions={currentSuggestions}
       onChatMessage={handleChatMessage}
-      onAPIKeySubmit={() => {}} // No longer needed
+      onAPIKeySubmit={handleAPIKeySubmit}
+      onLoadSelect={handleLoadSelect}
       onNavigate={navigate}
     />
   );

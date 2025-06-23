@@ -1,50 +1,42 @@
 
 import { useState, useCallback } from 'react';
-import { SupabaseAIService } from '../services/supabaseAIService';
+import { AIService } from '../services/aiService';
 
 interface UseAIOptions {
   systemPrompt?: string;
-  preferSupabase?: boolean;
 }
 
 export const useAI = (options: UseAIOptions = {}) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [supabaseService] = useState<SupabaseAIService>(() => new SupabaseAIService());
+  const [apiKey, setApiKey] = useState<string>('');
+  const [aiService, setAiService] = useState<AIService | null>(null);
+
+  const initializeService = useCallback((key: string) => {
+    setApiKey(key);
+    setAiService(new AIService(key));
+  }, []);
 
   const sendMessage = useCallback(async (
     messages: Array<{ role: 'user' | 'assistant'; content: string }>
   ) => {
+    if (!aiService) {
+      throw new Error('AI service not initialized. Please provide API key.');
+    }
+
     setIsLoading(true);
-    
     try {
-      console.log('=== AI Service Debug Info ===');
-      console.log('Using Supabase Edge Function for AI...');
-      console.log('Messages being sent:', messages);
-      console.log('System prompt:', options.systemPrompt);
-      
-      const response = await supabaseService.sendMessage(messages, options.systemPrompt);
-      
-      console.log('Response received:', response);
-      
-      if (response.error) {
-        console.error('AI service returned error:', response.error);
-        throw new Error(response.error);
-      }
-      
-      console.log('Supabase Edge Function successful');
-      return response.content;
-      
-    } catch (error) {
-      console.error('AI Service Error Details:', error);
-      throw error;
+      const response = await aiService.sendMessage(messages, options.systemPrompt);
+      return response;
     } finally {
       setIsLoading(false);
     }
-  }, [supabaseService, options.systemPrompt]);
+  }, [aiService, options.systemPrompt]);
 
   return {
     isLoading,
-    isSupabaseAvailable: true,
+    apiKey,
+    isInitialized: !!aiService,
+    initializeService,
     sendMessage
   };
 };
