@@ -1,10 +1,8 @@
 
 import { useCallback } from "react";
 import ChatInput from "./ChatInput";
-import ChatHeader from "./ChatHeader";
 import ChatContentArea from "./ChatContentArea";
 import ChatEscapeHandler from "./ChatEscapeHandler";
-import ChatTitleManager from "./ChatTitleManager";
 import ChatDemoHandler from "./ChatDemoHandler";
 import { InputFocusHandle } from "@/hooks/useInputFocus";
 import { ChatMessage, InteractiveButton } from "../hooks/useChatMessages";
@@ -78,35 +76,20 @@ const ChatInterfaceLayout = ({
         setMessage={setMessage}
       />
       
-      {/* Always render the same layout - just expand the content area when focused */}
-      {isFocused && (
-        <>
-          <div className="shrink-0">
-            <ChatTitleManager currentAction={currentAction} mode={mode}>
-              {(title) => (
-                <ChatHeader 
-                  isFocused={isFocused}
-                  title={title}
-                  onClose={finalHandleClose}
-                />
-              )}
-            </ChatTitleManager>
-          </div>
-          
-          <div className="flex-1 min-h-0 overflow-hidden">
-            <ChatContentArea
-              isFocused={isFocused}
-              showingResults={showingResults}
-              loadResults={loadResults}
-              chatHistory={chatHistory}
-              isLoading={isLoading}
-              onLoadSelect={handleLoadSelect}
-              onButtonClick={onButtonClick}
-            />
-          </div>
-        </>
-      )}
+      {/* Content area takes up most of the space */}
+      <div className="flex-1 min-h-0 overflow-hidden">
+        <ChatContentArea
+          isFocused={isFocused}
+          showingResults={showingResults}
+          loadResults={loadResults}
+          chatHistory={chatHistory}
+          isLoading={isLoading}
+          onLoadSelect={handleLoadSelect}
+          onButtonClick={onButtonClick}
+        />
+      </div>
       
+      {/* Input area at the bottom */}
       <div className="shrink-0 p-4 border-t bg-white">
         <div className="w-full max-w-4xl mx-auto">
           <ChatInput

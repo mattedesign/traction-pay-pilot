@@ -2,9 +2,10 @@
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Truck, Route, CreditCard } from "lucide-react";
-import ChatInterfaceWrapper from "./ChatInterfaceWrapper";
+import ChatDrawer from "./ChatDrawer";
 import { CarrierProfile } from "@/pages/Index";
 import HomeDocumentUpload from "./HomeDocumentUpload";
+import ChatInput from "./ChatInput";
 
 interface ChatOnlyDashboardProps {
   carrierProfile: CarrierProfile;
@@ -12,18 +13,42 @@ interface ChatOnlyDashboardProps {
 }
 
 const ChatOnlyDashboard = ({ carrierProfile, userProfile }: ChatOnlyDashboardProps) => {
-  const [activeConversation, setActiveConversation] = useState<string | null>(null);
-  const [isChatFocused, setIsChatFocused] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [drawerTopic, setDrawerTopic] = useState<string | null>(null);
+  const [drawerMessage, setDrawerMessage] = useState("");
+  const [message, setMessage] = useState("");
 
   const handleCardClick = (topic: string) => {
-    setActiveConversation(topic);
+    setDrawerTopic(topic);
+    setDrawerMessage("");
+    setIsDrawerOpen(true);
   };
 
-  const handleChatFocusChange = (focused: boolean) => {
-    setIsChatFocused(focused);
-    if (!focused) {
-      setActiveConversation(null);
+  const handleInputFocus = () => {
+    if (message.trim()) {
+      setDrawerTopic(null);
+      setDrawerMessage(message);
+      setIsDrawerOpen(true);
+    } else {
+      setDrawerTopic(null);
+      setDrawerMessage("");
+      setIsDrawerOpen(true);
     }
+  };
+
+  const handleSendMessage = () => {
+    if (message.trim()) {
+      setDrawerTopic(null);
+      setDrawerMessage(message);
+      setMessage("");
+      setIsDrawerOpen(true);
+    }
+  };
+
+  const handleCloseDrawer = () => {
+    setIsDrawerOpen(false);
+    setDrawerTopic(null);
+    setDrawerMessage("");
   };
 
   const quickAccessCards = [
@@ -49,7 +74,7 @@ const ChatOnlyDashboard = ({ carrierProfile, userProfile }: ChatOnlyDashboardPro
 
   return (
     <div className="flex-1 flex flex-col h-full overflow-hidden">
-      <div className={`flex-1 overflow-auto transition-all duration-300 ${isChatFocused ? 'pb-96' : ''}`}>
+      <div className="flex-1 overflow-auto">
         <div className="max-w-4xl mx-auto p-6 space-y-6">
           {/* Quick Access Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -79,18 +104,28 @@ const ChatOnlyDashboard = ({ carrierProfile, userProfile }: ChatOnlyDashboardPro
         </div>
       </div>
 
-      {/* Chat Interface - Fixed at bottom, expands when focused */}
-      <div className={`border-t bg-white transition-all duration-300 ${
-        isChatFocused ? 'h-96 shadow-2xl' : 'h-auto'
-      }`}>
-        <ChatInterfaceWrapper 
-          carrierProfile={carrierProfile}
-          userProfile={userProfile}
-          initialTopic={activeConversation}
-          onTopicChange={setActiveConversation}
-          onFocusChange={handleChatFocusChange}
-        />
+      {/* Chat Input - Fixed at bottom */}
+      <div className="border-t bg-white p-4">
+        <div className="max-w-4xl mx-auto">
+          <ChatInput
+            message={message}
+            onMessageChange={setMessage}
+            onSendMessage={handleSendMessage}
+            isLoading={false}
+            onFocus={handleInputFocus}
+          />
+        </div>
       </div>
+
+      {/* Chat Drawer */}
+      <ChatDrawer
+        isOpen={isDrawerOpen}
+        onClose={handleCloseDrawer}
+        carrierProfile={carrierProfile}
+        userProfile={userProfile}
+        initialTopic={drawerTopic}
+        initialMessage={drawerMessage}
+      />
     </div>
   );
 };

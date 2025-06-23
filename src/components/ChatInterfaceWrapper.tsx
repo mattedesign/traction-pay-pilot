@@ -13,45 +13,26 @@ interface ChatInterfaceWrapperProps {
   carrierProfile: CarrierProfile;
   userProfile: any;
   initialTopic?: string | null;
+  initialMessage?: string;
   onTopicChange?: (topic: string | null) => void;
-  onFocusChange?: (focused: boolean) => void;
+  onNavigate?: (path: string) => void;
 }
 
 const ChatInterfaceWrapper = ({
   carrierProfile,
   userProfile,
   initialTopic = null,
+  initialMessage = "",
   onTopicChange,
-  onFocusChange
+  onNavigate
 }: ChatInterfaceWrapperProps) => {
   const [isInDemoMode, setIsInDemoMode] = useState(false);
   const [demoStep, setDemoStep] = useState<string | null>(null);
-  const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<InputFocusHandle>(null);
   const navigate = useNavigate();
   
   const { chatHistory, addUserMessage, addAIMessage } = useChatMessages();
   const systemPrompt = getChatSystemPrompt();
-
-  // Handle focus changes and drawer closing
-  const handleFocusChange = (focused: boolean) => {
-    setIsFocused(focused);
-    if (onTopicChange && !focused) {
-      onTopicChange(null);
-    }
-    // Communicate focus change to parent
-    if (onFocusChange) {
-      onFocusChange(focused);
-    }
-  };
-
-  const handleCloseDrawer = () => {
-    console.log('ChatInterfaceWrapper: Closing drawer');
-    setIsFocused(false);
-    if (onFocusChange) {
-      onFocusChange(false);
-    }
-  };
 
   // Set up the unified chat handler
   const {
@@ -71,9 +52,9 @@ const ChatInterfaceWrapper = ({
     addUserMessage,
     addAIMessage,
     onLoadSelect: (loadId) => {
-      // Handle load selection if needed
       console.log('Load selected:', loadId);
-    }
+    },
+    onNavigate: onNavigate || ((path: string) => navigate(path))
   });
 
   // Enhanced button click handler with navigation support
@@ -82,17 +63,11 @@ const ChatInterfaceWrapper = ({
     
     ButtonClickHandler.handle({
       button,
-      onNavigate: (path: string) => {
-        console.log('ChatInterfaceWrapper: Navigating to:', path);
-        navigate(path);
-      },
+      onNavigate: onNavigate || ((path: string) => navigate(path)),
       onContinueChat: (message: string) => {
         console.log('ChatInterfaceWrapper: Continuing chat with:', message);
         setMessage(message);
-        // Optionally auto-send the message
-        // originalHandleSendMessage();
-      },
-      onCloseDrawer: handleCloseDrawer
+      }
     });
 
     // Also call the original handler for any additional processing
@@ -101,7 +76,7 @@ const ChatInterfaceWrapper = ({
     }
   };
 
-  // Initialize with topic if provided
+  // Initialize with topic or message if provided
   React.useEffect(() => {
     if (initialTopic && initialTopic !== 'null' && message === '') {
       const topicMessages: Record<string, string> = {
@@ -113,15 +88,11 @@ const ChatInterfaceWrapper = ({
       const topicMessage = topicMessages[initialTopic];
       if (topicMessage) {
         setMessage(topicMessage);
-        if (!isFocused) {
-          setIsFocused(true);
-          if (onFocusChange) {
-            onFocusChange(true);
-          }
-        }
       }
+    } else if (initialMessage && initialMessage !== '' && message === '') {
+      setMessage(initialMessage);
     }
-  }, [initialTopic, message, isFocused, setMessage, onFocusChange]);
+  }, [initialTopic, initialMessage, message, setMessage]);
 
   if (!isInitialized) {
     return (
@@ -133,9 +104,9 @@ const ChatInterfaceWrapper = ({
 
   return (
     <ChatInterfaceMain
-      isFocused={isFocused}
+      isFocused={true} // Always focused within the drawer
       currentAction={initialTopic || undefined}
-      onFocusChange={handleFocusChange}
+      onFocusChange={() => {}} // No-op since we're in a drawer
       inputRef={inputRef}
       message={message}
       setMessage={setMessage}

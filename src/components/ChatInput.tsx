@@ -16,6 +16,7 @@ interface ChatInputProps {
   isPreview?: boolean;
   mode?: "search" | "chat";
   onModeChange?: (mode: "search" | "chat") => void;
+  onFocus?: () => void;
 }
 
 const ChatInput = forwardRef<InputFocusHandle, ChatInputProps>(({
@@ -25,7 +26,8 @@ const ChatInput = forwardRef<InputFocusHandle, ChatInputProps>(({
   isLoading,
   isPreview = false,
   mode = "chat",
-  onModeChange
+  onModeChange,
+  onFocus
 }, ref) => {
   const { inputRef } = useChatInputFocus({ ref, message, isPreview });
   const { getPlaceholder } = useChatInputPlaceholder(mode);
@@ -37,6 +39,12 @@ const ChatInput = forwardRef<InputFocusHandle, ChatInputProps>(({
     message
   });
 
+  const handleFocus = () => {
+    if (onFocus) {
+      onFocus();
+    }
+  };
+
   return (
     <div className="relative">
       <Input
@@ -45,6 +53,7 @@ const ChatInput = forwardRef<InputFocusHandle, ChatInputProps>(({
         value={message}
         onChange={handleInputChange}
         onKeyPress={handleKeyPress}
+        onFocus={handleFocus}
         className="pl-32 pr-44 py-3 h-12 rounded-[18px]"
         disabled={isLoading || isPreview}
         maxLength={1000}
