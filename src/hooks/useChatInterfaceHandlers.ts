@@ -45,8 +45,9 @@ export const useChatInterfaceHandlers = ({
       hasOnFocusChange: !!onFocusChange
     });
     
-    if (onFocusChange) {
-      console.log('ChatInterfaceHandlers: Calling onFocusChange(true)');
+    // Only expand to full-screen when the user actually sends a message
+    if (onFocusChange && message.trim()) {
+      console.log('ChatInterfaceHandlers: Expanding to full-screen on send');
       onFocusChange(true);
     }
     

@@ -18,11 +18,9 @@ const ChatFocusManager = ({
   children 
 }: ChatFocusManagerProps) => {
   const handleMessageChange = useCallback((newMessage: string) => {
-    // Only trigger focus change if we have content and we're not already focused
-    if (onFocusChange && newMessage.length > 0 && !isFocused) {
-      onFocusChange(true);
-    }
-  }, [onFocusChange, isFocused]);
+    // Don't trigger focus change on typing - only when messages are sent
+    // This prevents the chat from expanding just by typing
+  }, []);
 
   const handleClose = useCallback(() => {
     if (onFocusChange) {
