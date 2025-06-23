@@ -20,32 +20,7 @@ export class RouteOptimizationProcessor {
     const messageLower = userMessage.toLowerCase().trim();
     console.log('RouteOptimizationProcessor: Normalized message:', messageLower);
     
-    // Check if user is asking for initial route optimization
-    if (messageLower.includes('optimize') && (messageLower.includes('route') || messageLower.includes('routing'))) {
-      console.log('RouteOptimizationProcessor: Initial route optimization request detected');
-      
-      const response = RouteOptimizationHandler.generateRouteOptimizationResponse('initial');
-      const loads = RouteOptimizationHandler.getOptimizableLoads();
-      
-      if (loads.length === 0) {
-        addAIMessage("I don't see any active loads that can be optimized right now. Route optimization is available for loads that are pending pickup or in transit.");
-        return true;
-      }
-      
-      const buttons: InteractiveButton[] = loads.map(load => ({
-        id: `route_load_${load.id}`,
-        text: `Load #${load.id} - ${load.origin} → ${load.destination}`,
-        action: 'continue_chat',
-        actionData: {
-          message: `Optimize route for Load #${load.id}`
-        }
-      }));
-      
-      addAIMessage(response, buttons);
-      return true;
-    }
-    
-    // Enhanced regex patterns for load selection
+    // PRIORITY 1: Check for specific load selection patterns FIRST
     const loadPatterns = [
       /optimize\s+route\s+for\s+load\s*#?(\w+)/i,
       /route\s+optimization\s+for\s+load\s*#?(\w+)/i,
@@ -92,7 +67,32 @@ export class RouteOptimizationProcessor {
       }
     }
     
-    // Check if user is asking about specific optimization types with navigation
+    // PRIORITY 2: Check for initial route optimization requests (only if no specific load was found)
+    if (messageLower.includes('optimize') && (messageLower.includes('route') || messageLower.includes('routing'))) {
+      console.log('RouteOptimizationProcessor: Initial route optimization request detected');
+      
+      const response = RouteOptimizationHandler.generateRouteOptimizationResponse('initial');
+      const loads = RouteOptimizationHandler.getOptimizableLoads();
+      
+      if (loads.length === 0) {
+        addAIMessage("I don't see any active loads that can be optimized right now. Route optimization is available for loads that are pending pickup or in transit.");
+        return true;
+      }
+      
+      const buttons: InteractiveButton[] = loads.map(load => ({
+        id: `route_load_${load.id}`,
+        text: `Load #${load.id} - ${load.origin} → ${load.destination}`,
+        action: 'continue_chat',
+        actionData: {
+          message: `Optimize route for Load #${load.id}`
+        }
+      }));
+      
+      addAIMessage(response, buttons);
+      return true;
+    }
+    
+    // PRIORITY 3: Check for specific optimization types with navigation
     const optimizationTypes = [
       { keywords: ['fuel efficient', 'fuel optimization'], id: 'fuel_efficient' },
       { keywords: ['fastest', 'quickest', 'time'], id: 'fastest' },
