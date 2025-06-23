@@ -18,8 +18,9 @@ const ChatFocusManager = ({
   children 
 }: ChatFocusManagerProps) => {
   const handleMessageChange = useCallback((newMessage: string) => {
-    if (onFocusChange) {
-      onFocusChange(newMessage.length > 0 || isFocused);
+    // Only trigger focus change if we have content and we're not already focused
+    if (onFocusChange && newMessage.length > 0 && !isFocused) {
+      onFocusChange(true);
     }
   }, [onFocusChange, isFocused]);
 

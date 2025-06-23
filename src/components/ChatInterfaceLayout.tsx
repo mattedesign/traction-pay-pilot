@@ -67,7 +67,7 @@ const ChatInterfaceLayout = ({
   }, [setMessage, handleMessageChange]);
 
   return (
-    <div className={`flex flex-col ${isFocused ? 'h-screen' : 'h-full'}`}>
+    <div className="flex flex-col h-full">
       <ChatEscapeHandler isFocused={isFocused} onClose={finalHandleClose} />
       
       <ChatDemoHandler
@@ -78,9 +78,8 @@ const ChatInterfaceLayout = ({
         setMessage={setMessage}
       />
       
-      {/* Render different layouts based on focus state */}
-      {isFocused ? (
-        /* Focused layout - full screen with header and content */
+      {/* Always render the same layout - just expand the content area when focused */}
+      {isFocused && (
         <>
           <div className="shrink-0">
             <ChatTitleManager currentAction={currentAction} mode={mode}>
@@ -105,24 +104,11 @@ const ChatInterfaceLayout = ({
               onButtonClick={onButtonClick}
             />
           </div>
-          
-          <div className="shrink-0 p-4 border-t bg-white">
-            <div className="w-full max-w-4xl mx-auto">
-              <ChatInput
-                ref={inputRef}
-                message={message}
-                onMessageChange={finalHandleMessageChange}
-                onSendMessage={handleSend}
-                isLoading={isLoading}
-                mode={mode}
-                onModeChange={handleModeChange}
-              />
-            </div>
-          </div>
         </>
-      ) : (
-        /* Unfocused layout - just the input */
-        <div className="p-4">
+      )}
+      
+      <div className="shrink-0 p-4 border-t bg-white">
+        <div className="w-full max-w-4xl mx-auto">
           <ChatInput
             ref={inputRef}
             message={message}
@@ -133,7 +119,7 @@ const ChatInterfaceLayout = ({
             onModeChange={handleModeChange}
           />
         </div>
-      )}
+      </div>
     </div>
   );
 };
