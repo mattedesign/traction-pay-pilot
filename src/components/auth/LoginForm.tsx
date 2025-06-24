@@ -101,6 +101,62 @@ const LoginForm = () => {
             console.log('Redirecting habitually late carrier to /dashboard2');
             navigate('/dashboard2');
             return;
+          } else if (email === 'carrier.demo@tractionpay.com') {
+            console.log('Creating profile for regular carrier demo user...');
+            const { error: insertError } = await supabase
+              .from('profiles')
+              .insert({
+                id: data.user.id,
+                email: data.user.email,
+                first_name: 'John',
+                last_name: 'Doe',
+                company_name: 'Demo Carrier Co',
+                phone: '555-0123',
+                user_type: 'carrier'
+              });
+
+            if (insertError) {
+              console.error('Error creating profile:', insertError);
+              setError("Error creating user profile. Please try again.");
+              return;
+            }
+
+            // Profile created successfully, redirect to carrier dashboard
+            toast({
+              title: "Welcome back!",
+              description: "Successfully signed in to your dashboard.",
+            });
+            console.log('Redirecting carrier to /');
+            navigate('/');
+            return;
+          } else if (email === 'broker.demo@tractionpay.com') {
+            console.log('Creating profile for broker demo user...');
+            const { error: insertError } = await supabase
+              .from('profiles')
+              .insert({
+                id: data.user.id,
+                email: data.user.email,
+                first_name: 'Jane',
+                last_name: 'Smith',
+                company_name: 'Demo Broker LLC',
+                phone: '555-0456',
+                user_type: 'broker'
+              });
+
+            if (insertError) {
+              console.error('Error creating profile:', insertError);
+              setError("Error creating user profile. Please try again.");
+              return;
+            }
+
+            // Profile created successfully, redirect to broker dashboard
+            toast({
+              title: "Welcome back!",
+              description: "Successfully signed in to your broker dashboard.",
+            });
+            console.log('Redirecting broker to /broker');
+            navigate('/broker');
+            return;
           }
           
           setError("Error loading user profile. Please try again.");

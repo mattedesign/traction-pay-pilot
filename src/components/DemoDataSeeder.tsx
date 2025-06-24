@@ -143,6 +143,10 @@ const DemoDataSeeder = () => {
               <span>factor.demo@tractionpay.com</span>
               <Badge className="bg-purple-100 text-purple-800">Factor (Special Dashboard)</Badge>
             </div>
+            <div className="flex justify-between items-center p-2 bg-amber-50 rounded border border-amber-200">
+              <span>latecarrier.demo@tractionpay.com</span>
+              <Badge className="bg-red-100 text-red-800">Habitually Late Carrier</Badge>
+            </div>
           </div>
         </div>
 
@@ -196,6 +200,7 @@ const DemoDataSeeder = () => {
           <p><strong>New password for all demo accounts:</strong> NewDemo123!</p>
           <p>Demo accounts will be automatically confirmed and ready to use.</p>
           <p>Existing accounts will have their passwords updated to the new password.</p>
+          <p><strong>Special:</strong> latecarrier.demo@tractionpay.com goes to the payment-focused dashboard</p>
         </div>
       </CardContent>
     </Card>
