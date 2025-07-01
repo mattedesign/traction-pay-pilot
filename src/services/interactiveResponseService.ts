@@ -1,161 +1,112 @@
 
-import { InteractiveButton } from "../hooks/useChatMessages";
-import { ChatStateManager } from "./chatStateManager";
+import { LoadSearchResult } from "./loadSearchService";
 
-export interface ProcessedResponse {
-  mainContent: string;
-  questionContent?: string;
-  interactiveButtons?: InteractiveButton[];
+export interface InteractiveResponse {
+  message: string;
+  buttons?: Array<{
+    text: string;
+    action: string;
+    loadId?: string;
+  }>;
 }
 
 export class InteractiveResponseService {
-  static processResponse(aiResponse: string): ProcessedResponse {
-    console.log('InteractiveResponseService: Processing response for interactive elements');
-    
-    // Look for yes/no questions in the response
-    const yesNoPatterns = [
-      /would you like to (.*?)\?/gi,
-      /do you want to (.*?)\?/gi,
-      /should i (.*?)\?/gi,
-      /would you like me to (.*?)\?/gi,
-      /shall i (.*?)\?/gi,
-    ];
-
-    let foundQuestion = null;
-    let questionMatch = null;
-
-    // Check for yes/no patterns
-    for (const pattern of yesNoPatterns) {
-      const match = aiResponse.match(pattern);
-      if (match) {
-        foundQuestion = match[0];
-        questionMatch = match;
-        break;
-      }
+  static generateLoadStatusResponse(results: LoadSearchResult[]): InteractiveResponse {
+    if (results.length === 0) {
+      return {
+        message: "No loads found matching your search criteria."
+      };
     }
 
-    // If no interactive question found, return original response
-    if (!foundQuestion) {
-      ChatStateManager.clearQuestionState();
-      return { mainContent: aiResponse };
+    if (results.length === 1) {
+      const result = results[0];
+      const load = result.load;
+      
+      const statusMessage = this.getStatusMessage(load.status);
+      
+      return {
+        message: `**Load #${load.id}** - ${load.broker}\n\n` +
+                `📍 **Route:** ${load.origin} → ${load.destination}\n` +
+                `💰 **Amount:** ${load.amount}\n` +
+                `📅 **Pickup:** ${load.pickupTime}\n` +
+                `🚛 **Distance:** ${load.distance}\n\n` +
+                `**Status:** ${statusMessage}`,
+        buttons: [
+          {
+            text: "📋 View Load Details",
+            action: "navigate",
+            loadId: load.id
+          },
+          {
+            text: "📞 Contact Broker",
+            action: "contact_broker",
+            loadId: load.id
+          }
+        ]
+      };
     }
 
-    // Check if we should suppress this question due to recent activity
-    if (ChatStateManager.shouldSuppressQuestion(foundQuestion)) {
-      console.log('InteractiveResponseService: Suppressing repetitive question');
-      ChatStateManager.clearQuestionState();
-      return { mainContent: aiResponse.replace(foundQuestion, '').trim() || aiResponse };
+    // Multiple loads found
+    let message = `Found ${results.length} loads:\n\n`;
+    
+    results.slice(0, 3).forEach((result, index) => {
+      const load = result.load;
+      message += `**${index + 1}. Load #${load.id}** - ${load.broker}\n`;
+      message += `   ${load.origin} → ${load.destination} | ${load.amount}\n`;
+      message += `   Status: ${this.getStatusMessage(load.status)}\n\n`;
+    });
+
+    if (results.length > 3) {
+      message += `... and ${results.length - 3} more loads\n\n`;
     }
-
-    // Extract the main content (everything except the question)
-    const mainContent = aiResponse.replace(foundQuestion, '').trim();
-    
-    // Generate appropriate buttons based on the question context
-    const buttons = this.generateButtonsForQuestion(foundQuestion, questionMatch);
-    
-    // Set question state to track this pending question
-    const questionId = `q_${Date.now()}`;
-    ChatStateManager.setQuestionState(questionId, true, foundQuestion);
-
-    console.log('InteractiveResponseService: Created interactive question with buttons');
 
     return {
-      mainContent,
-      questionContent: foundQuestion,
-      interactiveButtons: buttons
+      message,
+      buttons: [
+        {
+          text: "🔍 View All Loads",
+          action: "navigate_loads"
+        }
+      ]
     };
   }
 
-  private static generateButtonsForQuestion(question: string, match: RegExpMatchArray): InteractiveButton[] {
-    const questionLower = question.toLowerCase();
-    
-    // Check for load-related questions
-    if (questionLower.includes('load') || questionLower.includes('track')) {
-      return [
-        {
-          id: 'yes-load',
-          text: 'Yes',
-          action: 'navigate',
-          actionData: {
-            path: '/loads/1234',
-            message: 'Yes, show me the load details'
-          }
-        },
-        {
-          id: 'no-load',
-          text: 'No',
-          action: 'continue_chat',
-          actionData: {
-            message: 'No, I need something else'
-          }
-        }
-      ];
+  private static getStatusMessage(status: string): string {
+    switch (status) {
+      case "pending_acceptance":
+        return "⏳ Pending Acceptance - Awaiting your response";
+      case "pending_pickup":
+        return "📦 Ready for Pickup - Confirmed and ready";
+      case "in_transit":
+        return "🚛 In Transit - Currently en route";
+      case "delivered":
+        return "✅ Delivered - Successfully completed";
+      case "ready_to_invoice":
+        return "📄 Ready to Invoice - Awaiting payment processing";
+      default:
+        return status.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
     }
+  }
 
-    // Check for route-related questions
-    if (questionLower.includes('route') || questionLower.includes('navigate') || questionLower.includes('directions')) {
-      return [
-        {
-          id: 'yes-route',
-          text: 'Yes',
-          action: 'navigate',
-          actionData: {
-            path: '/route-options',
-            message: 'Yes, show me route options'
-          }
-        },
-        {
-          id: 'no-route',
-          text: 'No',
-          action: 'continue_chat',
-          actionData: {
-            message: 'No, I need something else'
-          }
+  static handleButtonAction(action: string, loadId?: string): string {
+    switch (action) {
+      case "navigate":
+        if (loadId) {
+          // Ensure we're using the correct path with 's' - /loads/:id
+          window.location.href = `/loads/${loadId}`;
+          return "Navigating to load details...";
         }
-      ];
+        return "Load ID not found";
+      
+      case "navigate_loads":
+        window.location.href = "/loads";
+        return "Navigating to loads page...";
+      
+      case "contact_broker":
+        return "Opening broker contact options...";
+      
+      default:
+        return "Unknown action";
     }
-
-    // Check for payment/invoice questions
-    if (questionLower.includes('payment') || questionLower.includes('invoice') || questionLower.includes('quickpay')) {
-      return [
-        {
-          id: 'yes-payment',
-          text: 'Yes',
-          action: 'navigate',
-          actionData: {
-            path: '/invoices',
-            message: 'Yes, show me payment options'
-          }
-        },
-        {
-          id: 'no-payment',
-          text: 'No',
-          action: 'continue_chat',
-          actionData: {
-            message: 'No, I need something else'
-          }
-        }
-      ];
-    }
-
-    // Default yes/no buttons
-    return [
-      {
-        id: 'yes-default',
-        text: 'Yes',
-        action: 'continue_chat',
-        actionData: {
-          message: 'Yes'
-        }
-      },
-      {
-        id: 'no-default',
-        text: 'No',
-        action: 'continue_chat',
-        actionData: {
-          message: 'No'
-        }
-      }
-    ];
   }
 }
