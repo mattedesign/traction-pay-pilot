@@ -5,15 +5,7 @@ import NavigationSidebar from "@/components/NavigationSidebar";
 import SmallCarrierDashboard from "@/components/adaptive/SmallCarrierDashboard";
 import LargeCarrierDashboard from "@/components/adaptive/LargeCarrierDashboard";
 import CarrierSizeDetector from "@/components/adaptive/CarrierSizeDetector";
-
-export interface CarrierProfile {
-  companySize: 'small' | 'large';
-  fleetSize: number;
-  userRoles: string[];
-  primaryUser: 'owner-operator' | 'dispatcher' | 'fleet-manager' | 'executive';
-  businessCoachingLevel: 'basic' | 'advanced' | 'enterprise';
-  onboardingCompleted: boolean;
-}
+import { CarrierProfile } from "@/types/carrier";
 
 const AdaptiveDashboardPage = () => {
   const { profile } = useAuth();

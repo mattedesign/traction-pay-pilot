@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,7 +13,7 @@ import {
   Clock,
   MapPin
 } from "lucide-react";
-import { CarrierProfile } from "@/pages/Index";
+import { CarrierProfile } from "@/types/carrier";
 import MorningRoutineWidget from "@/components/business-coach/MorningRoutineWidget";
 import AIBusinessCoach from "@/components/business-coach/AIBusinessCoach";
 import SavingsOpportunityDetector from "@/components/savings/SavingsOpportunityDetector";
