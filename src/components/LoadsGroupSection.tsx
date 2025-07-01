@@ -19,9 +19,9 @@ const LoadsGroupSection = ({ title, loads, isActive = false, getAvatarIcon, onLo
   }
 
   return (
-    <>
+    <div className="mb-6">
       <LoadGroupHeader title={title} isActive={isActive} />
-      <div>
+      <div className="space-y-1">
         {loads.map((load) => (
           <LoadItem 
             key={load.id}
@@ -32,7 +32,7 @@ const LoadsGroupSection = ({ title, loads, isActive = false, getAvatarIcon, onLo
           />
         ))}
       </div>
-    </>
+    </div>
   );
 };
 

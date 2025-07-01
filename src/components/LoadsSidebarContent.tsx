@@ -18,7 +18,7 @@ const LoadsSidebarContent = ({ loads, getAvatarIcon, onLoadSelect, selectedLoadI
 
   return (
     <ScrollArea className="flex-1 h-full">
-      <div className="space-y-1">
+      <div className="py-4">
         {/* Pending Loads */}
         {pendingLoads.length > 0 && (
           <LoadsGroupSection
@@ -57,7 +57,7 @@ const LoadsSidebarContent = ({ loads, getAvatarIcon, onLoadSelect, selectedLoadI
 
         {/* Empty state */}
         {loads.length === 0 && (
-          <div className="p-4 text-center text-slate-500">
+          <div className="p-6 text-center text-slate-500">
             <p className="text-sm">No loads found</p>
           </div>
         )}
