@@ -1,4 +1,3 @@
-
 import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { InputFocusHandle } from "@/hooks/useInputFocus";
@@ -7,7 +6,7 @@ import { useUnifiedChatHandler } from "../hooks/useUnifiedChatHandler";
 import { getChatSystemPrompt } from "./ChatSystemPrompt";
 import { ButtonClickHandler } from "@/services/buttonClickHandler";
 import ChatInterfaceMain from "./ChatInterfaceMain";
-import { CarrierProfile } from "@/pages/Index";
+import { CarrierProfile } from "@/types/carrier";
 
 interface ChatInterfaceWrapperProps {
   carrierProfile: CarrierProfile;

@@ -14,7 +14,7 @@ import {
   Clock
 } from "lucide-react";
 import { ContextualBusinessCoach, ContextualCoachingInsight, UserContext } from "@/services/contextualBusinessCoach";
-import { CarrierProfile } from "@/pages/Index";
+import { CarrierProfile } from "@/types/carrier";
 import { useEffect, useState } from "react";
 
 interface ContextualCoachingWidgetProps {

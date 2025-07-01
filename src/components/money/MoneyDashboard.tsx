@@ -1,7 +1,6 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import FactoringCostCalculator from "../insights/FactoringCostCalculator";
-import { CarrierProfile } from "@/pages/Index";
+import { CarrierProfile } from "@/types/carrier";
 
 interface MoneyDashboardProps {
   carrierProfile: CarrierProfile;

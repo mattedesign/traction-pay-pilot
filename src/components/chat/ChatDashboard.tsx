@@ -1,7 +1,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import FunctionalChatInterface from "../FunctionalChatInterface";
-import { CarrierProfile } from "@/pages/Index";
+import { CarrierProfile } from "@/types/carrier";
 import { useNavigate } from "react-router-dom";
 import { useRef } from "react";
 

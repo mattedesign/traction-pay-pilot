@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Truck, Route, CreditCard, Upload } from "lucide-react";
 import ChatDrawer from "./ChatDrawer";
-import { CarrierProfile } from "@/pages/Index";
+import { CarrierProfile } from "@/types/carrier";
 import HomeDocumentUpload from "./HomeDocumentUpload";
 import ChatInput from "./ChatInput";
 import { useNavigate } from "react-router-dom";

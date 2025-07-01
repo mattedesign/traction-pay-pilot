@@ -14,7 +14,7 @@ import {
   Star,
   Award
 } from "lucide-react";
-import { CarrierProfile } from "@/pages/Index";
+import { CarrierProfile } from "@/types/carrier";
 import PremiumProgramsDemo from "./PremiumProgramsDemo";
 
 interface AIBusinessCoachProps {

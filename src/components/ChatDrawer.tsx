@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import {
   Drawer,
@@ -10,7 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import ChatInterfaceWrapper from "./ChatInterfaceWrapper";
-import { CarrierProfile } from "@/pages/Index";
+import { CarrierProfile } from "@/types/carrier";
 
 interface ChatDrawerProps {
   isOpen: boolean;

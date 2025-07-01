@@ -1,11 +1,10 @@
-
 import SmartInsightsDashboard from "./SmartInsightsDashboard";
 import PerformanceBenchmarking from "./PerformanceBenchmarking";
 import LoadProfitabilityIntelligence from "./LoadProfitabilityIntelligence";
 import HabituallyLateInsightsDashboard from "./HabituallyLateInsightsDashboard";
 import DashboardHeader from "./DashboardHeader";
 import KeyMetricsGrid from "./KeyMetricsGrid";
-import { CarrierProfile } from "@/pages/Index";
+import { CarrierProfile } from "@/types/carrier";
 
 interface InsightsDashboardProps {
   carrierProfile: CarrierProfile;

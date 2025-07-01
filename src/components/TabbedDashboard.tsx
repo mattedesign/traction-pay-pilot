@@ -1,10 +1,9 @@
-
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TrendingUp, MessageCircle } from "lucide-react";
 import InsightsDashboard from "./insights/InsightsDashboard";
 import ChatDashboard from "./chat/ChatDashboard";
-import { CarrierProfile } from "@/pages/Index";
+import { CarrierProfile } from "@/types/carrier";
 
 interface TabbedDashboardProps {
   carrierProfile: CarrierProfile;

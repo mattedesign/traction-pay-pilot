@@ -2,7 +2,7 @@
 import { useAuth } from "@/hooks/useAuth";
 import NavigationSidebar from "@/components/NavigationSidebar";
 import InsightsDashboard from "@/components/insights/InsightsDashboard";
-import { CarrierProfile } from "@/pages/Index";
+import { CarrierProfile } from "@/types/carrier";
 import { useState, useEffect } from "react";
 
 const InsightsPage = () => {

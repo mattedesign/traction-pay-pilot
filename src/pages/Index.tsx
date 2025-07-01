@@ -2,12 +2,16 @@
 import { useAuth } from "@/hooks/useAuth";
 import NavigationSidebar from "@/components/NavigationSidebar";
 import ChatOnlyDashboard from "@/components/ChatOnlyDashboard";
+import { CarrierProfile } from "@/types/carrier";
+
+// Export the type for backward compatibility
+export type { CarrierProfile };
 
 const Index = () => {
   const { profile } = useAuth();
 
   // Simple carrier profile for the chat dashboard
-  const simplifiedCarrierProfile = {
+  const simplifiedCarrierProfile: CarrierProfile = {
     companySize: 'small' as const,
     fleetSize: 5,
     userRoles: ['owner-operator'],
