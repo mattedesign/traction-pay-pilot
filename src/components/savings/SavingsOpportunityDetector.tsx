@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -12,7 +11,7 @@ import {
   AlertCircle,
   CheckCircle
 } from "lucide-react";
-import { CarrierProfile } from "@/pages/AdaptiveDashboardPage";
+import { CarrierProfile } from "@/types/carrier";
 
 interface SavingsOpportunityDetectorProps {
   carrierProfile: CarrierProfile;
