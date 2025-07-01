@@ -52,7 +52,7 @@ const LoadMainContent = ({ loadData }: LoadMainContentProps) => {
       </div>
       
       {/* Tabs Container */}
-      <div className="flex-1 min-h-0 overflow-hidden px-6 pt-4">
+      <div className="flex-1 min-h-0 overflow-hidden px-3 pt-4">
         <LoadDetailTabs 
           load={load}
           emailThreads={emailThreads}
